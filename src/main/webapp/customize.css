@@ -1,0 +1,86 @@
+#termSearch{
+	height: 30px;
+	border-radius:10px;
+	border-color: #CFD4CF;
+	text-align: center;
+	width: 95%;
+	padding:5px;
+	font-size:14px;
+}
+#searchDisplay{
+	width: 95%;
+	table-layout:fixed;
+	margin-top: 5px;
+	background-color: #EAEBEA;
+	text-transform:lowercase;
+}
+
+#searchDisplay tbody {
+	display:block;
+    height: 200px;
+    overflow-y: scroll;
+    text-transform:capitalize;
+}
+
+#searchDisplay tbody td, thead th {
+    width: 1%; 
+}
+
+#searchDisplay tr:HOVER{
+	background-color: #FFFFCA
+}
+
+#termInformationDisplay {
+	text-transform:lowercase;
+	max-height: 200px;
+	overflow: scroll;
+	display: block;
+}
+
+#termInformationDisplay  tbody{
+	text-transform:capitalize;
+	
+}
+.node {
+  font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  fill: #bbb;
+}
+
+.node:hover {
+  fill: #000;
+}
+
+.link {
+  stroke: steelblue;
+  stroke-opacity: .4;
+  fill: none;
+  pointer-events: none;
+}
+
+.node:hover,
+.node--source,
+.node--target {
+  font-weight: 700;
+}
+
+.node--source {
+  fill: #2ca02c;
+}
+
+.node--target {
+  fill: #d62728;
+}
+
+.link--source,
+.link--target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.link--source {
+  stroke: #d62728;
+}
+
+.link--target {
+  stroke: #2ca02c;
+}
