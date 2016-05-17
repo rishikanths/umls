@@ -1,5 +1,4 @@
-UMLS Visualization
-=========================
+# UMLS Visualization
 
 
 What is in this Project
