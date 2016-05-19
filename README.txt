@@ -15,7 +15,4 @@ Java JDK 1.8
 Javascript
 Java REST API
 MySQL and MySQL JDBC
-Apache Tomcat
-
-Execution
----------
+Apache Tomcat 7
