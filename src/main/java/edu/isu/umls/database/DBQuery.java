@@ -228,11 +228,11 @@ public class DBQuery {
 				if(rel.equals("PAR")){
 					concept.addToHierarchy(cui2);
 				}else if(!rel.equals("CHD")){
-					relationship.setRelationShipType(result.getString("REL"));
+					relationship.setRelationType(result.getString("REL"));
 					if(rela!=null)
-						relationship.setRelationShipName(result.getString("RELA"));
+						relationship.setRelationName(result.getString("RELA"));
 					else
-						relationship.setRelationShipName("N/A");
+						relationship.setRelationName("N/A");
 					RelationTo relTo = new RelationTo();
 					relTo.setObject(cui2);
 					relTo.setPredicate(relationship);

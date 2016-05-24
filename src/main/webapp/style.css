@@ -69,7 +69,7 @@ ul {
 	
 #bg {
 	background: url('images/shadow.png') top left repeat-x;
-	padding: 60px 0 80px 0;
+	padding: 10px 0 40px 0;
 }
 
 #banner {
@@ -88,13 +88,14 @@ ul {
 }
 
 #termInformation {
-	height:200px;
-	margin-left:22%;
-	padding: 30px;
+	height:300px;
+	margin-top:10px;
 	background: #ffffff;
+	width:24%;
 }
 #visual {
 	height:500px;
+	margin-left:25%;
 	margin-top: 10px;
 	padding: 30px;
 	background: #ffffff;
@@ -186,7 +187,7 @@ ul {
 	position: relative;
 	padding: 0px;
 	margin: 30px 0 0 0;
-	width: 1180px;
+	width: 100%;
 	color: #6b6b6b;
 }
 
@@ -250,7 +251,7 @@ ul {
 	
 #outer {
 	position: relative;
-	width: 1180px;
+	width: 90%;
 	margin: 0 auto;
 }
 
@@ -266,32 +267,32 @@ ul {
 	border: dashed 1px #ffffff;
 	padding: 5px;
 }
-
-#leftSection {
-	width: 21%;
+#leftSection{
 	float: left;
-	padding: 10px;
+}
+#searchSection {
+	width:25%;
 	color: #959797;
 }
 
-#leftSection a {
+#searchSection a {
 	color: #d9dada;
 }
 
-#leftSection h2, #leftSection h3, #leftSection h4 {
+#searchSection h2, #searchSection h3, #searchSection h4 {
 	color: #ffffff;
 }
 
-#leftSection ul {
+#searchSection ul {
 	list-style: none;
 }
 
-#leftSection ul li {
+#searchSection ul li {
 	padding: 10px 0 10px 0;
 	border-top: dashed 1px #424545;
 }
 
-#leftSection ul li.first {
+#searchSection ul li.first {
 	padding-top: 0;
 	border-top: 0;
 }
