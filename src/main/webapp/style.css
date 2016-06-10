@@ -91,11 +91,10 @@ ul {
 	height:300px;
 	margin-top:10px;
 	background: #ffffff;
-	width:24%;
+	margin-left:24%;
 }
 #visual {
-	height:500px;
-	margin-left:25%;
+	min-height:300px;
 	margin-top: 10px;
 	padding: 30px;
 	background: #ffffff;

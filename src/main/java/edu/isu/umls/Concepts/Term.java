@@ -74,7 +74,7 @@ public class Term extends AbstractConcept {
 	public void addToHierarchy(List<AbstractConcept> concepts){
 		hierarchy.addAll(concepts);
 	}
-
+	
 	public void addToAdjacency(RelationTo rel){
 		adjacency.add(rel);
 	}
@@ -89,6 +89,21 @@ public class Term extends AbstractConcept {
 		String termString = top+"\n";
 				
 		return termString;
+	}
+
+	@Override
+	public void addToChildern(AbstractConcept childern) {
+		children.add(childern);
+	}
+
+	@Override
+	public boolean hasParent() {
+		return hierarchy.size()!=0 || false? true:false;
+	}
+
+	@Override
+	public boolean hasChildren() {
+		return children.size()!=0 || false? true:false;
 	}
 	
 }

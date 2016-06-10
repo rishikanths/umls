@@ -38,6 +38,8 @@ public class DBQuery {
 	
 	private final int LIMIT = 20;
 
+	private static int DEPTH = 0;
+	
 	public DBQuery() {
 		Log.addHandlers(logger);
 		connection = DBConnection.getDBConnection().getConnection();
@@ -192,15 +194,16 @@ public class DBQuery {
 	 * @param cui The CUI of the UMLS concept
 	 * @return {@link AbstractConcept}
 	 */
-	public AbstractConcept getInfomationByCUI(String cui){
+	public AbstractConcept getInfomationByCUI(String cui,int depth){
 		ResultSet result = null;
 		AbstractConcept concept = null;
 		try {
 			prepStatement = connection
-					.prepareStatement("SELECT c.CUI,c.STR,r.REL, r.RELA, r.CUI1,st.TUI,st.STY"
+					.prepareStatement("SELECT DISTINCT r.CUI1,c.CUI,c.STR,r.REL, r.RELA, st.TUI,st.STY"
 							+ " FROM mrconso as c, mrrel as r, mrsty as st WHERE"
-							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI"
-							+ " AND r.rel IN ('PAR','QB','RO','RU','XR',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'");
+							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
+							+ " AND r.rel IN ('PAR','CHD','QB','RO','RU','XR',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
+							+ " GROUP BY r.CUI1");
 			LoggerUtil.logInfo(logger, "Get Information on CUI - "+ cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
@@ -225,9 +228,23 @@ public class DBQuery {
 				AbstractConcept cui2 = searchByCUI(conceptCUI2);
 				Relationship relationship = new Relationship();
 				
-				if(rel.equals("PAR")){
+				if(rel.equals("CHD"))
 					concept.addToHierarchy(cui2);
-				}else if(!rel.equals("CHD")){
+				else if(rel.equals("PAR")){
+					System.out.println("Parent - "+ concept.getName()+ " - "+depth);
+					if(depth!=3){
+						depth++;
+						System.out.println("Child - "+cui2.getName()+ " - "+depth);
+						AbstractConcept t = getInfomationByCUI(cui2.getCui(),depth);
+						depth--;
+						concept.addToChildern(t);
+					}else{
+						concept.addToChildern(cui2);
+						System.out.println("Final Child - "+cui2.getName()+ " - "+depth);
+						continue;
+					}
+				}
+				else if(!rel.equals("CHD")){
 					relationship.setRelationType(result.getString("REL"));
 					if(rela!=null)
 						relationship.setRelationName(result.getString("RELA"));
@@ -284,6 +301,13 @@ public class DBQuery {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return result;
+	}
+	
+	public static void main(String args[]){
+		
+		DBQuery test = new DBQuery();
+		test.getInfomationByCUI("C0018790",0);
+		
 	}
 	
 }

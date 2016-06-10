@@ -42,7 +42,7 @@ public class UMLSSearch {
 		
 		DBQuery query = new DBQuery();
 		
-		AbstractConcept concept = query.getInfomationByCUI(cui);
+		AbstractConcept concept = query.getInfomationByCUI(cui,0);
 		
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concept));
 	}

@@ -40,7 +40,8 @@ function getCUI(cui){
 			$("#termInformationDisplay > tbody").empty();
 			var table = $("#termInformationDisplay > tbody");
 			var termMap = new Map();
-			var parentNames= [],adjacencyNames = [];
+			var parentNames= [],adjacencyNames = [], childNames= [];
+			var childObject;
 			if(object!=null){
 				for(var prop in object){
 					if(prop == 'hierarchy'){
@@ -51,6 +52,14 @@ function getCUI(cui){
 							parent +=parentObject[i].name+", "; 
 						}
 						table.append("<tr'><td>"+prop+"</td><td>"+parent+"</td></tr>");
+					}else if(prop == 'children'){
+						childObject = object[prop];
+						var child = "";
+						for(i=0;i<childObject.length;i++){
+							childNames.push(childObject[i].name);
+							child +=childObject[i].name+", "; 
+						}
+						table.append("<tr'><td>"+prop+"</td><td>"+child+"</td></tr>");
 					}else if(prop == 'semanticTypes'){
 						var types = object[prop];
 						var type = "";
@@ -71,7 +80,8 @@ function getCUI(cui){
 						table.append("<tr'><td>"+prop+"</td><td>"+object[prop]+"</td></tr>");
 				}
 			}
-			viz($('#termSearch').val(),parentNames,adjacencyNames);
+			dendogram(toD3jFormat($('#termSearch').val(),childObject));
+			//viz($('#termSearch').val(),parentNames,adjacencyNames);
 		},
 		error : function(data, status, response) {
 			alert("Error" + "\n Response - " + JSON.stringify(response)

@@ -27,6 +27,7 @@ public abstract class AbstractConcept {
 	
 	protected List<RelationTo> adjacency = new ArrayList<RelationTo>();
 	
+	protected List<AbstractConcept> children = new ArrayList<AbstractConcept>(); 
 	
 	public abstract void setSemanticType(List<AbstractType> type);
 	
@@ -38,11 +39,17 @@ public abstract class AbstractConcept {
 	
 	public abstract void addToHierarchy(AbstractConcept concept);
 	
+	public abstract void addToChildern(AbstractConcept childern);
+	
 	public abstract void addToHierarchy(List<AbstractConcept> concepts);
 
 	public abstract void addToAdjacency(RelationTo rel);
 	
 	public abstract void addToAdjacency(List<RelationTo> rels);
+	
+	public abstract boolean hasParent();
+	
+	public abstract boolean hasChildren();
 	
 	/**
 	 * @return the name

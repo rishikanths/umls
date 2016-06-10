@@ -1,86 +1,90 @@
-#termSearch{
+#termSearch {
 	height: 30px;
-	border-radius:10px;
+	border-radius: 10px;
 	border-color: #CFD4CF;
 	text-align: center;
 	width: 95%;
-	padding:5px;
-	font-size:14px;
+	padding: 5px;
+	font-size: 14px;
 }
-#searchDisplay{
+
+#searchDisplay {
 	width: 95%;
-	table-layout:fixed;
+	table-layout: fixed;
 	margin-top: 5px;
 	background-color: #EAEBEA;
-	text-transform:lowercase;
+	text-transform: lowercase;
 }
 
 #searchDisplay tbody {
-	display:block;
-    height: 200px;
-    overflow-y: scroll;
-    text-transform:capitalize;
+	display: block;
+	height: 200px;
+	overflow-y: scroll;
+	text-transform: capitalize;
 }
 
 #searchDisplay tbody td, thead th {
-    width: 1%; 
+	width: 1%;
 }
 
-#searchDisplay tr:HOVER{
+#searchDisplay tr:HOVER {
 	background-color: #FFFFCA
 }
 
 #termInformationDisplay {
-	text-transform:lowercase;
+	text-transform: lowercase;
 	max-height: 200px;
 	overflow: scroll;
 	display: block;
 }
 
-#termInformationDisplay  tbody{
-	text-transform:capitalize;
-	
+#termInformationDisplay  tbody {
+	text-transform: capitalize;
 }
+
 .node {
-  font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  fill: #bbb;
+	font: 300 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: blue;
+	text-transform: capitalize;
 }
 
 .node:hover {
-  fill: #000;
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	fill: #000;
+	text-transform: capitalize;
 }
 
 .link {
-  stroke: steelblue;
-  stroke-opacity: .4;
-  fill: none;
-  pointer-events: none;
+	stroke: black;
+	stroke-opacity: 1;
+	fill: none;
+	pointer-events: none;
 }
 
-.node:hover,
-.node--source,
-.node--target {
-  font-weight: 700;
+.node:hover, .node--source, .node--target {
+	font-weight: 700;
 }
 
 .node--source {
-  fill: #2ca02c;
+	fill: #2ca02c;
 }
 
 .node--target {
-  fill: #d62728;
+	fill: #d62728;
 }
 
-.link--source,
-.link--target {
-  stroke-opacity: 1;
-  stroke-width: 2px;
+.link--source, .link--target {
+	stroke-opacity: 1;
+	stroke-width: 2px;
 }
 
 .link--source {
-  stroke: #d62728;
+	stroke: #d62728;
 }
 
 .link--target {
-  stroke: #2ca02c;
+	stroke: #2ca02c;
+}
+.backgrd{
+	background-color: yellow;
 }
