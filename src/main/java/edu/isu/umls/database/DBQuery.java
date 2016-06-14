@@ -214,7 +214,7 @@ public class DBQuery {
 			boolean setOnce = true;
 			while(result.next()){
 				if(setOnce){
-					concept.setName(result.getString("STR"));
+					concept.setName(result.getString("STR").replace(" ", "_").replace(",", "_"));
 					concept.setCui(cui);
 					AbstractType type = new SemanticType();
 					type.setName(result.getString("STY"));

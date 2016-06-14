@@ -43,7 +43,7 @@
 }
 
 .node {
-	font: 300 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: blue;
 	text-transform: capitalize;
 }
@@ -61,30 +61,36 @@
 	pointer-events: none;
 }
 
-.node:hover, .node--source, .node--target {
-	font-weight: 700;
+path.arc {
+  cursor: move;
+  fill: #fff;
 }
 
-.node--source {
-	fill: #2ca02c;
+
+.link {
+  fill: none;
+  stroke: #1f77b4;
+  stroke-opacity: .4;
+  pointer-events: none;
 }
 
-.node--target {
-	fill: #d62728;
+.link.source, .link.target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
 }
 
-.link--source, .link--target {
-	stroke-opacity: 1;
-	stroke-width: 2px;
+.node.target {
+  fill: #d62728 !important;
 }
 
-.link--source {
-	stroke: #d62728;
+.link.source {
+  stroke: #d62728;
 }
 
-.link--target {
-	stroke: #2ca02c;
+.node.source {
+  fill: #2ca02c;
 }
-.backgrd{
-	background-color: yellow;
+
+.link.target {
+  stroke: #2ca02c;
 }

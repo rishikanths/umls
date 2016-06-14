@@ -30,7 +30,7 @@ public class ConceptMapper {
 		while(resultSet.next()){
 			Term concept = new Term();
 			concept.setCui(resultSet.getString("CUI"));
-			concept.setName(resultSet.getString("STR"));
+			concept.setName(resultSet.getString("STR").replace(" ", "_").replace(",", "_"));
 			concepts.add(concept);
 		}
 		return concepts;

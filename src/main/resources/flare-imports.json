@@ -1,0 +1,15 @@
+[
+{"name":"Blackwater_Fever", "imports":[]},
+{"name":"Malaria_Avian", "imports":[]},
+{"name":"Malaria_Cerebral", "imports":[]},
+{"name":"Malaria_Falciparum", "imports":["Malaria_Cerebral"]},
+{"name":"Quartan_Malaria", "imports":[]},
+{"name":"Malaria","imports":["Blackwater_Fever", "Malaria_Avian", "Malaria_Cerebral", "Malaria_Falciparum", "Quartan_Malaria", "Malaria_Vivax",
+"Other_malaria", "Ovale_malaria", "Mixed_malaria", "Induced_malaria", "Otherpernicious_complications_of_malaria"]},
+{"name":"Malaria_Vivax", "imports":[]},
+{"name":"Other_malaria", "imports":[]},
+{"name":"Ovale_malaria", "imports":[]},
+{"name":"Mixed_malaria", "imports":[]},
+{"name":"Induced_malaria", "imports":[]},
+{"name":"Otherpernicious_complications_of_malaria", "imports":[]}
+]

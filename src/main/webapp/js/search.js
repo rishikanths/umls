@@ -41,11 +41,12 @@ function getCUI(cui){
 			var table = $("#termInformationDisplay > tbody");
 			var termMap = new Map();
 			var parentNames= [],adjacencyNames = [], childNames= [];
-			var childObject;
+			var childObject,
+				parentObject;
 			if(object!=null){
 				for(var prop in object){
 					if(prop == 'hierarchy'){
-						var parentObject = object[prop];
+						parentObject = object[prop];
 						var parent = "";
 						for(i=0;i<parentObject.length;i++){
 							parentNames.push(parentObject[i].name);
@@ -80,8 +81,7 @@ function getCUI(cui){
 						table.append("<tr'><td>"+prop+"</td><td>"+object[prop]+"</td></tr>");
 				}
 			}
-			dendogram(toD3jFormat($('#termSearch').val(),childObject));
-			//viz($('#termSearch').val(),parentNames,adjacencyNames);
+			dendogramRadial(M2J(toD3jRadialFormat($('#termSearch').val(),childObject)));
 		},
 		error : function(data, status, response) {
 			alert("Error" + "\n Response - " + JSON.stringify(response)

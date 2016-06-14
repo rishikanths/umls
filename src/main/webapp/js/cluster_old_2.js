@@ -1,6 +1,5 @@
 var m = [ 20, 120, 20, 120 ], w = 1280 - m[1] - m[3], h = 800 - m[0] - m[2], i = 0, root;
 
-
 var tree = d3.layout.tree().size([ h, w ]);
 
 var diagonal = d3.svg.diagonal().projection(function(d) {
@@ -32,11 +31,10 @@ function update(source) {
 	});
 
 	// Enter any new nodes at the parent's previous position.
-	var nodeEnter = node.enter().append("svg:g").attr("transform", 
-		function(d) {
-			source.y0=source.y0+140;
-				
-			return "translate(" + source.y0 + "," + source.x0 + ")";
+	var nodeEnter = node.enter().append("svg:g").attr("transform", function(d) {
+		//console.log("@EnterNode");
+		source.y0 = source.y0;
+		return "translate(" + source.y0 + "," + source.x0 + ")";
 	}).on("click", function(d) {
 		toggle(d);
 		update(d);
@@ -51,9 +49,11 @@ function update(source) {
 	}).style("fill-opacity", 1e-6);
 
 	// Transition nodes to their new position.
-	var nodeUpdate = node.transition().duration(duration).attr("transform",
+	var nodeUpdate = node.transition().duration(duration).attr(
+			"transform",
 			function(d) {
-				if (d.parent != null && (d.children != null || d._children!=null)) {
+				if (d.parent != null
+						&& (d.children != null || d._children != null)) {
 					var arr = document.getElementsByTagName("text");
 					for (i = 0; i < arr.length; i++) {
 						if (d.name == arr[i].innerHTML)
@@ -68,37 +68,56 @@ function update(source) {
 	// Transition exiting nodes to the parent's new position.
 	var nodeExit = node.exit().transition().duration(duration).attr(
 			"transform", function(d) {
+				//console.log("@Exit");
+				var arr = document.getElementsByTagName("text");
+				for (i = 0; i < arr.length; i++) {
+						if (d.name == arr[i].innerHTML)
+							d.y = d.y + arr[i].getComputedTextLength();
+					}
 				return "translate(" + source.y + "," + source.x + ")";
 			}).remove();
 
 	nodeExit.select("text").style("fill-opacity", 1e-6);
-	
+
 	// Update the links…
-	var link = vis.selectAll("path.link").data(tree.links(nodes), function(d) {
-	
-			console.log(d.object);
-			if(d.source.parent==null && (d.target.children!=null || d.target._children!=null)){
-				console.log(d.source.name);
-				var arr = document.getElementsByTagName("text");
-					for(i = 0;i<arr.length;i++){
-						if(d.target.name == arr[i].innerHTML)
-							d.target.y  = d.target.y - arr[i].getComputedTextLength();
-					}
-			}
-			else if((d.target.children==null || d.target._children!=null) && d.target.parent.parent!=null){
-				console.log(d.source.name);
-				var arr = document.getElementsByTagName("text");
-					for(i = 0;i<arr.length;i++){
-						if(d.source.name == arr[i].innerHTML)
-							d.source.y0  = d.source.y0 + arr[i].getComputedTextLength();
-					}
-			}
-		return d.target.id;
-	});
+	var link = vis
+			.selectAll("path.link")
+			.data(
+					tree.links(nodes),
+					function(d) {
+						//console.log("@LinkSelectAll");
+						//console.log(d.object);
+						if (d.source.parent == null
+								&& d.target.children != null){
+							console.log(d.source.name+"----"+d.target.name+"*");
+							var arr = document.getElementsByTagName("text");
+							for (i = 0; i < arr.length; i++) {
+								if (d.target.name == arr[i].innerHTML)
+									d.target.y = d.target.y
+											- arr[i].getComputedTextLength();
+							}
+						} else if ((d.target.children == null || d.target._children != null)
+								&& d.target.parent.parent != null) {
+							console.log(d.source.name+"----"+d.target.name+"**");
+							var arr = document.getElementsByTagName("text");
+							if(d.source.y0!=null){
+							for (i = 0; i < arr.length; i++) {
+								if (d.target.name == arr[i].innerHTML){
+									console.log(arr[i].getComputedTextLength()+"&");									
+									d.source.y0 = d.source.y0
+											+ arr[i].getComputedTextLength();
+									console.log(d.source.y0);
+								}
+							}
+							}
+						}
+						return d.target.id;
+					});
 
 	// Enter any new links at the parent's previous position.
 	link.enter().insert("svg:path", "g").attr("class", "link").attr("d",
 			function(d) {
+				console.log("@Insert");
 				var o = {
 					x : source.x,
 					y : parseInt(source.y)
@@ -114,19 +133,21 @@ function update(source) {
 
 	// Transition exiting nodes to the parent's new position.
 	link.exit().transition().duration(duration).attr("d", function(d) {
+		console.log("@ExitLink");
 		var o = {
 			x : source.x,
-			y : source.y
+			y : parseInt(source.y)-300
 		};
 
 		return diagonal({
 			source : o,
-			target:o
+			target : o
 		});
 	}).remove();
 
 	// Stash the old positions for transition.
 	nodes.forEach(function(d) {
+		//console.log("@NodeForEach");
 		d.x0 = d.x;
 		d.y0 = d.y;
 	});
