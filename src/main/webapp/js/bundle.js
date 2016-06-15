@@ -1,3 +1,7 @@
+
+var len = 20,
+	inc=20; 
+
 var w = 1280, h = 800, rx = w / 2, ry = h / 2, m0, rotate = 0;
 
 var splines = [];
@@ -22,13 +26,11 @@ function dendogramRadial(data) {
 	 * To redraw a difference concept, the previous SVG has be removed. 
 	 */
 	$("#visual").empty();
-
-	div = d3.select("#visual").insert("div", "h2").style("width", w + "px")
-			.style("height", w + "px").style("-webkit-backface-visibility",
-					"hidden");
-
+	div = d3.select("#visual").insert("div", "h2").style("height", w + "px")
+			.style("-webkit-backface-visibility","hidden");
+	var ryTemp = parseInt(ry)+200;
 	svg = div.append("svg:svg").attr("width", w).attr("height", w).append(
-			"svg:g").attr("transform", "translate(" + rx + "," + ry + ")");
+			"svg:g").attr("transform", "translate(" + rx + "," + ryTemp + ")");
 
 	svg.append("svg:path").attr("class", "arc").attr(
 			"d",d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0)
@@ -73,9 +75,24 @@ function update(root) {
 			return line(splines[i]);
 		});
 	});
+	
+	svg.selectAll('text').each(function (d) {
+		var el = d3.select(this);		
+		var total = d.name.length;
+		el.text('');
+		if(len>=total)
+			el.text(d.name);
+		while(len<total){
+			var tspan = el.append('tspan').text(d.name.slice(len-inc,len));
+			tspan.attr('x', 0).attr('dy', inc);
+			len = len+inc;
+		}
+		var tspan = el.append('tspan').text(d.name.slice(len));
+		tspan.attr('x', 0).attr('dy', 10);
+	});
 }
 
-d3.select(window).on("mousemove", mousemove).on("mouseup", mouseup);
+//d3.select(window).on("mousemove", mousemove).on("mouseup", mouseup);
 
 function mouse(e) {
 	return [ e.pageX - rx, e.pageY - ry ];
