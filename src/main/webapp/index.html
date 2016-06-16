@@ -3,11 +3,12 @@
 <head>
 	<title>UMLS Visualizations</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="style.css" />
-	<link rel="stylesheet" href="customize.css" />
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="customize.css" />
 </head>
 <body>
 	<div id="bg">
@@ -15,15 +16,12 @@
 			<div id="header">
 				<div id="logo">
 					<h1>
-						<a href="#">UMLS @3 Visualization</a>
+						<a href="#">UMLS Visualization</a>
 					</h1>
 				</div>
 				<div id="nav">
 						<ul>
 							<li class="first active">
-								<a href="#">Home</a>
-							</li>
-							<li>
 								<a href="#">About</a>
 							</li>
 							<li class="last">
@@ -39,11 +37,12 @@
 			<div id="main">
 				<div id = "leftSection">
 					<div id="searchSection">
-						<input type="search" id="termSearch" autocomplete="on" placeholder="Search UMLS for ......">
-						<table id="searchDisplay">
+						<input type="search" id="termSearch" placeholder="Search UMLS for ......" autocomplete="on">
+						<input type="text" id="selectedConceptCUI" style="display:none"/>
+						<!-- <table id="searchDisplay">
 							<tbody>
 							</tbody>
-						</table>
+						</table> -->
 					</div>
 				</div>
 					<div id="termInformation">

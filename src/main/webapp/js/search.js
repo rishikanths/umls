@@ -1,35 +1,36 @@
 $("#termSearch").autocomplete({
-	minLength:3,
+	minLength:4,
 	delay: 200,
-	autoFocus:true,
 	source: function(req,resp){
 		$.ajax({
 			url : 'rest/umls/search?term='+$('#termSearch').val(),
 			success : function(data, status, response) {
 				var object = jQuery.parseJSON(data);
-				$("#searchDisplay > tbody").empty();
-				var table = $("#searchDisplay > tbody");
-				if(object.length!=0){
-					for(i=0;i<object.length;i++){
-						var dataObj = object[i];
-						table.append("<tr id='"+dataObj.cui+"'><td>"+dataObj.name+"</td></tr>");
-					}
-				}else{
-					table.append("<tr><td>No terms starting with = "+$('#termSearch').val()+"</td></tr>")
-				}
-				$("#searchDisplay tr").click(function(e){
-					var cui = this.id;
-					getCUI(cui);
-					$("#termSearch").val(this.innerText);
-				});
-			},
+				resp($.map(object, function (item) {
+            		return {
+                		label: item.name,
+                		value: item.cui
+            		};
+        		}));
+			}, 
 			error : function(data, status, response) {
 				alert("Error" + "\n Response - " + JSON.stringify(response)
 						+ "\n\n Data - " + JSON.stringify(data)
 						+ "\n\n Status - " + JSON.stringify(status));
 			}
-		})
-	}
+		});
+	},
+	focus: function() {
+		// prevent value inserted on focus
+		return false;
+    },
+	select: function( event, ui ) {
+		$("#selectedConceptCUI").text(ui.item.value);
+		$("#termSearch").val(ui.item.label);
+		getCUI(ui.item.value);
+		$("#visual").empty();
+    	return false;
+    },
 });
 
 function getCUI(cui){

@@ -87,12 +87,6 @@ ul {
 	overflow: hidden;
 }
 
-#termInformation {
-	height:300px;
-	margin-top:10px;
-	background: #ffffff;
-	margin-left:24%;
-}
 #visual {
 	min-height:300px;
 	margin-top: 10px;
@@ -267,10 +261,10 @@ ul {
 	padding: 5px;
 }
 #leftSection{
-	float: left;
+	/*float: left;*/
 }
 #searchSection {
-	width:25%;
+	width:100%;
 	color: #959797;
 }
 

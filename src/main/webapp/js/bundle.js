@@ -92,7 +92,6 @@ function update(root) {
 	});
 }
 
-//d3.select(window).on("mousemove", mousemove).on("mouseup", mouseup);
 
 function mouse(e) {
 	return [ e.pageX - rx, e.pageY - ry ];
@@ -101,41 +100,6 @@ function mouse(e) {
 function mousedown() {
 	m0 = mouse(d3.event);
 	d3.event.preventDefault();
-}
-
-function mousemove() {
-	if (m0) {
-		var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1))
-				* 180 / Math.PI;
-		div.style("-webkit-transform", "translateY(" + (ry - rx)
-				+ "px)rotateZ(" + dm + "deg)translateY(" + (rx - ry) + "px)");
-	}
-}
-
-function mouseup() {
-	if (m0) {
-		var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1))
-				* 180 / Math.PI;
-
-		rotate += dm;
-		if (rotate > 360)
-			rotate -= 360;
-		else if (rotate < 0)
-			rotate += 360;
-		m0 = null;
-
-		div.style("-webkit-transform", null);
-
-		svg.attr("transform",
-				"translate(" + rx + "," + ry + ")rotate(" + rotate + ")")
-				.selectAll("g.node text").attr("dx", function(d) {
-					return (d.x + rotate) % 360 < 180 ? 8 : -8;
-				}).attr("text-anchor", function(d) {
-					return (d.x + rotate) % 360 < 180 ? "start" : "end";
-				}).attr("transform", function(d) {
-					return (d.x + rotate) % 360 < 180 ? null : "rotate(180)";
-				});
-	}
 }
 
 function mouseover(d) {
