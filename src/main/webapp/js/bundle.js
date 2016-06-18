@@ -1,6 +1,7 @@
-
-var len = 20,
-	inc=20; 
+var LEN_CONST = 50;
+var INC_CONST = 20;
+var len = LEN_CONST;
+var inc=INC_CONST; 
 
 var w = 1280, h = 800, rx = w / 2, ry = h / 2, m0, rotate = 0;
 
@@ -78,17 +79,18 @@ function update(root) {
 	
 	svg.selectAll('text').each(function (d) {
 		var el = d3.select(this);		
-		var total = d.name.length;
 		el.text('');
-		if(len>=total)
+		len = LEN_CONST;
+		inc=INC_CONST;
+		if(len>=d.name.length)
 			el.text(d.name);
-		while(len<total){
+		while(len<d.name.length){
 			var tspan = el.append('tspan').text(d.name.slice(len-inc,len));
-			tspan.attr('x', 0).attr('dy', inc);
+			tspan.attr('x', 0).attr('dy', 15);
 			len = len+inc;
 		}
-		var tspan = el.append('tspan').text(d.name.slice(len));
-		tspan.attr('x', 0).attr('dy', 10);
+		var tspan = el.append('tspan').text(d.name.slice(len-inc));
+		tspan.attr('x', 0).attr('dy', 15);
 	});
 }
 

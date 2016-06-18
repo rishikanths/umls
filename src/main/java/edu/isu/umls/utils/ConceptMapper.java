@@ -50,4 +50,8 @@ public class ConceptMapper {
 		return type;
 	}
 	
+	public static String normalizeName(String name){
+		return name.replaceAll("[^\\w0-9]","_").replaceAll(" ", "_");
+	}
+	
 }
