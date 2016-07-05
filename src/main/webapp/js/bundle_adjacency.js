@@ -5,56 +5,56 @@ var inc=INC_CONST;
 
 var w = 1280, h = 800, rx = w / 2, ry = h / 2, m0, rotate = 0;
 
-var splines = [];
+var splines_rel = [];
 
-var cluster = d3.layout.cluster().size([ 360, ry - 120 ]).sort(function(a, b) {
+var cluster_rel = d3.layout.cluster().size([ 360, ry - 120 ]).sort(function(a, b) {
 	return d3.ascending(a.key, b.key);
 });
 
-var bundle = d3.layout.bundle();
+var bundle_rel = d3.layout.bundle();
 
-var line = d3.svg.line.radial().interpolate("bundle").tension(.85).radius(
+var line_rel = d3.svg.line.radial().interpolate("bundle").tension(.85).radius(
 		function(d) {
 			return d.y;
 		}).angle(function(d) {
 	return d.x / 180 * Math.PI;
 });
 
-var div, svg;
-function dendogramRadial(data) {
+var div_rel, svg_rel;
+function dendogramRadialRelation(data) {
 
 	/**
 	 * To redraw a difference concept, the previous SVG has be removed. 
 	 */
-	$("#hierarchy").empty();
-	div = d3.select("#hierarchy").insert("div", "h2").style("height", w + "px")
+	$("#relation").empty();
+	div_rel = d3.select("#relation").insert("div", "h2").style("height", w + "px")
 			.style("-webkit-backface-visibility","hidden");
 	var ryTemp = parseInt(ry)+200;
-	svg = div.append("svg:svg").attr("width", w).attr("height", w).append(
+	svg_rel = div_rel.append("svg:svg").attr("width", w).attr("height", w).append(
 			"svg:g").attr("transform", "translate(" + rx + "," + ryTemp + ")");
 
-	svg.append("svg:path").attr("class", "arc").attr(
+	svg_rel.append("svg:path").attr("class", "arc").attr(
 			"d",d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0)
-					.endAngle(2 * Math.PI)).on("mousedown", mousedown);
+					.endAngle(2 * Math.PI)).on("mousedown", mousedown_rel);
 
-	update(data.data);
+	updateRelation(data.data);
 }
-function update(root) {
+function updateRelation(root) {
 
-	var nodes = cluster.nodes(packages.root(root)), links = packages
-			.imports(nodes), splines = bundle(links);
+	var nodes_rel = cluster_rel.nodes(packages.root(root)), links_rel = packages
+			.imports(nodes_rel), splines_rel = bundle_rel(links_rel);
 
-	var path = svg.selectAll("path.link").data(links).enter()
+	var path_rel = svg_rel.selectAll("path.link").data(links_rel).enter()
 			.append("svg:path").attr(
 					"class",
 					function(d) {
 						return "link source-" + d.source.key + " target-"
 								+ d.target.key;
 					}).attr("d", function(d, i) {
-				return line(splines[i]);
+				return line(splines_rel[i]);
 			});
 
-	svg.selectAll("g.node").data(nodes.filter(function(n) {
+	svg_rel.selectAll("g.node").data(nodes_rel.filter(function(n) {
 		return !n.children;
 	})).enter().append("svg:g").attr("class", "node").attr("id", function(d) {
 		return "node-" + d.key;
@@ -68,16 +68,16 @@ function update(root) {
 		return d.x < 180 ? null : "rotate(180)";
 	}).text(function(d) {
 		return d.key;
-	}).on("mouseover", mouseover).on("mouseout", mouseout);
+	}).on("mouseover", mouseover_rel).on("mouseout", mouseout_rel);
 
 	d3.select("input[type=range]").on("change", function() {
-		line.tension(this.value / 100);
-		path.attr("d", function(d, i) {
-			return line(splines[i]);
+		line_rel.tension(this.value / 100);
+		path_rel.attr("d", function(d, i) {
+			return line(splines_rel[i]);
 		});
 	});
 	
-	svg.selectAll('text').each(function (d) {
+	svg_rel.selectAll('text').each(function (d) {
 		var el = d3.select(this);		
 		el.text('');
 		len = LEN_CONST;
@@ -94,47 +94,34 @@ function update(root) {
 	});
 }
 
-
-function mouse(e) {
-	return [ e.pageX - rx, e.pageY - ry ];
-}
-
-function mousedown() {
+function mousedown_rel() {
 	m0 = mouse(d3.event);
 	d3.event.preventDefault();
 }
 
-function mouseover(d) {
-	svg.selectAll("path.link.target-" + d.key).classed("target", true).each(
-			updateNodes("source", true,d.name));
+function mouseover_rel(d) {
+	svg_rel.selectAll("path.link.target-" + d.key).classed("target", true).each(
+			updateNodes_rel("source", true, d.name));
 
-	svg.selectAll("path.link.source-" + d.key).classed("source", true).each(
-			updateNodes("target", true,d.name));
+	svg_rel.selectAll("path.link.source-" + d.key).classed("source", true).each(
+			updateNodes_rel("target", true, d.name));
+
 }
 
-function mouseout(d) {
-	svg.selectAll("path.link.source-" + d.key).classed("source", false).each(
-			updateNodes("target", false));
+function mouseout_rel(d) {
+	svg_rel.selectAll("path.link.source-" + d.key).classed("source", false).each(
+			updateNodes_rel("target", false));
 
-	svg.selectAll("path.link.target-" + d.key).classed("target", false).each(
-			updateNodes("source", false));
-	removeInformation();
+	svg_rel.selectAll("path.link.target-" + d.key).classed("target", false).each(
+			updateNodes_rel("source", false));
 }
 
-function updateNodes(name, value, term) {
+function updateNodes_rel(name, value, term) {
 	return function(d) {
 		if(value)
-			detailedInformation(d, term);
+			detailedRelationInformation(d, term);
 		if (value)
 			this.parentNode.appendChild(this);
-		svg.select("#node-" + d[name].key).classed(name, value);
+		svg_rel.select("#node-" + d[name].key).classed(name, value);
 	};
-}
-
-function cross(a, b) {
-	return a[0] * b[1] - a[1] * b[0];
-}
-
-function dot(a, b) {
-	return a[0] * b[0] + a[1] * b[1];
 }

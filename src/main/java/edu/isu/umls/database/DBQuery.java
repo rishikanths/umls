@@ -38,7 +38,7 @@ public class DBQuery {
 	
 	private final int LIMIT = 20;
 
-	private static int DEPTH = 0;
+	private static int DEPTH = 3;
 	
 	public DBQuery() {
 		Log.addHandlers(logger);
@@ -194,15 +194,14 @@ public class DBQuery {
 	 * @param cui The CUI of the UMLS concept
 	 * @return {@link AbstractConcept}
 	 */
-	public AbstractConcept getInfomationByCUI(String cui,int depth){
+	public AbstractConcept getHierarchyInfomationByCUI(String cui,int depth, AbstractConcept concept){
 		ResultSet result = null;
-		AbstractConcept concept = null;
 		try {
 			prepStatement = connection
 					.prepareStatement("SELECT DISTINCT r.CUI1,c.CUI,c.STR,r.REL, r.RELA, st.TUI,st.STY"
 							+ " FROM mrconso as c, mrrel as r, mrsty as st WHERE"
 							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
-							+ " AND r.rel IN ('PAR','CHD','QB','RO','RU','XR',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
+							+ " AND r.rel IN ('PAR','CHD') AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
 							+ " GROUP BY r.CUI1");
 			LoggerUtil.logInfo(logger, "Get Information on CUI - "+ cui);
 			long start = Calendar.getInstance().getTimeInMillis();
@@ -210,7 +209,8 @@ public class DBQuery {
 			prepStatement.setString(1, cui);
 			prepStatement.executeQuery();
 			result = prepStatement.getResultSet();
-			concept = new Term();
+			if(concept == null)
+				concept = new Term();
 			boolean setOnce = true;
 			while(result.next()){
 				if(setOnce){
@@ -223,39 +223,85 @@ public class DBQuery {
 					setOnce = false;
 				}
 				String rel = result.getString("REL");
-				String rela = result.getString("RELA");
 				String conceptCUI2 = result.getString("CUI1");
 				AbstractConcept cui2 = searchByCUI(conceptCUI2);
-				Relationship relationship = new Relationship();
 				
 				if(rel.equals("CHD"))
 					concept.addToHierarchy(cui2);
 				else if(rel.equals("PAR")){
-					System.out.println("Parent - "+ concept.getName()+ " - "+depth);
+					//System.out.println("Parent - "+ concept.getName()+ " - "+depth);
 					if(depth!=3){
 						depth++;
-						System.out.println("Child - "+cui2.getName()+ " - "+depth);
-						AbstractConcept t = getInfomationByCUI(cui2.getCui(),depth);
+						//System.out.println("Child - "+cui2.getName()+ " - "+depth);
+						AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(),depth,null);
 						depth--;
 						concept.addToChildern(t);
 					}else{
 						concept.addToChildern(cui2);
-						System.out.println("Final Child - "+cui2.getName()+ " - "+depth);
+						//System.out.println("Final Child - "+cui2.getName()+ " - "+depth);
 						continue;
 					}
 				}
-				else if(!rel.equals("CHD")){
-					relationship.setRelationType(result.getString("REL"));
-					if(rela!=null)
-						relationship.setRelationName(result.getString("RELA"));
-					else
-						relationship.setRelationName("N/A");
-					RelationTo relTo = new RelationTo();
-					relTo.setObject(cui2);
-					relTo.setPredicate(relationship);
-					
-					concept.addToAdjacency(relTo);
+			}
+			long end = Calendar.getInstance().getTimeInMillis();
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
+					+ " milli seconds");
+			
+			prepStatement.close();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return concept;
+	}
+
+	
+	
+	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept){
+		ResultSet result = null;
+		try {
+			prepStatement = connection
+					.prepareStatement("SELECT DISTINCT r.CUI1,c.CUI,c.STR,r.REL, r.RELA, st.TUI,st.STY"
+							+ " FROM mrconso as c, mrrel as r, mrsty as st WHERE"
+							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
+							+ " AND r.rel IN ('QB','RO','RU',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
+							+ " GROUP BY r.CUI1");
+			LoggerUtil.logInfo(logger, "Get Information on CUI - "+ cui);
+			long start = Calendar.getInstance().getTimeInMillis();
+
+			prepStatement.setString(1, cui);
+			prepStatement.executeQuery();
+			result = prepStatement.getResultSet();
+			if(concept == null)
+				concept = new Term();
+			boolean setOnce = true;
+			while(result.next()){
+				if(setOnce){
+					concept.setName(ConceptMapper.normalizeName(result.getString("STR")));
+					concept.setCui(cui);
+					AbstractType type = new SemanticType();
+					type.setName(result.getString("STY"));
+					type.setTypeId(result.getString("TUI"));
+					concept.addSemanticType(type);
+					setOnce = false;
 				}
+				String rela = result.getString("RELA");
+				String conceptCUI2 = result.getString("CUI1");
+				AbstractConcept cui2 = searchByCUI(conceptCUI2);
+				cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
+				Relationship relationship = new Relationship();
+				
+				relationship.setRelationType(result.getString("REL"));
+				if(rela!=null)
+					relationship.setRelationName(rela);
+				else
+					relationship.setRelationName("N/A");
+				System.out.println(relationship.toString());
+				RelationTo relTo = new RelationTo();
+				relTo.setObject(cui2);
+				relTo.setPredicate(relationship);
+				
+				concept.addToAdjacency(relTo);
 			}
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
@@ -268,6 +314,8 @@ public class DBQuery {
 
 		return concept;
 	}
+
+	
 	
 	public List<RelationTo> getAdjaceny(String cui) {
 
@@ -306,7 +354,8 @@ public class DBQuery {
 	public static void main(String args[]){
 		
 		DBQuery test = new DBQuery();
-		test.getInfomationByCUI("C0018790",0);
+		AbstractConcept t = test.getAdjacencyInfomationByCUI("C0024530",null);
+		//AbstractConcept t1 = test.getInfomationByCUI_Hierarchy("C0024530",0);
 		
 	}
 	

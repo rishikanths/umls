@@ -30,7 +30,22 @@
 #searchDisplay tr:HOVER {
 	background-color: #FFFFCA
 }
-
+#termInfo{
+	color: #0101DF;
+    font-family: monospace;
+    font-size: large
+}
+#relationInfo{
+    font-weight: bold;
+}
+#relationRadioSelection input{
+	margin-left: 15px;
+}
+#relationLabel{
+	text-align: left; 
+	font-weight: bold;
+	padding: 15px 0 5px 20px;
+}
 /* loading - the AJAX indicator */
 .ui-autocomplete-loading {
 	background: white url('images/loader.gif') right center no-repeat;

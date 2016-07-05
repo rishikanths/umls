@@ -39,4 +39,11 @@ public class Relationship extends AbstractRelation{
 		semanticRelationships.add(semanticType);
 		
 	}
+	
+	@Override
+	public String toString(){
+		
+		return "Relation Name - "+relationName+" Relation Type - "+relationType+
+				"  Relation Description - "+relationDescription;
+	}
 }

@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>UMLS Visualizations</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-	<link rel="stylesheet" href="style.css" />
-	<link rel="stylesheet" href="customize.css" />
+<title>UMLS Visualizations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="js/libraries/jquery-2.1.4.min.js"></script>
+<script src="js/libraries/jquery-ui-1.11.4/jquery-ui.js"></script>
+<script src="js/libraries/d3.js"></script>
+<link rel="stylesheet"
+	href="js/libraries/jquery-ui-1.11.4/jquery-ui.css" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="customize.css" />
+<script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs({
+			activate: function( event, ui ) {
+				if(ui.newTab.attr('id') == "hierarchyView"){
+					$("#relationDiv").css("display","none");
+				}
+				else{
+					$("#relationDiv").css("display","block");
+				}
+			}
+		});
+	});
+</script>
+
 </head>
 <body>
 	<div id="bg">
@@ -20,39 +36,49 @@
 					</h1>
 				</div>
 				<div id="nav">
-						<ul>
-							<li class="first active">
-								<a href="#">About</a>
-							</li>
-							<li class="last">
-								<a href="#">Contact</a>
-							</li>
-						</ul>
-						<br class="clear">
-					</div>
+					<ul>
+						<li class="first active"><a href="#">About</a></li>
+						<li class="last"><a href="#">Contact</a></li>
+					</ul>
+					<br class="clear">
+				</div>
 			</div>
 			<div id="banner">
 				<img src="images/strip.jpg" width="1120" height="20" alt="">
 			</div>
 			<div id="main">
-				<div id = "leftSection">
+				<div id="leftSection">
 					<div id="searchSection">
-						<input type="search" id="termSearch" placeholder="Search UMLS for ......" autocomplete="on">
-						<input type="text" id="selectedConceptCUI" style="display:none"/>
+						<input type="search" id="termSearch"
+							placeholder="Search UMLS for ......" autocomplete="on"> <input
+							type="text" id="selectedConceptCUI" style="display: none" />
 						<!-- <table id="searchDisplay">
 							<tbody>
 							</tbody>
 						</table> -->
 					</div>
 				</div>
-					<div id="termInformation">
-						<table id="termInformationDisplay">
-							<tbody>
-							</tbody>
-						</table>
+				<div id="termInformation">
+					<table id="termInformationDisplay">
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div id="tabs">
+					<ul>
+						<li id="hierarchyView"><a href="#hierarchy">Hierarchy View</a></li>
+						<li id="relationView"><a href="#relation">Relations View</a></li>
+					</ul>
+					<div id="hierarchy" style="text-align: center"></div>
+					<div id="relationDiv" style="text-align: center;display: none;">
+						<div id="relationLabel">
+							<label>Select a Relationship</label>
+						</div>
+						<div id="relationRadioSelection"></div>
+						<div id="relation" style="text-align: center"></div>
 					</div>
-				<div id="visual" style="text-align: center"></div>
-				
+				</div>
+				<div id="information" title="More Information"></div>
 			</div>
 			<div id="footer"></div>
 		</div>
@@ -60,6 +86,9 @@
 	<script type="text/javascript" src="js/search.js"></script>
 	<script type="text/javascript" src="js/packages.js"></script>
 	<script type="text/javascript" src="js/bundle.js"></script>
+	<script type="text/javascript" src="js/bundle_adjacency.js"></script>
 	<script type="text/javascript" src="js/Utils.js"></script>
+	<script type="text/javascript" src="js/events.js"></script>
+	<script type="text/javascript" src="js/information.js"></script>
 </body>
 </html>

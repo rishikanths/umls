@@ -5,11 +5,11 @@ import java.util.List;
 
 public abstract class AbstractRelation {
 
-	private String relationName = "";
+	protected String relationName = "";
 	
-	private String relationType = "";
+	protected String relationType = "";
 	
-	private String relationDescription = "";
+	protected String relationDescription = "";
 	
 	protected List<AbstractType> semanticRelationships = new ArrayList<AbstractType>();
 

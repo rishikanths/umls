@@ -1,8 +1,32 @@
 /**
+ * processedConcepts - keeps track of processed concepts, i.e. the terms that have been added to the map
+ * unProcessedConcepts - keeps track of unprocessed concepts.
+ * This is required due to the cyclic nature of the UMLS metathesaurus. For example, term Malaria can be related
+ * to itself using any relationship. Hence, if "Malaria" is processed, the next time the term is encountered 
+ * it will be not be processed again. 
  * 
+ * relationDescription - stores all the relationship types and the respective description. 
  */
 var processedConcepts = [];
 var unProcessedConcepts = [];
+var relationDescription = new Map();
+
+$(function() {
+	relationDescription.set("AQ","Allowed qualifier");
+	relationDescription.set("CHD","has child relationship in a Metathesaurus source vocabulary");
+	relationDescription.set("DEL","Deleted concept");
+	relationDescription.set("PAR","has parent relationship in a Metathesaurus source vocabulary");
+	relationDescription.set("QB","can be qualified by.");
+	relationDescription.set("RB","has a broader relationship");
+	relationDescription.set("RL","the relationship is similar or 'alike'. the two concepts are similar or 'alike'."); 	
+	relationDescription.set("RN","has a narrower relationship");
+	relationDescription.set("RO","has relationship other than synonymous, narrower, or broader");
+	relationDescription.set("RQ","related and possibly synonymous.");
+	relationDescription.set("RU","Related, unspecified");
+	relationDescription.set("SIB","has sibling relationship in a Metathesaurus source vocabulary.");
+	relationDescription.set("SY","source asserted synonymy.");
+});
+
 function toD3jRadialFormat(term, child){
 	addToList(term,"UP");
 	var conceptMap = new Map();
@@ -45,6 +69,9 @@ function M2J(conceptMap){
 	});
 	return d3JSONRadial;
 }
+/*
+ * Add and remove terms to/from processedConcepts and unProcessedConcepts 
+ */
 function addToList(term,type){
 	if(type == "UP"){
 		if($.inArray(term in unProcessedConcepts) == -1)
@@ -60,20 +87,36 @@ function removeFromList(term,type){
 	else if(type=="P")
 		unProcessedConcepts.splice(unProcessedConcepts.indexOf(term), 1);
 }
-
 /*
- * function toD3jFormatRadial(term, child) { var d3JSONRadial = { data : [] };
- * var imports = []; child.forEach(function(c) { if(child.children!=null){ var
- * temp = toD3jFormat(term, child.children)
- * d3JSONRadial.data.push({"name":temp.name,"imports":temp.imports}); }else{
- * imports.push(term+_PREFIX+c.name);
- * d3JSONRadial.data.push({"name":term,"imports":imports}); } });
- * 
- * return d3JSONRadial;
- *  } function toJSONRadial(term,child){ child.forEach(function(c){ var dJSON =
- * {}; dJSON["name"] = term+_PREFIX+c.name; dJSON["imports"] = [];
- * c.children.forEach(function(cc) {
- * dJSON.imports.push(term+_PREFIX+c.name+_PREFIX+cc.name); });
- * d3JSONRadial.data.push(dJSON); if(c.children.length!=0)
- * toJSONRadial(term+_PREFIX+c.name,c.children); }); }
+ * Converts the relationship map (obtained from search.js) to the radial format.
  */
+function toD3jRadialFormatRelation(term, map){
+	var conceptMap = new Map();
+	var imports = [];
+	map.forEach(function (val, key) {
+		for (var i in val) {
+			conceptMap.set(val[i],[]);
+		}
+		imports = $.merge(imports,val);
+	});
+	conceptMap.set(term,imports);
+	return conceptMap;
+}
+/*
+ * Generates the radial format based on the relation selected by the user.
+ * The function uses the relationships populated in the adjacencyMap variable.
+ */
+function toD3jRadialFormatSelectedRelation(term, relation){
+	var conceptMap = new Map();
+	var imports = [];
+	adjacencyMap.forEach(function (val, key) {
+		if(key.indexOf(relation)!=-1){
+			for (var i in val) {
+				conceptMap.set(val[i],[]);
+			}
+			imports = $.merge(imports,val);
+		}
+	});
+	conceptMap.set(term,imports);
+	dendogramRadialRelation(M2J(conceptMap));
+}
