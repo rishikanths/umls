@@ -77,21 +77,7 @@ function update(root) {
 		});
 	});
 	
-	svg.selectAll('text').each(function (d) {
-		var el = d3.select(this);		
-		el.text('');
-		len = LEN_CONST;
-		inc=INC_CONST;
-		if(len>=d.name.length)
-			el.text(d.name);
-		while(len<d.name.length){
-			var tspan = el.append('tspan').text(d.name.slice(len-inc,len));
-			tspan.attr('x', 0).attr('dy', 15);
-			len = len+inc;
-		}
-		var tspan = el.append('tspan').text(d.name.slice(len-inc));
-		tspan.attr('x', 0).attr('dy', 15);
-	});
+	formatGraphText(svg);
 }
 
 
@@ -118,7 +104,6 @@ function mouseout(d) {
 
 	svg.selectAll("path.link.target-" + d.key).classed("target", false).each(
 			updateNodes("source", false));
-	removeInformation();
 }
 
 function updateNodes(name, value, term) {

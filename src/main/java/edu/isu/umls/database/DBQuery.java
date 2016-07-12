@@ -18,12 +18,13 @@ import edu.isu.umls.Concepts.Term;
 import edu.isu.umls.logging.Log;
 import edu.isu.umls.utils.ConceptMapper;
 import edu.isu.umls.utils.LoggerUtil;
- /**
+
+/**
  * @author rsaripa
  * @date Sep 28, 2015
  * @time 4:36:14 PM
  *
- * DBQuery
+ *       DBQuery
  *
  */
 public class DBQuery {
@@ -35,20 +36,21 @@ public class DBQuery {
 	private Statement statement = null;
 
 	private PreparedStatement prepStatement = null;
-	
+
 	private final int LIMIT = 20;
 
 	private static int DEPTH = 3;
-	
+
 	public DBQuery() {
 		Log.addHandlers(logger);
 		connection = DBConnection.getDBConnection().getConnection();
 	}
 
-	
 	/**
 	 * Search the UMLS database based on the user string.
-	 * @param value The string pattern to be searched
+	 * 
+	 * @param value
+	 *            The string pattern to be searched
 	 * @return
 	 */
 	public List<AbstractConcept> searchByString(String value, int limit) {
@@ -63,14 +65,14 @@ public class DBQuery {
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, value + "%");
-			if(limit!=0)
+			if (limit != 0)
 				prepStatement.setInt(2, limit);
 			else
 				prepStatement.setInt(2, LIMIT);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)+ " milli seconds");
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			concepts = ConceptMapper.term2Concept(result);
 
@@ -83,34 +85,31 @@ public class DBQuery {
 		return concepts;
 	}
 
-	
 	/**
 	 * Get the single concept associated with a CUI
-	 * @param cui Concept Unique Identifier
+	 * 
+	 * @param cui
+	 *            Concept Unique Identifier
 	 * @return {@link AbstractConcept}
 	 */
 	public AbstractConcept searchByCUI(String cui) {
 		ResultSet result = null;
 		AbstractConcept concept = null;
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT CUI, STR from MRCONSO WHERE TS = 'P' AND STT='PF' AND ISPREF='Y'"
-							+ " AND CUI = ?");
+			prepStatement = connection.prepareStatement(
+					"SELECT CUI, STR from MRCONSO WHERE TS = 'P' AND STT='PF' AND ISPREF='Y'" + " AND CUI = ?");
 			prepStatement.clearParameters();
-			LoggerUtil.logInfo(logger, "Search for CUI - "
-					+ cui);
+			LoggerUtil.logInfo(logger, "Search for CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 			concept = ConceptMapper.term2Concept(result).get(0);
 			concept.setSemanticType(getSemanticType(cui));
-			
-			
+
 			prepStatement.close();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -118,11 +117,13 @@ public class DBQuery {
 
 		return concept;
 	}
-	
-	
+
 	/**
-	 * Search the UMLS database using AUI. The function finds the associated CUI and gets the information based on the CUI. 
-	 * @param aui Atom Unique Identifier
+	 * Search the UMLS database using AUI. The function finds the associated CUI
+	 * and gets the information based on the CUI.
+	 * 
+	 * @param aui
+	 *            Atom Unique Identifier
 	 * @return {@link AbstractConcept}
 	 */
 	public AbstractConcept searchByAUI(String aui) {
@@ -130,24 +131,22 @@ public class DBQuery {
 		AbstractConcept concept = null;
 		String cui = "";
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT CUI from MRCONSO WHERE AUI = ?");
+			prepStatement = connection.prepareStatement("SELECT CUI from MRCONSO WHERE AUI = ?");
 
-			LoggerUtil.logInfo(logger, "Search for AUI - "+ aui);
+			LoggerUtil.logInfo(logger, "Search for AUI - " + aui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, aui);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
-			while(result.next())
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			while (result.next())
 				cui = result.getString("CUI");
-			
+
 			concept = searchByCUI(cui);
 			concept.setSemanticType(getSemanticType(cui));
-			
+
 			prepStatement.clearParameters();
 			prepStatement.close();
 		} catch (Exception e) {
@@ -158,27 +157,26 @@ public class DBQuery {
 	}
 
 	/**
-	 * Search for the semantic type assigned to CUI. CUI can have multiple Semantic Types
+	 * Search for the semantic type assigned to CUI. CUI can have multiple
+	 * Semantic Types
+	 * 
 	 * @param cui
 	 * @return List of {@link AbstractType}
 	 */
 	public List<AbstractType> getSemanticType(String cui) {
 		ResultSet resultSet = null;
-		List<AbstractType> type =null;
+		List<AbstractType> type = null;
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT TUI, STY from MRSTY WHERE CUI = ?");
+			prepStatement = connection.prepareStatement("SELECT TUI, STY from MRSTY WHERE CUI = ?");
 
-			LoggerUtil.logInfo(logger, "Search for Semantic type of - "
-					+ cui);
+			LoggerUtil.logInfo(logger, "Search for Semantic type of - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			resultSet = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 			type = ConceptMapper.toAbstractType(resultSet);
 			prepStatement.clearParameters();
 			prepStatement.close();
@@ -190,11 +188,14 @@ public class DBQuery {
 	}
 
 	/**
-	 * Get all the information associated with a CUI, which includes its name, relationships and assigned semantic type(s) 
-	 * @param cui The CUI of the UMLS concept
+	 * Get all the information associated with a CUI, which includes its name,
+	 * relationships and assigned semantic type(s)
+	 * 
+	 * @param cui
+	 *            The CUI of the UMLS concept
 	 * @return {@link AbstractConcept}
 	 */
-	public AbstractConcept getHierarchyInfomationByCUI(String cui,int depth, AbstractConcept concept){
+	public AbstractConcept getHierarchyInfomationByCUI(String cui, int depth, AbstractConcept concept) {
 		ResultSet result = null;
 		try {
 			prepStatement = connection
@@ -203,61 +204,70 @@ public class DBQuery {
 							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
 							+ " AND r.rel IN ('PAR','CHD') AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
 							+ " GROUP BY r.CUI1");
-			LoggerUtil.logInfo(logger, "Get Information on CUI - "+ cui);
+			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			prepStatement.executeQuery();
 			result = prepStatement.getResultSet();
-			if(concept == null)
+			if (concept == null)
 				concept = new Term();
 			boolean setOnce = true;
-			while(result.next()){
-				if(setOnce){
-					concept.setName(ConceptMapper.normalizeName(result.getString("STR")));
-					concept.setCui(cui);
-					AbstractType type = new SemanticType();
-					type.setName(result.getString("STY"));
-					type.setTypeId(result.getString("TUI"));
-					concept.addSemanticType(type);
-					setOnce = false;
-				}
-				String rel = result.getString("REL");
-				String conceptCUI2 = result.getString("CUI1");
-				AbstractConcept cui2 = searchByCUI(conceptCUI2);
-				
-				if(rel.equals("CHD"))
-					concept.addToHierarchy(cui2);
-				else if(rel.equals("PAR")){
-					//System.out.println("Parent - "+ concept.getName()+ " - "+depth);
-					if(depth!=3){
-						depth++;
-						//System.out.println("Child - "+cui2.getName()+ " - "+depth);
-						AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(),depth,null);
-						depth--;
-						concept.addToChildern(t);
-					}else{
-						concept.addToChildern(cui2);
-						//System.out.println("Final Child - "+cui2.getName()+ " - "+depth);
-						continue;
+
+			result.last();
+			int rows = result.getRow();
+			result.beforeFirst();
+			if (rows != 0) {
+				while (result.next()) {
+					if (setOnce) {
+						concept.setName(ConceptMapper.normalizeName(result.getString("STR")));
+						concept.setCui(cui);
+						AbstractType type = new SemanticType();
+						type.setName(result.getString("STY"));
+						type.setTypeId(result.getString("TUI"));
+						concept.addSemanticType(type);
+						setOnce = false;
+					}
+					String rel = result.getString("REL");
+					String conceptCUI2 = result.getString("CUI1");
+					AbstractConcept cui2 = searchByCUI(conceptCUI2);
+
+					/*
+					 * if(rel.equals("CHD")) concept.addToHierarchy(cui2); else
+					 */
+					if (rel.equals("PAR")) {
+						System.out.println("Parent - " + concept.getName() + " - " + depth);
+						if (depth != DEPTH) {
+							depth++;
+							System.out.println("Child - " + cui2.getName() + " - " + depth);
+							AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(), depth, null);
+							depth--;
+							concept.addToChildern(t);
+						} else {
+							concept.addToChildern(cui2);
+							System.out.println("Final Child - " + cui2.getName() + " - " + depth);
+							continue;
+						}
 					}
 				}
+			}else{
+				concept = searchByCUI(cui);
+				concept.setName(ConceptMapper.normalizeName(concept.getName()));
+				AbstractType type = getSemanticType(cui).get(0);
+				concept.addSemanticType(type);
 			}
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
-			
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+
 			prepStatement.close();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
-		
+
 		return concept;
 	}
 
-	
-	
-	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept){
+	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept) {
 		ResultSet result = null;
 		try {
 			prepStatement = connection
@@ -266,17 +276,17 @@ public class DBQuery {
 							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
 							+ " AND r.rel IN ('QB','RO','RU',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
 							+ " GROUP BY r.CUI1");
-			LoggerUtil.logInfo(logger, "Get Information on CUI - "+ cui);
+			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			prepStatement.executeQuery();
 			result = prepStatement.getResultSet();
-			if(concept == null)
+			if (concept == null)
 				concept = new Term();
 			boolean setOnce = true;
-			while(result.next()){
-				if(setOnce){
+			while (result.next()) {
+				if (setOnce) {
 					concept.setName(ConceptMapper.normalizeName(result.getString("STR")));
 					concept.setCui(cui);
 					AbstractType type = new SemanticType();
@@ -290,23 +300,21 @@ public class DBQuery {
 				AbstractConcept cui2 = searchByCUI(conceptCUI2);
 				cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
 				Relationship relationship = new Relationship();
-				
+
 				relationship.setRelationType(result.getString("REL"));
-				if(rela!=null)
+				if (rela != null)
 					relationship.setRelationName(rela);
 				else
 					relationship.setRelationName("N/A");
-				System.out.println(relationship.toString());
 				RelationTo relTo = new RelationTo();
 				relTo.setObject(cui2);
 				relTo.setPredicate(relationship);
-				
+
 				concept.addToAdjacency(relTo);
 			}
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
-			
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+
 			prepStatement.close();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -315,8 +323,6 @@ public class DBQuery {
 		return concept;
 	}
 
-	
-	
 	public List<RelationTo> getAdjaceny(String cui) {
 
 		return null;
@@ -328,7 +334,8 @@ public class DBQuery {
 	}
 
 	/**
-	 * @param query The SQL query as string
+	 * @param query
+	 *            The SQL query as string
 	 * @return Returns the SQL {@link ResultSet}
 	 */
 	public ResultSet executeQuery(String query) {
@@ -342,21 +349,20 @@ public class DBQuery {
 			statement.close();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start)
-					+ " milli seconds");
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return result;
 	}
-	
-	public static void main(String args[]){
-		
+
+	public static void main(String args[]) {
+
 		DBQuery test = new DBQuery();
-		AbstractConcept t = test.getAdjacencyInfomationByCUI("C0024530",null);
-		//AbstractConcept t1 = test.getInfomationByCUI_Hierarchy("C0024530",0);
-		
+		AbstractConcept t = test.getAdjacencyInfomationByCUI("C0024530", null);
+		// AbstractConcept t1 = test.getInfomationByCUI_Hierarchy("C0024530",0);
+
 	}
-	
+
 }

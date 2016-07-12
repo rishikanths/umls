@@ -2,11 +2,26 @@
  * adjacencyMap - the map that stores the relationships between the search term and other terms. 
  * The key is the relationship (e.g., "may_be_treated_by") and the value is an array of terms. 
  * For example, Malaria relationships will be formated as {"may_be_treated_by" => ["XXX", "YYY"], "R2"=>[...]}
+ * 
+ * termSemanticTypes - the map will hold the semantic type of the concept or relation. For example, Malaria is
+ * of semantic type Disease_or_Syndrome, etc. 
  */
 var adjacencyMap = new Map();
+var termSemanticTypes = new Map();
+var defaultRelation = "";
 /*
  * Auto complete for term search. 
  */
+$( document ).ajaxStart(function() {
+	$("#loading").css('display','block');
+	$("#message").css('display','none');
+	$("#error").css('display','none');
+	$("#hierarchy").empty();
+	$("#relation").empty();
+});
+$( document ).ajaxStop(function() {
+	$("#loading").css('display','none');
+});
 $("#termSearch").autocomplete({
 	minLength:4,
 	delay: 200,
@@ -14,18 +29,28 @@ $("#termSearch").autocomplete({
 		$.ajax({
 			url : 'rest/umls/search?term='+$('#termSearch').val(),
 			success : function(data, status, response) {
+				resetGlobalVariable();
 				var object = jQuery.parseJSON(data);
-				resp($.map(object, function (item) {
-            		return {
-                		label: item.name,
-                		value: item.cui
-            		};
-        		}));
+				if(object.length == 0){
+					var msg = "No matches found for term - <b>"
+						+$('#termSearch').val()+"</b>";
+					displayMessage(msg);
+				}else{
+					resp($.map(object, function (item) {
+	            		return {
+	                		label: item.name,
+	                		value: item.cui
+	            		};
+	        		}));
+				}
 			}, 
 			error : function(data, status, response) {
-				alert("Error" + "\n Response - " + JSON.stringify(response)
-						+ "\n\n Data - " + JSON.stringify(data)
-						+ "\n\n Status - " + JSON.stringify(status));
+				var error = "Response - " + JSON.stringify(response)
+							+ "\nData - " + JSON.stringify(data)
+							+ "\nStatus - " + JSON.stringify(status);
+				displayError(error);
+				$("#loading").css('display','none');
+
 			}
 		});
 	},
@@ -56,32 +81,24 @@ function getCUI(cui){
 				for(var prop in object){
 					if(prop == 'hierarchy'){
 						parentObject = object[prop];
-						var parent = "";
-						for(i=0;i<parentObject.length;i++){
+						for(i=0;i<parentObject.length;i++)
 							parentNames.push(parentObject[i].name);
-							parent +=parentObject[i].name+", "; 
-						}
 					}else if(prop == 'children'){
 						childObject = object[prop];
-						var child = "";
-						for(i=0;i<childObject.length;i++){
+						for(i=0;i<childObject.length;i++)
 							childNames.push(childObject[i].name);
-							child +=childObject[i].name+", "; 
-						}
 					}else if(prop == 'semanticTypes'){
-						var types = object[prop];
-						var type = "";
-						for(i=0;i<types.length;i++){
-							type +=types[i].name+", "; 
-						}
+						add2Map(termSemanticTypes, object.name, object[prop]);
 					}
 					else if(prop == 'adjacency'){
 						var adjacency = object[prop];
-						var relation = "";
 						for(i=0;i<adjacency.length;i++){
+							add2Map(termSemanticTypes, adjacency[i].object.name
+									, adjacency[i].object.semanticTypes)
 							adjacencyNames.push(adjacency[i].object.name);
 							var names = [];
 							var temp = adjacency[i].predicate.relationName+"*"+adjacency[i].predicate.relationType
+							defaultRelation = adjacency[i].predicate.relationName;
 							if(adjacencyMap.get(temp)!=null)
 								names = adjacencyMap.get(temp)
 							else
@@ -91,7 +108,6 @@ function getCUI(cui){
 										adjacency[i].predicate.relationName+"</input>"));
 							names.push(adjacency[i].object.name);
 							adjacencyMap.set(temp,names);
-							relation +=adjacency[i].predicate.relationName+"("+adjacency[i].predicate.relationType+") "+adjacency[i].object.name+", "; 
 						}
 						$('#relationRadioSelection input[type=radio]').each(function(r){
 							 $(this).on("click",relationSelected);
@@ -99,8 +115,10 @@ function getCUI(cui){
 					}
 				}
 			}
-			dendogramRadial(M2J(toD3jRadialFormat($('#termSearch').val(),childObject)));
-			dendogramRadialRelation(M2J(toD3jRadialFormatRelation($('#termSearch').val(),adjacencyMap)));
+			dendogramRadial(M2J(toD3JFormat($('#termSearch').val(),childObject)));
+			dendogramRadialRelation(M2J(toD3JFormatSelectedRelation($('#termSearch').val(),defaultRelation)));
+			checkSelection(defaultRelation,true);
+			changeRelationText($('#termSearch').val(),defaultRelation);
 		},
 		error : function(data, status, response) {
 			alert("Error" + "\n Response - " + JSON.stringify(response)

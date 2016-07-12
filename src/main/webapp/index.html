@@ -10,21 +10,6 @@
 	href="js/libraries/jquery-ui-1.11.4/jquery-ui.css" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="customize.css" />
-<script type="text/javascript">
-	$(function() {
-		$("#tabs").tabs({
-			activate: function( event, ui ) {
-				if(ui.newTab.attr('id') == "hierarchyView"){
-					$("#relationDiv").css("display","none");
-				}
-				else{
-					$("#relationDiv").css("display","block");
-				}
-			}
-		});
-	});
-</script>
-
 </head>
 <body>
 	<div id="bg">
@@ -32,13 +17,15 @@
 			<div id="header">
 				<div id="logo">
 					<h1>
-						<a href="#">UMLS Visualization</a>
+						<a href="index.html">UMLS Visualization</a>
 					</h1>
 				</div>
 				<div id="nav">
 					<ul>
-						<li class="first active"><a href="#">About</a></li>
-						<li class="last"><a href="#">Contact</a></li>
+						<li style="font-size: 24px"><a href="index.html">Search</a></li>
+						<li class=""><a href="about.html">Project</a></li>
+						<li class=""><a href="umls.html">About UMLS</a></li>
+						<li class=""><a href="contact.html">Contact</a></li>
 					</ul>
 					<br class="clear">
 				</div>
@@ -46,39 +33,59 @@
 			<div id="banner">
 				<img src="images/strip.jpg" width="1120" height="20" alt="">
 			</div>
+			<div id="message"></div>
+			<div id="error"></div>
 			<div id="main">
 				<div id="leftSection">
 					<div id="searchSection">
 						<input type="search" id="termSearch"
 							placeholder="Search UMLS for ......" autocomplete="on"> <input
 							type="text" id="selectedConceptCUI" style="display: none" />
-						<!-- <table id="searchDisplay">
-							<tbody>
-							</tbody>
-						</table> -->
 					</div>
-				</div>
-				<div id="termInformation">
-					<table id="termInformationDisplay">
-						<tbody>
-						</tbody>
-					</table>
 				</div>
 				<div id="tabs">
 					<ul>
-						<li id="hierarchyView"><a href="#hierarchy">Hierarchy View</a></li>
-						<li id="relationView"><a href="#relation">Relations View</a></li>
+						<li id="hierarchyView"><a href="#hierarchyDiv">Hierarchy
+								View</a></li>
+						<li id="relationView"><a href="#relationDiv">Relations
+								View</a></li>
 					</ul>
-					<div id="hierarchy" style="text-align: center"></div>
-					<div id="relationDiv" style="text-align: center;display: none;">
+
+					<div id="hierarchyDiv" style="text-align: center">
+						<div id="info">
+							<img src="images/information.png" width="25" height="25" />
+							<p id="hierarchyViewInfo">
+								Hierarchy View tab renders all the <b>childern (isa
+									relationship)</b> of the search term.<br />For example, Apple 'isa'
+								Fruit and Mango 'isa' Fruit, that means Apples and Mango are
+								children of Fruit or Fruit is the parent of Apple and Mango.
+						</div>
+						<div id="loading">
+							<img alt="loading....." src="images/infinity.gif">
+						</div>
+						<div id="hierarchyMessage" style="margin-top: 10px;"></div>
+						<div id="hierarchy"></div>
+					</div>
+					<div id="relationDiv" style="text-align: center;">
+						<div id="info">
+							<img src="images/information.png" width="25" height="25" />
+							<p id="relationViewInfo">
+								Relation View tab renders all the <b>relationships (other
+								then isa relationship)</b> of the search term.<br />For example,
+								Fever 'maybe_treated_by' Advil, that means the terms Fever and
+								Advil are related using 'maybe_treated_by' relationship.
+						</div>
+						<div id="loading"></div>
+						<div id="relationMessage"></div>
 						<div id="relationLabel">
 							<label>Select a Relationship</label>
 						</div>
 						<div id="relationRadioSelection"></div>
+						<div id="relationRadioSelectionDesc"></div>
 						<div id="relation" style="text-align: center"></div>
 					</div>
 				</div>
-				<div id="information" title="More Information"></div>
+				<div id="information" title="Details"></div>
 			</div>
 			<div id="footer"></div>
 		</div>
@@ -87,8 +94,9 @@
 	<script type="text/javascript" src="js/packages.js"></script>
 	<script type="text/javascript" src="js/bundle.js"></script>
 	<script type="text/javascript" src="js/bundle_adjacency.js"></script>
-	<script type="text/javascript" src="js/Utils.js"></script>
+	<script type="text/javascript" src="js/format.js"></script>
 	<script type="text/javascript" src="js/events.js"></script>
 	<script type="text/javascript" src="js/information.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
 </body>
 </html>

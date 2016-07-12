@@ -8,43 +8,87 @@
 	font-size: 15px;
 }
 
-#searchDisplay {
-	width: 95%;
-	table-layout: fixed;
-	margin-top: 5px;
-	background-color: #EAEBEA;
-	text-transform: lowercase;
-}
-
-#searchDisplay tbody {
-	display: block;
-	height: 200px;
-	overflow-y: scroll;
-	text-transform: capitalize;
-}
-
-#searchDisplay tbody td, thead th {
-	width: 1%;
-}
-
-#searchDisplay tr:HOVER {
-	background-color: #FFFFCA
-}
-#termInfo{
+#termInfo {
 	color: #0101DF;
-    font-family: monospace;
-    font-size: large
+	font-family: monospace;
+	font-size: large
 }
-#relationInfo{
-    font-weight: bold;
+
+#relationInfo {
+	font-weight: bold;
 }
-#relationRadioSelection input{
+
+#relationTypeDesc {
+	color: rgb(8, 162, 70)
+}
+
+#relationRadioSelection input {
 	margin-left: 15px;
 }
-#relationLabel{
-	text-align: left; 
+
+#relationLabel {
+	text-align: left;
 	font-weight: bold;
 	padding: 15px 0 5px 20px;
+}
+
+#relationRadioSelectionDesc {
+	padding: 20px;
+}
+
+#semanticTypeBg {
+	background-color: beige;
+}
+
+#loading {
+	display: none;
+}
+
+#error {
+	display: none;
+	font-size: 120%;
+	background-color: #eeb9b9;
+	padding: 5px 0px 5px 0px;
+	text-align: center;
+	color: red;
+}
+
+#message {
+	display: none;
+	font-size: 120%;
+	background-color: #E6F8DD;
+	color: #006600;
+	text-align: center;
+	padding: 5px 0px 5px 0px;
+}
+
+.searchTerm { @extend node;
+	font-size: 120%;
+	fill: #3aa64a;
+	font-weight: bold;
+}
+
+#umls {
+	background-color: white;
+}
+
+#umls p {
+	padding: 10px 30px 10px 30px;
+}
+
+#about {
+	background-color: white;
+}
+
+#about p {
+	padding: 10px 30px 10px 30px;
+}
+#info{
+	text-align: left;
+}
+.ui-dialog {
+	position: fixed;
+	overflow: hidden;
 }
 /* loading - the AJAX indicator */
 .ui-autocomplete-loading {
@@ -55,9 +99,7 @@
 .ui-autocomplete {
 	max-height: 250px;
 	overflow-y: auto;
-	/* prevent horizontal scrollbar */
 	overflow-x: hidden;
-	/* add padding for vertical scrollbar */
 	padding-right: 5px;
 }
 
@@ -75,7 +117,7 @@
 	width: 1px;
 } /* without this, the menu expands to 100% in IE6 */
 .ui-menu {
-	background-color:#EDEDED;
+	background-color: #EDEDED;
 	list-style: none;
 	padding-left: 20px;
 	padding-top: 15px;
@@ -122,79 +164,8 @@
 	color: black;
 	font-size: 16px;
 }
+
 .ui-autocomplete li:hover {
 	background-color: #F6FCB3;
 	font-weight: 550;
-}
-
-
-#termInformation {
-	display: none;
-	height: 300px;
-	margin-top: 10px;
-	background: #ffffff;
-	/*margin-left:24%;*/
-}
-
-#termInformationDisplay {
-	text-transform: lowercase;
-	max-height: 200px;
-	overflow: scroll;
-	display: block;
-}
-
-#termInformationDisplay  tbody {
-	text-transform: capitalize;
-}
-
-.node {
-	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: blue;
-	text-transform: capitalize;
-}
-
-.node:hover {
-	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
-	fill: #000;
-	text-transform: capitalize;
-}
-
-.link {
-	stroke: black;
-	stroke-opacity: 1;
-	fill: none;
-	pointer-events: none;
-}
-
-path.arc {
-	cursor: move;
-	fill: #fff;
-}
-
-.link {
-	fill: none;
-	stroke: #1f77b4;
-	stroke-opacity: .4;
-	pointer-events: none;
-}
-
-.link.source, .link.target {
-	stroke-opacity: 1;
-	stroke-width: 2px;
-}
-
-.node.target {
-	fill: #d62728 !important;
-}
-
-.link.source {
-	stroke: #d62728;
-}
-
-.node.source {
-	fill: #2ca02c;
-}
-
-.link.target {
-	stroke: #2ca02c;
 }

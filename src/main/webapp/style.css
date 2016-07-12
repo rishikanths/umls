@@ -27,7 +27,7 @@ a:hover {
 body {
 	font-size: 12pt;
 	line-height: 1.75em;
-	font-family: Arial, sans-serif;
+	font-family: sans-serif;
 	background: #030707 url('images/grey.png');
 	color: #c0c1c1;
 }
@@ -49,10 +49,6 @@ img.left {
 
 img.top {
 	margin: 5px 0 20px 0;
-}
-
-p {
-	margin-bottom: 1.5em;
 }
 
 ul {
@@ -228,9 +224,11 @@ ul {
 	margin: 0 0.5em 0 0.5em;
 	padding: 0.25em 1.1em 0.25em 1.1em;
 }
-
+#nav ul li:HOVER {
+	background: #007fff;
+}
 #nav ul li.active {
-	background: #3CA9CD;
+	background: #007fff;
 }
 
 #nav li a {
@@ -289,7 +287,60 @@ ul {
 	padding-top: 0;
 	border-top: 0;
 }
+#contact{
+	background-color: #ffffff;
+	padding:20px;
+	text-align: center;
+	font-size: 18px;
+}
+.node {
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: blue;
+	text-transform: capitalize;
+}
 
-.ui-autocomplete-loading {
-    background: white url("images/loader.gif") left center no-repeat;
-  }
+.node:hover {
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	fill: #000;
+	text-transform: capitalize;
+}
+
+.link {
+	stroke: black;
+	stroke-opacity: 1;
+	fill: none;
+	pointer-events: none;
+}
+
+path.arc {
+	cursor: move;
+	fill: #fff;
+}
+
+.link {
+	fill: none;
+	stroke: #1f77b4;
+	stroke-opacity: .4;
+	pointer-events: none;
+}
+
+.link.source, .link.target {
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+.node.target {
+	fill: #d62728 !important;
+}
+
+.link.source {
+	stroke: #d62728;
+}
+
+.node.source {
+	fill: #2ca02c;
+}
+
+.link.target {
+	stroke: #2ca02c;
+}
