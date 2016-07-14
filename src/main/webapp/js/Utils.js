@@ -2,66 +2,41 @@
  * 
  */
 
-function toD3jRadialFormat(term, child){
+function add2Map(map,key,value){
 	
-	var conceptMap = new Map();
-	var imports = [];
-	child.forEach(function(c){
-		if(conceptMap.get(term)!=null)
-			imports = conceptMap.get(term);
-		imports.push(c.name);
-		conceptMap.set(term,imports);
-		if(c.children.length!=0){
-			var tempMap = toD3jRadialFormat(c.name,c.children);
-			tempMap.forEach(function(v,k){
-				conceptMap.set(k,v);
-			});
-		}else{
-			conceptMap.set(c.name,[]);
+	if(value.constructor==Array){
+		var t = map.get(key);
+		if(t == null)
+			t = [];
+		for(var i in value){
+			if($.inArray(value[i].name, t) == -1)
+				t.push(value[i].name);
 		}
-	});
-	
-	return conceptMap;
+		map.set(key,t);
+	}else{
+		map.set(key,value);
+	}
+	return map;
 }
 
-function M2J(conceptMap){
-	var d3JSONRadial = {
-			data : []
-		};
-	conceptMap.forEach(function(v,k){
-		d3JSONRadial.data.push({"name":k,"imports":v});
-	});
-	return d3JSONRadial;
+function arr2String(value){
+	var str = "";
+	for(var i in value){
+		str = str+value[i]+" ";
+	}
+	return str;
 }
 
-/*function toD3jFormatRadial(term, child) {
-	var d3JSONRadial = {
-			data : []
-		};
-	var imports = [];
-	child.forEach(function(c) {
-		if(child.children!=null){
-			var temp = toD3jFormat(term, child.children)
-			d3JSONRadial.data.push({"name":temp.name,"imports":temp.imports});
-		}else{
-			imports.push(term+_PREFIX+c.name);
-			d3JSONRadial.data.push({"name":term,"imports":imports});
-		}
-	});
-	
-	return d3JSONRadial;
-	
+function resetGlobalVariable(){
+	// From format.js;
+	processedConcepts = [];
+	unProcessedConcepts = [];
+	// From information.js
+	focusTerm = "";
+	//From search.js
+	adjacencyMap = new Map();
+	termSemanticTypes = new Map();
+	defaultRelation = "";
+	if ($("#information").dialog("instance") != null)
+		$("#information").dialog("close");
 }
-function toJSONRadial(term,child){
-	child.forEach(function(c){
-		var dJSON = {};
-		dJSON["name"] = term+_PREFIX+c.name;
-		dJSON["imports"] = [];
-		c.children.forEach(function(cc) {
-			dJSON.imports.push(term+_PREFIX+c.name+_PREFIX+cc.name);
-		});
-		d3JSONRadial.data.push(dJSON);
-		if(c.children.length!=0)
-			toJSONRadial(term+_PREFIX+c.name,c.children);
-	});
-}*/

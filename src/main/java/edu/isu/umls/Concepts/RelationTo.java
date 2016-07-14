@@ -15,6 +15,9 @@ package edu.isu.umls.Concepts;
 public class RelationTo {
 
 	
+	/**
+	 * Type and information about the relation that connects the concepts.
+	 */
 	private Relationship predicate = null;
 	
 	private AbstractConcept object = null;

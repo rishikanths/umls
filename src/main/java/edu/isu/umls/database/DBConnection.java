@@ -8,6 +8,10 @@ import java.util.logging.Logger;
 import edu.isu.umls.logging.Log;
 import edu.isu.umls.utils.LoggerUtil;
 
+/**
+ * @author rsaripa
+ *
+ */
 public class DBConnection {
 
 	private static Logger logger = Logger.getLogger(DBConnection.class.getName());

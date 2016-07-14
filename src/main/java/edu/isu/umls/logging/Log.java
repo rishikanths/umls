@@ -12,18 +12,17 @@ public class Log {
 	private static FileHandler fileHandler = null;
 	private static ConsoleHandler consoleHandler = null;
 	private static Log log = null;
-	private Logger logLogger = Logger.getLogger(Log.class.getName());
+	private Logger logger = Logger.getLogger(Log.class.getName());
 	
 	private Log(){
 		try{
             LogManager.getLogManager().readConfiguration(Log.class.getResourceAsStream("logger.properties"));
 			fileHandler = new FileHandler();
-			System.out.println(fileHandler.getLevel());
 			consoleHandler = new ConsoleHandler();
-			logLogger.addHandler(fileHandler);
-			logLogger.addHandler(consoleHandler);
+			logger.addHandler(fileHandler);
+			logger.addHandler(consoleHandler);
 		}catch(Exception e){
-			logLogger.log(Level.SEVERE, e.getMessage(),e);
+			logger.log(Level.SEVERE, e.getMessage(),e);
 		}
 	}
 	

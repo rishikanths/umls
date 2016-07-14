@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import edu.isu.umls.Concepts.AbstractConcept;
+import edu.isu.umls.Concepts.Term;
 import edu.isu.umls.REST.Utils.RESTUtils;
 import edu.isu.umls.database.DBQuery;
 
@@ -30,7 +31,7 @@ public class UMLSSearch {
 		
 		DBQuery query = new DBQuery();
 		
-		List<AbstractConcept> concepts = query.searchByString(term,30);
+		List<AbstractConcept> concepts = query.searchByString(term);
 		
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concepts));
 	}
@@ -41,9 +42,9 @@ public class UMLSSearch {
 	public Response searchCUI(@QueryParam("cui") String cui){
 		
 		DBQuery query = new DBQuery();
-		
-		AbstractConcept concept = query.getInfomationByCUI(cui,0);
-		
+		AbstractConcept concept = new Term();
+		query.getHierarchyInfomationByCUI(cui,0,concept);
+		query.getAdjacencyInfomationByCUI(cui, concept);
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concept));
 	}
 	

@@ -1,6 +1,7 @@
-
-var len = 20,
-	inc=20; 
+var LEN_CONST = 50;
+var INC_CONST = 20;
+var len = LEN_CONST;
+var inc=INC_CONST; 
 
 var w = 1280, h = 800, rx = w / 2, ry = h / 2, m0, rotate = 0;
 
@@ -25,8 +26,8 @@ function dendogramRadial(data) {
 	/**
 	 * To redraw a difference concept, the previous SVG has be removed. 
 	 */
-	$("#visual").empty();
-	div = d3.select("#visual").insert("div", "h2").style("height", w + "px")
+	$("#hierarchy").empty();
+	div = d3.select("#hierarchy").insert("div", "h2").style("height", w + "px")
 			.style("-webkit-backface-visibility","hidden");
 	var ryTemp = parseInt(ry)+200;
 	svg = div.append("svg:svg").attr("width", w).attr("height", w).append(
@@ -76,23 +77,9 @@ function update(root) {
 		});
 	});
 	
-	svg.selectAll('text').each(function (d) {
-		var el = d3.select(this);		
-		var total = d.name.length;
-		el.text('');
-		if(len>=total)
-			el.text(d.name);
-		while(len<total){
-			var tspan = el.append('tspan').text(d.name.slice(len-inc,len));
-			tspan.attr('x', 0).attr('dy', inc);
-			len = len+inc;
-		}
-		var tspan = el.append('tspan').text(d.name.slice(len));
-		tspan.attr('x', 0).attr('dy', 10);
-	});
+	formatGraphText(svg);
 }
 
-//d3.select(window).on("mousemove", mousemove).on("mouseup", mouseup);
 
 function mouse(e) {
 	return [ e.pageX - rx, e.pageY - ry ];
@@ -103,47 +90,12 @@ function mousedown() {
 	d3.event.preventDefault();
 }
 
-function mousemove() {
-	if (m0) {
-		var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1))
-				* 180 / Math.PI;
-		div.style("-webkit-transform", "translateY(" + (ry - rx)
-				+ "px)rotateZ(" + dm + "deg)translateY(" + (rx - ry) + "px)");
-	}
-}
-
-function mouseup() {
-	if (m0) {
-		var m1 = mouse(d3.event), dm = Math.atan2(cross(m0, m1), dot(m0, m1))
-				* 180 / Math.PI;
-
-		rotate += dm;
-		if (rotate > 360)
-			rotate -= 360;
-		else if (rotate < 0)
-			rotate += 360;
-		m0 = null;
-
-		div.style("-webkit-transform", null);
-
-		svg.attr("transform",
-				"translate(" + rx + "," + ry + ")rotate(" + rotate + ")")
-				.selectAll("g.node text").attr("dx", function(d) {
-					return (d.x + rotate) % 360 < 180 ? 8 : -8;
-				}).attr("text-anchor", function(d) {
-					return (d.x + rotate) % 360 < 180 ? "start" : "end";
-				}).attr("transform", function(d) {
-					return (d.x + rotate) % 360 < 180 ? null : "rotate(180)";
-				});
-	}
-}
-
 function mouseover(d) {
 	svg.selectAll("path.link.target-" + d.key).classed("target", true).each(
-			updateNodes("source", true));
+			updateNodes("source", true,d.name));
 
 	svg.selectAll("path.link.source-" + d.key).classed("source", true).each(
-			updateNodes("target", true));
+			updateNodes("target", true,d.name));
 }
 
 function mouseout(d) {
@@ -154,8 +106,10 @@ function mouseout(d) {
 			updateNodes("source", false));
 }
 
-function updateNodes(name, value) {
+function updateNodes(name, value, term) {
 	return function(d) {
+		if(value)
+			detailedInformation(d, term);
 		if (value)
 			this.parentNode.appendChild(this);
 		svg.select("#node-" + d[name].key).classed(name, value);

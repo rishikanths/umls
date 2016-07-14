@@ -1,92 +1,150 @@
-$("#termSearch").autocomplete({
-	minLength:3,
-	delay: 200,
-	autoFocus:true,
-	source: function(req,resp){
-		$.ajax({
-			url : 'rest/umls/search?term='+$('#termSearch').val(),
-			success : function(data, status, response) {
-				var object = jQuery.parseJSON(data);
-				$("#searchDisplay > tbody").empty();
-				var table = $("#searchDisplay > tbody");
-				if(object.length!=0){
-					for(i=0;i<object.length;i++){
-						var dataObj = object[i];
-						table.append("<tr id='"+dataObj.cui+"'><td>"+dataObj.name+"</td></tr>");
+/*
+ * adjacencyMap - the map that stores the relationships between the search term and other terms. 
+ * The key is the relationship (e.g., "may_be_treated_by") and the value is an array of terms. 
+ * For example, Malaria relationships will be formated as {"may_be_treated_by" => ["XXX", "YYY"], "R2"=>[...]}
+ * 
+ * termSemanticTypes - the map will hold the semantic type of the concept or relation. For example, Malaria is
+ * of semantic type Disease_or_Syndrome, etc. 
+ */
+var adjacencyMap = new Map();
+var termSemanticTypes = new Map();
+var defaultRelation = "";
+/*
+ * Auto complete for term search.
+ */
+$(document).ajaxSend(function(){
+	//$("#tabs").LoadingOverlay("show");
+});
+$(document).ajaxStart(function() {
+	$("#message").css('display', 'none');
+	$("#error").css('display', 'none');
+	$("#hierarchy").empty();
+	$("#hierarchyMessage").empty();
+	$("#relation").empty();
+	$("#relationRadioSelection").empty();
+	$("#relationRadioSelectionDesc").empty();
+});
+$(document).ajaxStop(function() {
+	$("#tabs").LoadingOverlay("hide");
+});
+$("#termSearch").autocomplete(
+		{
+			minLength : 4,
+			delay : 200,
+			source : function(req, resp) {
+				$.ajax({
+					url : 'rest/umls/search?term=' + $('#termSearch').val(),
+					success : function(data, status, response) {
+						resetGlobalVariable();
+						var object = jQuery.parseJSON(data);
+						if (object.length == 0) {
+							var msg = "No matches found for term - <b>"
+									+ $('#termSearch').val() + "</b>";
+							displayMessage(msg);
+						} else {
+							resp($.map(object, function(item) {
+								return {
+									label : item.name,
+									value : item.cui
+								};
+							}));
+						}
+					},
+					error : function(data, status, response) {
+						var error = "Response - " + JSON.stringify(response)
+								+ "\nData - " + JSON.stringify(data)
+								+ "\nStatus - " + JSON.stringify(status);
+						displayError(error);
+						$("#loading").css('display', 'none');
+
 					}
-				}else{
-					table.append("<tr><td>No terms starting with = "+$('#termSearch').val()+"</td></tr>")
-				}
-				$("#searchDisplay tr").click(function(e){
-					var cui = this.id;
-					getCUI(cui);
-					$("#termSearch").val(this.innerText);
 				});
 			},
-			error : function(data, status, response) {
-				alert("Error" + "\n Response - " + JSON.stringify(response)
-						+ "\n\n Data - " + JSON.stringify(data)
-						+ "\n\n Status - " + JSON.stringify(status));
-			}
-		})
-	}
-});
+			focus : function() {
+				return false;
+			},
+			select : function(event, ui) {
+				$("#tabs").LoadingOverlay("show");
+				$("#selectedConceptCUI").text(ui.item.value);
+				$("#termSearch").val(ui.item.label);
+				getCUI(ui.item.value);
+				$("#visual").empty();
+				return false;
+			},
+		});
 
-function getCUI(cui){
-	$.ajax({
-		url : 'rest/umls/searchwithcui?cui='+cui,
-		success : function(data, status, response) {
-			var object = jQuery.parseJSON(data);
-			$("#termInformationDisplay > tbody").empty();
-			var table = $("#termInformationDisplay > tbody");
-			var termMap = new Map();
-			var parentNames= [],adjacencyNames = [], childNames= [];
-			var childObject,
-				parentObject;
-			if(object!=null){
-				for(var prop in object){
-					if(prop == 'hierarchy'){
-						parentObject = object[prop];
-						var parent = "";
-						for(i=0;i<parentObject.length;i++){
-							parentNames.push(parentObject[i].name);
-							parent +=parentObject[i].name+", "; 
+function getCUI(cui) {
+	$
+			.ajax({
+				url : 'rest/umls/searchwithcui?cui=' + cui,
+				success : function(data, status, response) {
+					var object = jQuery.parseJSON(data);
+					adjacencyMap.clear();
+					var radio = $("#relationRadioSelection");
+					radio.empty();
+					var parentNames = [], adjacencyNames = [], childNames = [];
+					var childObject, parentObject;
+					if (object != null) {
+						for ( var prop in object) {
+							if (prop == 'hierarchy') {
+								parentObject = object[prop];
+								for (i = 0; i < parentObject.length; i++)
+									parentNames.push(parentObject[i].name);
+							} else if (prop == 'children') {
+								childObject = object[prop];
+								for (i = 0; i < childObject.length; i++)
+									childNames.push(childObject[i].name);
+							} else if (prop == 'semanticTypes') {
+								add2Map(termSemanticTypes, object.name,
+										object[prop]);
+							} else if (prop == 'adjacency') {
+								var adjacency = object[prop];
+								for (i = 0; i < adjacency.length; i++) {
+									add2Map(termSemanticTypes,
+											adjacency[i].object.name,
+											adjacency[i].object.semanticTypes)
+									adjacencyNames
+											.push(adjacency[i].object.name);
+									var names = [];
+									var temp = adjacency[i].predicate.relationName
+											+ "*"
+											+ adjacency[i].predicate.relationType
+									defaultRelation = adjacency[i].predicate.relationName;
+									if (adjacencyMap.get(temp) != null)
+										names = adjacencyMap.get(temp)
+									else
+										radio
+												.append($('<input type="radio" '
+														+ 'name="relations" '
+														+ 'value="'
+														+ adjacency[i].predicate.relationName
+														+ '">'
+														+ adjacency[i].predicate.relationName
+														+ "</input>"));
+									names.push(adjacency[i].object.name);
+									adjacencyMap.set(temp, names);
+								}
+								$('#relationRadioSelection input[type=radio]')
+										.each(
+												function(r) {
+													$(this).on("click",
+															relationSelected);
+												});
+							}
 						}
-						table.append("<tr'><td>"+prop+"</td><td>"+parent+"</td></tr>");
-					}else if(prop == 'children'){
-						childObject = object[prop];
-						var child = "";
-						for(i=0;i<childObject.length;i++){
-							childNames.push(childObject[i].name);
-							child +=childObject[i].name+", "; 
-						}
-						table.append("<tr'><td>"+prop+"</td><td>"+child+"</td></tr>");
-					}else if(prop == 'semanticTypes'){
-						var types = object[prop];
-						var type = "";
-						for(i=0;i<types.length;i++){
-							type +=types[i].name+", "; 
-						}
-						table.append("<tr'><td>"+prop+"</td><td>"+type+"</td></tr>");
 					}
-					else if(prop == 'adjacency'){
-						var adjacency = object[prop];
-						var relation = "";
-						for(i=0;i<adjacency.length;i++){
-							adjacencyNames.push(adjacency[i].object.name);
-							relation +=adjacency[i].predicate.name+"("+adjacency[i].predicate.relationShipType+") "+adjacency[i].object.name+", "; 
-						}
-						table.append("<tr'><td>"+prop+"</td><td>"+relation+"</td></tr>");
-					}else
-						table.append("<tr'><td>"+prop+"</td><td>"+object[prop]+"</td></tr>");
+					dendogramRadial(M2J(toD3JFormat($('#termSearch').val(),
+							childObject)));
+					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation($(
+							'#termSearch').val(), defaultRelation)));
+					checkSelection(defaultRelation, true);
+					changeRelationText($('#termSearch').val(), defaultRelation);
+				},
+				error : function(data, status, response) {
+					var error = "Response - " + JSON.stringify(response)
+							+ "\nData - " + JSON.stringify(data)
+							+ "\nStatus - " + JSON.stringify(status);
+					displayError(error);
 				}
-			}
-			dendogramRadial(M2J(toD3jRadialFormat($('#termSearch').val(),childObject)));
-		},
-		error : function(data, status, response) {
-			alert("Error" + "\n Response - " + JSON.stringify(response)
-					+ "\n\n Data - " + JSON.stringify(data)
-					+ "\n\n Status - " + JSON.stringify(status));
-		}
-	})
+			})
 }
