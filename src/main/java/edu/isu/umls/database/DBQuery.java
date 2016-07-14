@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.isu.umls.Concepts.AbstractConcept;
@@ -37,9 +36,9 @@ public class DBQuery {
 
 	private PreparedStatement prepStatement = null;
 
-	private final int LIMIT = 20;
+	private final int LIMIT = 30;
 
-	private static int DEPTH = 3;
+	private final int DEPTH = 3;
 
 	public DBQuery() {
 		Log.addHandlers(logger);
@@ -53,22 +52,17 @@ public class DBQuery {
 	 *            The string pattern to be searched
 	 * @return
 	 */
-	public List<AbstractConcept> searchByString(String value, int limit) {
+	public List<AbstractConcept> searchByString(String value) {
 		ResultSet result = null;
 		List<AbstractConcept> concepts = null;
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT CUI, STR from MRCONSO WHERE TS = 'P' AND STT='PF' AND ISPREF='Y'"
-							+ " AND STR LIKE ? LIMIT ?");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_QUERY);
 
 			LoggerUtil.logInfo(logger, "Search for String with pattern - " + value);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, value + "%");
-			if (limit != 0)
-				prepStatement.setInt(2, limit);
-			else
-				prepStatement.setInt(2, LIMIT);
+			prepStatement.setInt(2, LIMIT);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
@@ -79,14 +73,14 @@ public class DBQuery {
 			prepStatement.clearParameters();
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return concepts;
 	}
 
 	/**
-	 * Get the single concept associated with a CUI
+	 * Get the concept associated with a CUI
 	 * 
 	 * @param cui
 	 *            Concept Unique Identifier
@@ -96,8 +90,7 @@ public class DBQuery {
 		ResultSet result = null;
 		AbstractConcept concept = null;
 		try {
-			prepStatement = connection.prepareStatement(
-					"SELECT CUI, STR from MRCONSO WHERE TS = 'P' AND STT='PF' AND ISPREF='Y'" + " AND CUI = ?");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_BY_CUI);
 			prepStatement.clearParameters();
 			LoggerUtil.logInfo(logger, "Search for CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
@@ -112,7 +105,7 @@ public class DBQuery {
 
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return concept;
@@ -131,7 +124,7 @@ public class DBQuery {
 		AbstractConcept concept = null;
 		String cui = "";
 		try {
-			prepStatement = connection.prepareStatement("SELECT CUI from MRCONSO WHERE AUI = ?");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_BY_AUI);
 
 			LoggerUtil.logInfo(logger, "Search for AUI - " + aui);
 			long start = Calendar.getInstance().getTimeInMillis();
@@ -150,7 +143,7 @@ public class DBQuery {
 			prepStatement.clearParameters();
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return concept;
@@ -167,7 +160,7 @@ public class DBQuery {
 		ResultSet resultSet = null;
 		List<AbstractType> type = null;
 		try {
-			prepStatement = connection.prepareStatement("SELECT TUI, STY from MRSTY WHERE CUI = ?");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_SEMANTIC_TYPE_BY_CUI);
 
 			LoggerUtil.logInfo(logger, "Search for Semantic type of - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
@@ -181,7 +174,7 @@ public class DBQuery {
 			prepStatement.clearParameters();
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return type;
@@ -198,12 +191,7 @@ public class DBQuery {
 	public AbstractConcept getHierarchyInfomationByCUI(String cui, int depth, AbstractConcept concept) {
 		ResultSet result = null;
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT DISTINCT r.CUI1,c.CUI,c.STR,r.REL, r.RELA, st.TUI,st.STY"
-							+ " FROM mrconso as c, mrrel as r, mrsty as st WHERE"
-							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
-							+ " AND r.rel IN ('PAR','CHD') AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
-							+ " GROUP BY r.CUI1");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
 			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
@@ -250,7 +238,7 @@ public class DBQuery {
 						}
 					}
 				}
-			}else{
+			} else {
 				concept = searchByCUI(cui);
 				concept.setName(ConceptMapper.normalizeName(concept.getName()));
 				AbstractType type = getSemanticType(cui).get(0);
@@ -261,7 +249,7 @@ public class DBQuery {
 
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return concept;
@@ -270,12 +258,7 @@ public class DBQuery {
 	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept) {
 		ResultSet result = null;
 		try {
-			prepStatement = connection
-					.prepareStatement("SELECT DISTINCT r.CUI1,c.CUI,c.STR,r.REL, r.RELA, st.TUI,st.STY"
-							+ " FROM mrconso as c, mrrel as r, mrsty as st WHERE"
-							+ " c.CUI = ? AND c.CUI = r.CUI2 AND c.CUI = st.CUI AND r.CUI1 <> c.CUI"
-							+ " AND r.rel IN ('QB','RO','RU',NULL) AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y'"
-							+ " GROUP BY r.CUI1");
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_RELATIONS);
 			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
@@ -317,7 +300,7 @@ public class DBQuery {
 
 			prepStatement.close();
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 
 		return concept;
@@ -352,7 +335,7 @@ public class DBQuery {
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			LoggerUtil.logError(logger, e);
 		}
 		return result;
 	}
@@ -360,8 +343,7 @@ public class DBQuery {
 	public static void main(String args[]) {
 
 		DBQuery test = new DBQuery();
-		AbstractConcept t = test.getAdjacencyInfomationByCUI("C0024530", null);
-		// AbstractConcept t1 = test.getInfomationByCUI_Hierarchy("C0024530",0);
+		test.getAdjacencyInfomationByCUI("C0024530", null);
 
 	}
 

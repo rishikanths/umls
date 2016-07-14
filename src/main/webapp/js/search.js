@@ -10,120 +10,141 @@ var adjacencyMap = new Map();
 var termSemanticTypes = new Map();
 var defaultRelation = "";
 /*
- * Auto complete for term search. 
+ * Auto complete for term search.
  */
-$( document ).ajaxStart(function() {
-	$("#loading").css('display','block');
-	$("#message").css('display','none');
-	$("#error").css('display','none');
+$(document).ajaxSend(function(){
+	//$("#tabs").LoadingOverlay("show");
+});
+$(document).ajaxStart(function() {
+	$("#message").css('display', 'none');
+	$("#error").css('display', 'none');
 	$("#hierarchy").empty();
+	$("#hierarchyMessage").empty();
 	$("#relation").empty();
+	$("#relationRadioSelection").empty();
+	$("#relationRadioSelectionDesc").empty();
 });
-$( document ).ajaxStop(function() {
-	$("#loading").css('display','none');
+$(document).ajaxStop(function() {
+	$("#tabs").LoadingOverlay("hide");
 });
-$("#termSearch").autocomplete({
-	minLength:4,
-	delay: 200,
-	source: function(req,resp){
-		$.ajax({
-			url : 'rest/umls/search?term='+$('#termSearch').val(),
-			success : function(data, status, response) {
-				resetGlobalVariable();
-				var object = jQuery.parseJSON(data);
-				if(object.length == 0){
-					var msg = "No matches found for term - <b>"
-						+$('#termSearch').val()+"</b>";
-					displayMessage(msg);
-				}else{
-					resp($.map(object, function (item) {
-	            		return {
-	                		label: item.name,
-	                		value: item.cui
-	            		};
-	        		}));
-				}
-			}, 
-			error : function(data, status, response) {
-				var error = "Response - " + JSON.stringify(response)
+$("#termSearch").autocomplete(
+		{
+			minLength : 4,
+			delay : 200,
+			source : function(req, resp) {
+				$.ajax({
+					url : 'rest/umls/search?term=' + $('#termSearch').val(),
+					success : function(data, status, response) {
+						resetGlobalVariable();
+						var object = jQuery.parseJSON(data);
+						if (object.length == 0) {
+							var msg = "No matches found for term - <b>"
+									+ $('#termSearch').val() + "</b>";
+							displayMessage(msg);
+						} else {
+							resp($.map(object, function(item) {
+								return {
+									label : item.name,
+									value : item.cui
+								};
+							}));
+						}
+					},
+					error : function(data, status, response) {
+						var error = "Response - " + JSON.stringify(response)
+								+ "\nData - " + JSON.stringify(data)
+								+ "\nStatus - " + JSON.stringify(status);
+						displayError(error);
+						$("#loading").css('display', 'none');
+
+					}
+				});
+			},
+			focus : function() {
+				return false;
+			},
+			select : function(event, ui) {
+				$("#tabs").LoadingOverlay("show");
+				$("#selectedConceptCUI").text(ui.item.value);
+				$("#termSearch").val(ui.item.label);
+				getCUI(ui.item.value);
+				$("#visual").empty();
+				return false;
+			},
+		});
+
+function getCUI(cui) {
+	$
+			.ajax({
+				url : 'rest/umls/searchwithcui?cui=' + cui,
+				success : function(data, status, response) {
+					var object = jQuery.parseJSON(data);
+					adjacencyMap.clear();
+					var radio = $("#relationRadioSelection");
+					radio.empty();
+					var parentNames = [], adjacencyNames = [], childNames = [];
+					var childObject, parentObject;
+					if (object != null) {
+						for ( var prop in object) {
+							if (prop == 'hierarchy') {
+								parentObject = object[prop];
+								for (i = 0; i < parentObject.length; i++)
+									parentNames.push(parentObject[i].name);
+							} else if (prop == 'children') {
+								childObject = object[prop];
+								for (i = 0; i < childObject.length; i++)
+									childNames.push(childObject[i].name);
+							} else if (prop == 'semanticTypes') {
+								add2Map(termSemanticTypes, object.name,
+										object[prop]);
+							} else if (prop == 'adjacency') {
+								var adjacency = object[prop];
+								for (i = 0; i < adjacency.length; i++) {
+									add2Map(termSemanticTypes,
+											adjacency[i].object.name,
+											adjacency[i].object.semanticTypes)
+									adjacencyNames
+											.push(adjacency[i].object.name);
+									var names = [];
+									var temp = adjacency[i].predicate.relationName
+											+ "*"
+											+ adjacency[i].predicate.relationType
+									defaultRelation = adjacency[i].predicate.relationName;
+									if (adjacencyMap.get(temp) != null)
+										names = adjacencyMap.get(temp)
+									else
+										radio
+												.append($('<input type="radio" '
+														+ 'name="relations" '
+														+ 'value="'
+														+ adjacency[i].predicate.relationName
+														+ '">'
+														+ adjacency[i].predicate.relationName
+														+ "</input>"));
+									names.push(adjacency[i].object.name);
+									adjacencyMap.set(temp, names);
+								}
+								$('#relationRadioSelection input[type=radio]')
+										.each(
+												function(r) {
+													$(this).on("click",
+															relationSelected);
+												});
+							}
+						}
+					}
+					dendogramRadial(M2J(toD3JFormat($('#termSearch').val(),
+							childObject)));
+					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation($(
+							'#termSearch').val(), defaultRelation)));
+					checkSelection(defaultRelation, true);
+					changeRelationText($('#termSearch').val(), defaultRelation);
+				},
+				error : function(data, status, response) {
+					var error = "Response - " + JSON.stringify(response)
 							+ "\nData - " + JSON.stringify(data)
 							+ "\nStatus - " + JSON.stringify(status);
-				displayError(error);
-				$("#loading").css('display','none');
-
-			}
-		});
-	},
-	focus: function() {
-		return false;
-    },
-	select: function( event, ui ) {
-		$("#selectedConceptCUI").text(ui.item.value);
-		$("#termSearch").val(ui.item.label);
-		getCUI(ui.item.value);
-		$("#visual").empty();
-    	return false;
-    },
-});
-
-function getCUI(cui){
-	$.ajax({
-		url : 'rest/umls/searchwithcui?cui='+cui,
-		success : function(data, status, response) {
-			var object = jQuery.parseJSON(data);
-			adjacencyMap.clear();
-			var radio = $("#relationRadioSelection");
-			radio.empty();
-			var parentNames= [],adjacencyNames = [], childNames= [];
-			var childObject,
-				parentObject;
-			if(object!=null){
-				for(var prop in object){
-					if(prop == 'hierarchy'){
-						parentObject = object[prop];
-						for(i=0;i<parentObject.length;i++)
-							parentNames.push(parentObject[i].name);
-					}else if(prop == 'children'){
-						childObject = object[prop];
-						for(i=0;i<childObject.length;i++)
-							childNames.push(childObject[i].name);
-					}else if(prop == 'semanticTypes'){
-						add2Map(termSemanticTypes, object.name, object[prop]);
-					}
-					else if(prop == 'adjacency'){
-						var adjacency = object[prop];
-						for(i=0;i<adjacency.length;i++){
-							add2Map(termSemanticTypes, adjacency[i].object.name
-									, adjacency[i].object.semanticTypes)
-							adjacencyNames.push(adjacency[i].object.name);
-							var names = [];
-							var temp = adjacency[i].predicate.relationName+"*"+adjacency[i].predicate.relationType
-							defaultRelation = adjacency[i].predicate.relationName;
-							if(adjacencyMap.get(temp)!=null)
-								names = adjacencyMap.get(temp)
-							else
-								radio.append($('<input type="radio" ' +
-										'name="relations" ' +
-										'value="' +adjacency[i].predicate.relationName+'">' +
-										adjacency[i].predicate.relationName+"</input>"));
-							names.push(adjacency[i].object.name);
-							adjacencyMap.set(temp,names);
-						}
-						$('#relationRadioSelection input[type=radio]').each(function(r){
-							 $(this).on("click",relationSelected);
-						});
-					}
+					displayError(error);
 				}
-			}
-			dendogramRadial(M2J(toD3JFormat($('#termSearch').val(),childObject)));
-			dendogramRadialRelation(M2J(toD3JFormatSelectedRelation($('#termSearch').val(),defaultRelation)));
-			checkSelection(defaultRelation,true);
-			changeRelationText($('#termSearch').val(),defaultRelation);
-		},
-		error : function(data, status, response) {
-			alert("Error" + "\n Response - " + JSON.stringify(response)
-					+ "\n\n Data - " + JSON.stringify(data)
-					+ "\n\n Status - " + JSON.stringify(status));
-		}
-	})
+			})
 }

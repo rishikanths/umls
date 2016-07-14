@@ -7,11 +7,13 @@
 	padding: 5px;
 	font-size: 15px;
 }
-
+#information{
+	text-align: center;;
+}
 #termInfo {
 	color: #0101DF;
 	font-family: monospace;
-	font-size: large
+	font-size: large;
 }
 
 #relationInfo {
@@ -38,10 +40,6 @@
 
 #semanticTypeBg {
 	background-color: beige;
-}
-
-#loading {
-	display: none;
 }
 
 #error {
@@ -85,6 +83,29 @@
 }
 #info{
 	text-align: left;
+	background-color: #f1f8ff;
+}
+#info p{
+	padding:5px 0px 5px 15px;
+}
+#info img{
+	float: left;
+	padding:5px 10px 0px 15px;
+}
+#contact {
+	background-color: #ffffff;
+	padding: 20px;
+	text-align: center;
+	font-size: 18px;
+}
+#meta ul{
+	padding-left: 90px;
+	padding-right: 90px;
+}
+
+#meta li{
+	list-style-type: circle;
+	list-style-position: outside;
 }
 .ui-dialog {
 	position: fixed;

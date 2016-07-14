@@ -31,7 +31,7 @@
 				</div>
 			</div>
 			<div id="banner">
-				<img src="images/strip.jpg" width="1120" height="20" alt="">
+				<img src="images/strip.jpg" alt="">
 			</div>
 			<div id="message"></div>
 			<div id="error"></div>
@@ -56,12 +56,9 @@
 							<img src="images/information.png" width="25" height="25" />
 							<p id="hierarchyViewInfo">
 								Hierarchy View tab renders all the <b>childern (isa
-									relationship)</b> of the search term.<br />For example, Apple 'isa'
+									relationship)</b> of the search term. For example, Apple 'isa'
 								Fruit and Mango 'isa' Fruit, that means Apples and Mango are
 								children of Fruit or Fruit is the parent of Apple and Mango.
-						</div>
-						<div id="loading">
-							<img alt="loading....." src="images/infinity.gif">
 						</div>
 						<div id="hierarchyMessage" style="margin-top: 10px;"></div>
 						<div id="hierarchy"></div>
@@ -71,11 +68,10 @@
 							<img src="images/information.png" width="25" height="25" />
 							<p id="relationViewInfo">
 								Relation View tab renders all the <b>relationships (other
-								then isa relationship)</b> of the search term.<br />For example,
+								then isa relationship)</b> of the search term.For example,
 								Fever 'maybe_treated_by' Advil, that means the terms Fever and
 								Advil are related using 'maybe_treated_by' relationship.
 						</div>
-						<div id="loading"></div>
 						<div id="relationMessage"></div>
 						<div id="relationLabel">
 							<label>Select a Relationship</label>
@@ -98,5 +94,6 @@
 	<script type="text/javascript" src="js/events.js"></script>
 	<script type="text/javascript" src="js/information.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/loadingoverlay.min.js"></script>
 </body>
 </html>

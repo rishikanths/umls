@@ -17,7 +17,7 @@ import java.util.List;
 public class Relationship extends AbstractRelation{
 
 
-	/* (non-Javadoc)
+	/** 
 	 * @see edu.isu.umls.Concepts.AbstractConcept#setSemanticType(java.util.List)
 	 */
 	public void setSemanticType(List<AbstractType> semanticRelationships) {
@@ -25,14 +25,14 @@ public class Relationship extends AbstractRelation{
 		
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see edu.isu.umls.Concepts.AbstractConcept#getSemanticType()
 	 */
 	public List<AbstractType> getSemanticRelations() {
 		return semanticRelationships;
 	}
 
-	/* (non-Javadoc)
+	/** 
 	 * @see edu.isu.umls.Concepts.AbstractConcept#addSemanticType(edu.isu.umls.Concepts.AbstractType)
 	 */
 	public void addSemanticType(AbstractType semanticType) {

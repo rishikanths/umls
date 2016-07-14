@@ -3,13 +3,8 @@
 <head>
 <title>UMLS Visualizations</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script src="js/libraries/jquery-2.1.4.min.js"></script>
-<script src="js/libraries/jquery-ui-1.11.4/jquery-ui.js"></script>
-<script src="js/libraries/d3.js"></script>
-<link rel="stylesheet"
-	href="js/libraries/jquery-ui-1.11.4/jquery-ui.css" />
-<link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="customize.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 	<div id="bg">
@@ -22,7 +17,7 @@
 				</div>
 				<div id="nav">
 					<ul>
-						<li style="font-size: 24px"><a href="index.html">Search</a></li>
+						<li style="font-size: 20px"><a href="index.html">Search</a></li>
 						<li class=""><a href="about.html">Project</a></li>
 						<li class=""><a href="umls.html">About UMLS</a></li>
 						<li class=""><a href="contact.html">Contact</a></li>
@@ -31,32 +26,44 @@
 				</div>
 			</div>
 			<div id="banner">
-				<img src="images/strip.jpg" width="1120" height="20" alt="">
+				<img src="images/strip.jpg" alt="">
 			</div>
 			<div id="main">
 				<div id="umls">
+					<h2>Introduction</h2>
 					<p>
 						UMLS stands for <b>U</b>nified <b>M</b>edical <b>L</b>anguage <b>S</b>ystems.
 						The project is developed and maintained by National Library of
-						Medicine. Before UMLS, the biomedical and healthcare community had
-						diverse medical terminologies that captured the domain's
-						vocabulary. For example, ICD (International Classification of
-						Diseases), MeSH(Medical Subject Heading), SNOMED-CT (Systematized
-						Nomenclature of Medicine- Clinical Terms),OMIM (Online Mendelian
-						Inheritance in Man) and many other terminologies, both national
-						and international.However, all these terminologies are <b><i>disparate</i></b>
+						Medicine. Before UMLS, the biomedical community had diverse
+						medical terminologies that captured the domain's vocabulary. For
+						example, <span id='termInfo'>ICD (International
+							Classification of Diseases)</span>, <span id='termInfo'>MeSH(Medical
+							Subject Heading)</span>, <span id='termInfo'>SNOMED-CT
+							(Systematized Nomenclature of Medicine- Clinical Terms)</span>,<span
+							id='termInfo'>OMIM (Online Mendelian Inheritance in Man)</span>
+						and many other terminologies, both national and
+						international.However, all these terminologies are <b><i>disparate</i></b>
 						and <i><b>not interoperable </b></i>, i.e., they don't talk or
-						understand each other.
+						understand each other. This has unintended effect on biomedical
+						software applications as various applications use different
+						terminologies. Now, the applications cannot communicate data among
+						themselves, even though all the applications have ONE goal -
+						patient care.
 					</p>
 					<p>
 						The UMLS project was initiated in 1986 to integrate various
 						disparate biomedical terminologies and provide a unified global
-						terminology to the biomedical domain. For over more
-						than 30 years, the UMLS system has integrated more than 60
-						families of biomedical terminologies. The UMLS currently holds 2.5
-						million concepts or terms, but also over 12 million relations
-						among these concepts. Its scope is broader and its granularity
-						finer than that of any of its source vocabularies. <br /> <br />
+						terminology. It provides a mapping structure among these diverse
+						terminologies allowing one (human or software)to translate
+						concepts among the various terminologies. Thus using UMLS, a
+						biomedical application using <span id='termInfo'>SNOMED-CT</span>
+						can understand another software application using <span
+							id='termInfo'> ICD terminology</span>. For over more than 30
+						years, the UMLS system has integrated more than 60 families of
+						biomedical terminologies. Currently, UMLS holds 2.5 million
+						concepts or terms and over 12 million relations among these
+						concepts. Its scope is broader and its granularity finer than that
+						of any of its source vocabularies. <br /> <br />
 					</p>
 					<p style="text-align: center">
 						<img alt="UMLS View" src="images/umls.gif"> <br /> <span>Figure
@@ -64,6 +71,58 @@
 							various biomedical terminologies.</span><br /> <a
 							href="http://nar.oxfordjournals.org/content/32/suppl_1/D267.full">Reference</a>
 					</p>
+					<h2>UMLS System</h2>
+					<p>
+						UMLS is comprised of three components: <span id='termInfo'><b>Metathesaurus</b>,
+							<b>Semantic Networks</b></span> and <span id='termInfo'><b>SPECIALIST Lexicon</b></span>.
+					<div id="meta">
+						<ul>
+							<li>The <span id='termInfo'>Metathesaurus</span> forms the
+								base of the UMLS and holds all the concepts and relationships.
+								In simple terms, its a database which stores all the concepts
+								and respective information. <br />The <span id='termInfo'>Metathesaurus</span>
+								is organized by concept, and each concept has attributes
+								defining its meaning and is linked to the corresponding concept
+								names in the various source vocabularies. As different
+								terminologies may use different names for the same concept
+								(Heart Attack or Cardiac Arrest), then a common agreed term will
+								be faithfully represented in the <span id='termInfo'>Metathesaurus</span>
+								to connect all the synonyms. <span id='termInfo'>Metathesaurus</span>
+								concepts can also link to resources outside of the database, for
+								instance gene sequence databases.
+							</li>
+							<li>The <span id='termInfo'>Semantic Network (SN)</span> is
+								structure formed by semantic types that are connected using
+								semantic relationships. Semantic types can be considered as a
+								set of broad subject categories that are used for categorizing
+								the concepts stored in the Metathesaurus. For example, the terms
+								<span id='termInfo'>Fever, Cardiac Arrest and Malaria</span> are
+								of type (or belong to category) <span id='termInfo'>'Disease
+									or Syndrome'</span>. <br /> Each concept in the <span id='termInfo'>Metathesaurus</span>
+								is assigned one or more semantic types. For example, <span
+								id='termInfo'>Fever</span> is of semantic type (can be
+								categorized as) <span id='termInfo'>'Disease or
+									Syndrome', 'Sign or Symptom'</span>, and <span id='termInfo'>'Finding'</span>.
+								The semantic types are linked with to one another through
+								semantic relationships. <br />UMLS rather has broad
+								classification; there are <b>135 semantic types</b> and <b>54
+								relationships</b>. The major semantic types are organisms,
+								anatomical structures, biologic function, chemicals, events,
+								physical objects, and concepts or ideas. The primary link
+								between semantic types is the "isa" link, establishing a
+								hierarchy of types. The network also has 5 major categories of
+								non-hierarchical (or associative) relationships, which
+								constitute the remaining 53 relationship types. These are
+								"physically related to", "spatially related to", "temporally
+								related to", "functionally related to" and "conceptually related
+								to".
+								<p style="text-align: center">
+									<img alt="UMLS Semantic Network" src="images/sn.gif"> <br />
+									<span>Figure 2: A subset of UMLS Semantic Network.</span>
+								</p></li>
+						</ul>
+					</div>
+					<p></p>
 				</div>
 			</div>
 			<div id="footer"></div>

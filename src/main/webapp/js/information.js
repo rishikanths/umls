@@ -57,10 +57,10 @@ function getSemanticType(source,target){
 function displayDialog(){
 	$( "#information" ).dialog({
 		width:500,
-		appendTo: "#hierarchyDiv",
+		appendTo: "#main",
 		maxHeight: 400,
 		closeOnEscape: true,
 		hide:false,
-		position:{my:"right center", at:"right center"}
+		position:{my:"right center", at:"right-80 center"}
 	});
 }

@@ -9,7 +9,6 @@
 	Released   : 20130222
 	
 */
-
 * {
 	margin: 0;
 	padding: 0;
@@ -29,17 +28,20 @@ body {
 	line-height: 1.75em;
 	font-family: sans-serif;
 	background: #030707 url('images/grey.png');
-	color: #c0c1c1;
+	color: #0a0b0b;
 }
 
 br.clear {
 	clear: both;
 }
 
-h2,h3,h4 {
-	margin-bottom: 1em;
-	font-family: Arvo, serif;
-	color: #ffffff;
+
+#main h2 {
+	color: #0e53ee;
+	font-size: 28px;
+	padding: 10px;
+	background-color: #ececec;
+	margin: 10px 0px 0px 10px;
 }
 
 img.left {
@@ -62,7 +64,7 @@ ul {
 .imageList li {
 	clear: both;
 }
-	
+
 #bg {
 	background: url('images/shadow.png') top left repeat-x;
 	padding: 10px 0 40px 0;
@@ -84,7 +86,7 @@ ul {
 }
 
 #visual {
-	min-height:300px;
+	min-height: 300px;
 	margin-top: 10px;
 	padding: 30px;
 	background: #ffffff;
@@ -102,7 +104,7 @@ ul {
 }
 
 #footer {
-	margin-top:2%;
+	margin-top: 2%;
 	position: relative;
 	padding: 30px;
 	background: #3ca9cd;
@@ -172,38 +174,21 @@ ul {
 	font-family: Arvo, serif;
 }
 
+#banner img {
+	width: 1120px;
+	height: 20px;
+}
+
 #main {
 	position: relative;
 	padding: 0px;
 	margin: 30px 0 0 0;
 	width: 100%;
-	color: #6b6b6b;
+	color: #0a0b0b;
 }
 
 #main a {
 	color: #262626;
-}
-
-#main strong {
-	color: #404040;
-}
-
-#main h2, #main h3, #main h4 {
-	color: #141414;
-}
-
-#main ul {
-	list-style: none;
-}
-
-#main ul li {
-	padding: 10px 0 10px 0;
-	border-top: dashed 1px #bfbfbf;
-}
-
-#main ul li.first {
-	padding-top: 0;
-	border-top: 0;
 }
 
 #nav {
@@ -224,9 +209,11 @@ ul {
 	margin: 0 0.5em 0 0.5em;
 	padding: 0.25em 1.1em 0.25em 1.1em;
 }
+
 #nav ul li:HOVER {
 	background: #007fff;
 }
+
 #nav ul li.active {
 	background: #007fff;
 }
@@ -239,7 +226,7 @@ ul {
 #nav ul li.active a {
 	color: #ffffff;
 }
-	
+
 #outer {
 	position: relative;
 	width: 90%;
@@ -258,11 +245,14 @@ ul {
 	border: dashed 1px #ffffff;
 	padding: 5px;
 }
-#leftSection{
+
+#leftSection {
 	/*float: left;*/
+	
 }
+
 #searchSection {
-	width:100%;
+	width: 100%;
 	color: #959797;
 }
 
@@ -287,12 +277,8 @@ ul {
 	padding-top: 0;
 	border-top: 0;
 }
-#contact{
-	background-color: #ffffff;
-	padding:20px;
-	text-align: center;
-	font-size: 18px;
-}
+
+
 .node {
 	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: blue;

@@ -31,7 +31,7 @@ public class UMLSSearch {
 		
 		DBQuery query = new DBQuery();
 		
-		List<AbstractConcept> concepts = query.searchByString(term,30);
+		List<AbstractConcept> concepts = query.searchByString(term);
 		
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concepts));
 	}

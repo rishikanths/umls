@@ -3,6 +3,10 @@ package edu.isu.umls.Concepts;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author rsaripa
+ * Captures the knowledge related to a relationship that connect two concepts {@link AbstractConcept}
+ */
 public abstract class AbstractRelation {
 
 	protected String relationName = "";
