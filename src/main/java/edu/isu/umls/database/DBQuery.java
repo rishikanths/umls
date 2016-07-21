@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import edu.isu.umls.Concepts.AbstractConcept;
@@ -340,6 +343,36 @@ public class DBQuery {
 		return result;
 	}
 
+	
+	public Map<String,List<String>> getSynonyms(String cui){
+		ResultSet resultSet = null;
+		Map<String,List<String>> results = new HashMap<String, List<String>>();
+		try {
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_SYNONYMS);
+			prepStatement.clearParameters();
+			LoggerUtil.logInfo(logger, "Synonyms for CUI - " + cui);
+			long start = Calendar.getInstance().getTimeInMillis();
+
+			prepStatement.setString(1, cui);
+			resultSet = prepStatement.executeQuery();
+
+			long end = Calendar.getInstance().getTimeInMillis();
+			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+
+			while(resultSet.next()){
+				String source = resultSet.getString("SOURCE");
+				List<String> temp = results.get(source);
+				if(temp==null)
+						temp = new ArrayList<String>();
+				temp.add(resultSet.getString("STR"));
+				results.put(resultSet.getString("SOURCE"), temp);
+			}
+			prepStatement.close();
+		} catch (Exception e) {
+			LoggerUtil.logError(logger, e);
+		}
+		return results;
+	}
 	public static void main(String args[]) {
 
 		DBQuery test = new DBQuery();

@@ -12,8 +12,8 @@ var defaultRelation = "";
 /*
  * Auto complete for term search.
  */
-$(document).ajaxSend(function(){
-	//$("#tabs").LoadingOverlay("show");
+$(document).ajaxSend(function() {
+	// $("#tabs").LoadingOverlay("show");
 });
 $(document).ajaxStart(function() {
 	$("#message").css('display', 'none');
@@ -82,6 +82,8 @@ function getCUI(cui) {
 					adjacencyMap.clear();
 					var radio = $("#relationRadioSelection");
 					radio.empty();
+					var CUIDiv = $("#CUI_Info");
+					CUIDiv.empty();
 					var parentNames = [], adjacencyNames = [], childNames = [];
 					var childObject, parentObject;
 					if (object != null) {
@@ -92,8 +94,12 @@ function getCUI(cui) {
 									parentNames.push(parentObject[i].name);
 							} else if (prop == 'children') {
 								childObject = object[prop];
-								for (i = 0; i < childObject.length; i++)
+								for (i = 0; i < childObject.length; i++) {
 									childNames.push(childObject[i].name);
+									CUIDiv.append("<label id='"
+											+ childObject[i].name + "'>"
+											+ childObject[i].cui + "</label>");
+								}
 							} else if (prop == 'semanticTypes') {
 								add2Map(termSemanticTypes, object.name,
 										object[prop]);
@@ -105,6 +111,10 @@ function getCUI(cui) {
 											adjacency[i].object.semanticTypes)
 									adjacencyNames
 											.push(adjacency[i].object.name);
+									CUIDiv.append("<label id='"
+											+ adjacency[i].object.name + "'>"
+											+ adjacency[i].object.cui
+											+ "</label>")
 									var names = [];
 									var temp = adjacency[i].predicate.relationName
 											+ "*"
@@ -147,4 +157,27 @@ function getCUI(cui) {
 					displayError(error);
 				}
 			})
+}
+
+function getSynonyms(term){
+	var cui = $("label#"+term).text();
+	var ele = $("#synonyms");
+	ele.empty();
+	var innerText = "";
+	$.ajax({
+		url : 'rest/umls/searchsynonyms?cui=' + cui,
+		success : function(data, status, response) {
+			var object = jQuery.parseJSON(data);
+			if(object!=null){
+				innerText+="<table><thead><tr><th>Name</th><th>Source</th></tr></thead><tbody>";
+				for(var source in object){
+					for(var i in object[source])
+						innerText+="<tr><td>"+object[source][i]+"</td><td>"+source+"</td></tr>";
+				}
+			}
+			innerText+="</tbody></table>";
+			ele.append(innerText);
+		}
+	});
+	displaySynonymsDialog();
 }

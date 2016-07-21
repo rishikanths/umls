@@ -7,16 +7,17 @@ function detailedInformation(d, term){
 	if(focusTerm!=d.source.name+"*"+d.target.name){
 		if(focusTerm.indexOf(term) == -1)
 			$( "#information" ).empty();
-		$( "#information" ).append("<p><span id='termInfo'>"+d.target.name+"</span> "
+		$( "#information" ).append("<p><span id='"+d.target.name+"' class='termInfo'>"+d.target.name+"</span> "
 				+"<a href='https://en.wikipedia.org/wiki/Is-a' target='_blank'>"
-				+"<span id='relationInfo'>is a</span></a> "
-				+"<span id='termInfo'>"+d.source.name+"</span>.<br/> or <br/>"
-				+"<span id='termInfo'>"+d.source.name+"</span> <span id='relationInfo'> is the parent of </span>" 
-				+"<span id='termInfo'>"+d.target.name+"<span></p>");
+				+"<span class='relationInfo'>is a</span></a> "
+				+"<span id='"+d.source.name+"' class='termInfo'>"+d.source.name+"</span>.<br/> or <br/>"
+				+"<span class='termInfo'>"+d.source.name+"</span> <span class='relationInfo'> is the parent of </span>" 
+				+"<span class='termInfo'>"+d.target.name+"<span></p>");
 		
 		$( "#information" ).append(getSemanticType(d.source.name,d.target.name));
 		focusTerm = d.source.name+"*"+d.target.name;
 		displayDialog();
+		//findSynonyms();
 	}
 }
 function detailedRelationInformation(d, term){
@@ -27,12 +28,12 @@ function detailedRelationInformation(d, term){
 				var rel = key.substr(0,key.indexOf('*'));
 				if(rel=="N/A")
 					rel = "unknow_relationship"
-				$( "#information" ).append("<p><span id='termInfo'>"+d.source.name+"</span> "
-						+"<span id='relationInfo'>"+key.substr(0,key.indexOf('*'))+"</span> "
-						+"<span id='termInfo'>"+d.target.name+"</span><hr/><br/> "
-						+"The relationship <span id='relationInfo'>"+rel
-						+" </span> is of type <span id='termInfo'>"+key.substr(key.indexOf('*')+1)
-						+".</span> <span id='termInfo'>"+key.substr(key.indexOf('*')+1)
+				$( "#information" ).append("<p><span id='"+d.source.name+"' class='termInfo'>"+d.source.name+"</span> "
+						+"<span class='relationInfo'>"+key.substr(0,key.indexOf('*'))+"</span> "
+						+"<span id='"+d.target.name+"'class='termInfo'>"+d.target.name+"</span><hr/><br/> "
+						+"The relationship <span class='relationInfo'>"+rel
+						+" </span> is of type <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
+						+".</span> <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
 						+"</span> is described as - <span id='relationTypeDesc'>"
 						+relationDescription.get(key.substr(key.indexOf('*')+1))
 						+"</span>.<br/>Please refer to <a target='_blank'" +
@@ -46,10 +47,10 @@ function detailedRelationInformation(d, term){
 }
 
 function getSemanticType(source,target){
-	var typeInfo = "<hr/><p id = 'semanticTypeBg'><span id='termInfo'>" +source
-	+"</span><b> is of semantic type </b><span id='termInfo'>"+arr2String(termSemanticTypes.get(source))
-	+"</span><br/><span id='termInfo'>"+ target
-	+"</span> <b>is of semantic type </b><span id='termInfo'>"
+	var typeInfo = "<hr/><p id = 'semanticTypeBg'><span class='termInfo'>" +source
+	+"</span><b> is of semantic type </b><span class='termInfo'>"+arr2String(termSemanticTypes.get(source))
+	+"</span><br/><span class='termInfo'>"+ target
+	+"</span> <b>is of semantic type </b><span class='termInfo'>"
 	+arr2String(termSemanticTypes.get(target))+"</span></p><hr/>";
 	
 	return typeInfo;
@@ -64,3 +65,24 @@ function displayDialog(){
 		position:{my:"right center", at:"right-80 center"}
 	});
 }
+
+function displaySynonymsDialog(){
+	$("#synonyms").dialog({
+		width:600,
+		appendTo: "#main",
+		maxHeight: 200,
+		closeOnEscape: true,
+		hide:true,
+		position:{my:"left center", at:"left-80 center"}
+	});
+}
+
+
+function findSynonyms(){
+	$("#information span").hover(function(){
+		$("#synonymsText").empty();
+		$("#synonymsText").append("<p> Show all the synonyms for the term <b>"
+				+"<a href=\"javascript:getSynonyms('"+this.innerHTML+"')\">"+this.innerHTML+"</b></a> in various  terminologies.");
+	});
+}
+

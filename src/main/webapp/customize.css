@@ -10,13 +10,13 @@
 #information{
 	text-align: center;;
 }
-#termInfo {
+.termInfo {
 	color: #0101DF;
 	font-family: monospace;
 	font-size: large;
 }
 
-#relationInfo {
+.relationInfo {
 	font-weight: bold;
 }
 

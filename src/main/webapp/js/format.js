@@ -42,28 +42,29 @@ function toD3JFormat(term, child) {
 	var imports = [];
 	if (child.length != 0) {
 		child.forEach(function(c) {
-			if ($.inArray(c.name, unProcessedConcepts) == -1
-					&& $.inArray(c.name, processedConcepts) == -1) {
-				add2Map(termSemanticTypes, c.name, c.semanticTypes);
+			var cName = c.name;
+			if ($.inArray(cName, unProcessedConcepts) == -1
+					&& $.inArray(cName, processedConcepts) == -1) {
+				add2Map(termSemanticTypes, cName, c.semanticTypes);
 				if (conceptMap.get(term) != null)
 					imports = conceptMap.get(term);
-				imports.push(c.name);
+				imports.push(cName);
 				conceptMap.set(term, imports);
 				if (c.children.length != 0) {
-					var tempMap = toD3JFormat(c.name, c.children);
+					var tempMap = toD3JFormat(cName, c.children);
 					tempMap.forEach(function(v, k) {
 						conceptMap.set(k, v);
 					});
 					addToList(term, "P");
 					removeFromList(term, "UP");
 				} else {
-					conceptMap.set(c.name, []);
+					conceptMap.set(cName, []);
 					addToList(term, "P");
 				}
 			} else {
 				if (conceptMap.get(term) != null)
 					imports = conceptMap.get(term);
-				imports.push(c.name);
+				imports.push(cName);
 				conceptMap.set(term, imports);
 			}
 		});
