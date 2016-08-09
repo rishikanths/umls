@@ -39,10 +39,9 @@ function dendogramRadialRelation(data) {
 
 	updateRelation(data.data);
 }
-function updateRelation(root) {
+function updateRelation(relationData) {
 
-	var nodes_rel = cluster_rel.nodes(packages.root(root)), links_rel = packages
-			.imports(nodes_rel), splines_rel = bundle_rel(links_rel);
+	var nodes_rel = cluster_rel.nodes(getHierarchy(relationData)), links_rel = getImports(nodes_rel), splines_rel = bundle_rel(links_rel);
 
 	var path_rel = svg_rel.selectAll("path.link").data(links_rel).enter()
 			.append("svg:path").attr(

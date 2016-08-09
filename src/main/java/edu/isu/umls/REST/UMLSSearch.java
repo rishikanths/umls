@@ -57,6 +57,16 @@ public class UMLSSearch {
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(query.getSynonyms(cui)));
 	}
 	
+	
+	@GET
+	@Path("/searchdef")
+	@Produces({MediaType.APPLICATION_FORM_URLENCODED})
+	public Response searchDefinition(@QueryParam("cui") String cui){
+		
+		DBQuery query = new DBQuery();
+		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(query.getConceptDefinitons(cui)));
+	}
+	
 	@GET
 	@Produces({MediaType.APPLICATION_FORM_URLENCODED})
 	public Response test(){

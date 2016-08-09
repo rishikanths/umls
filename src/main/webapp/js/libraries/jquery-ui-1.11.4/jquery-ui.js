@@ -5286,7 +5286,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		that.currentItem.after(that.placeholder);
 
 		//Update the size of the placeholder (TODO: Logic to fuzzy, see line 316/317)
-		o.placeholder.update(that, that.placeholder);
+		o.placeholder.updateHierarchy(that, that.placeholder);
 
 	},
 
@@ -5394,7 +5394,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			this.currentContainer = this.containers[innermostIndex];
 
 			//Update the placeholder
-			this.options.placeholder.update(this.currentContainer, this.placeholder);
+			this.options.placeholder.updateHierarchy(this.currentContainer, this.placeholder);
 
 			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
 			this.containers[innermostIndex].containerCache.over = 1;

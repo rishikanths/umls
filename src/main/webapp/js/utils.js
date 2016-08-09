@@ -28,6 +28,7 @@ function arr2String(value){
 }
 
 function resetGlobalVariable(){
+	
 	// From format.js;
 	processedConcepts = [];
 	unProcessedConcepts = [];
@@ -37,6 +38,8 @@ function resetGlobalVariable(){
 	adjacencyMap = new Map();
 	termSemanticTypes = new Map();
 	defaultRelation = "";
+	searchTerm = "";
+	conceptMap = new Map();
 	if ($("#information").dialog("instance") != null)
 		$("#information").dialog("close");
 }

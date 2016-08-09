@@ -7,10 +7,14 @@ function detailedInformation(d, term){
 	if(focusTerm!=d.source.name+"*"+d.target.name){
 		if(focusTerm.indexOf(term) == -1)
 			$( "#information" ).empty();
-		$( "#information" ).append("<p><span id='"+d.target.name+"' class='termInfo'>"+d.target.name+"</span> "
+		var tcui = $("#"+d.target.name).innerHTML;
+		$( "#information" ).append("<p><span id='"+d.target.name+"' class='termInfo'>"+d.target.name
+				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.target.name+"')\">def</a>) </span></span>"
 				+"<a href='https://en.wikipedia.org/wiki/Is-a' target='_blank'>"
-				+"<span class='relationInfo'>is a</span></a> "
-				+"<span id='"+d.source.name+"' class='termInfo'>"+d.source.name+"</span>.<br/> or <br/>"
+				+"<span class='relationInfo'> is a </span></a> "
+				+"<span id='"+d.source.name+"' class='termInfo'>"+d.source.name
+				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.source.name+"')\">def</a>) </span></span>"
+				+".<br/> or <br/>"
 				+"<span class='termInfo'>"+d.source.name+"</span> <span class='relationInfo'> is the parent of </span>" 
 				+"<span class='termInfo'>"+d.target.name+"<span></p>");
 		
@@ -74,6 +78,17 @@ function displaySynonymsDialog(){
 		closeOnEscape: true,
 		hide:true,
 		position:{my:"left center", at:"left-80 center"}
+	});
+}
+
+function displayDefinitionDialog(){
+	$("#definitions").dialog({
+		width:800,
+		appendTo: "#main",
+		maxHeight: 250,
+		closeOnEscape: true,
+		hide:false,
+		position:{my:"left", at:"left+100"}
 	});
 }
 

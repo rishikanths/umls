@@ -24,4 +24,7 @@ public interface DBStatements {
 
 	public String SEARCH_SYNONYMS = "SELECT  c.str as STR, v.son as SOURCE FROM mrconso as c, mrsab as v WHERE c.CUI = ? "
 			+ "AND c.sab = v.rsab";
+	
+	public String SEARCH_CONCEPT_DEFINITION = "SELECT DISTINCT s.SON ,c.STR, d.DEF,d.SAB FROM MRDEF as d, MRCONSO as c, MRSAB as s  "
+			+ "WHERE d.CUI = c.CUI AND c.CUI = ? AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y' AND d.SAB = s.RSAB";
 }

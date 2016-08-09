@@ -4,8 +4,8 @@
 
 function relationSelected(e){
 	dendogramRadialRelation(M2J(toD3JFormatSelectedRelation
-			($('#termSearch').val(),e.currentTarget.value)));
-	changeRelationText($('#termSearch').val(),e.currentTarget.value);
+			(searchTerm,e.currentTarget.value)));
+	changeRelationText(searchTerm,e.currentTarget.value);
 }
 function checkSelection(name, value){
 	$("#relationRadioSelection input:radio[value='"+name+"']").attr("checked",value);
@@ -32,7 +32,6 @@ function displayMessage(msg){
 function formatGraphText(svg){
 	svg.selectAll('text').each(function (d) {
 		var el = d3.select(this);		
-		var searchTerm = $('#termSearch').val();
 		if(el.text() == searchTerm)
 			el.attr("class","searchTerm");
 		el.text('');
@@ -67,5 +66,13 @@ $(function() {
 				$("#relationRadioSelectionDesc").css("display","block");
 			}
 		}
+	});
+	$("#hierarchyLayoutSelection").on("change",function(){
+         var val = $(this).val();
+         if(val == 'radial')
+        	 dendogramRadial(M2J(conceptMap));
+         else if(val == 'tree')
+        	 treeLayout(toD3JTreeFormat(searchTerm))
+        	 
 	});
 });

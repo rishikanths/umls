@@ -37,12 +37,11 @@ function dendogramRadial(data) {
 			"d",d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0)
 					.endAngle(2 * Math.PI)).on("mousedown", mousedown);
 
-	update(data.data);
+	updateHierarchy(data.data);
 }
-function update(root) {
+function updateHierarchy(heirarchyData) {
 
-	var nodes = cluster.nodes(packages.root(root)), links = packages
-			.imports(nodes), splines = bundle(links);
+	var nodes = cluster.nodes(getHierarchy(heirarchyData)), links = getImports(nodes), splines = bundle(links);
 
 	var path = svg.selectAll("path.link").data(links).enter()
 			.append("svg:path").attr(

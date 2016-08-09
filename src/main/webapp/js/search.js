@@ -9,13 +9,15 @@
 var adjacencyMap = new Map();
 var termSemanticTypes = new Map();
 var defaultRelation = "";
+var searchTerm = "";
+var currentRequest  = null;
 /*
  * Auto complete for term search.
  */
 $(document).ajaxSend(function() {
 	// $("#tabs").LoadingOverlay("show");
 });
-$(document).ajaxStart(function() {
+/*$(document).ajaxStart(function() {
 	$("#message").css('display', 'none');
 	$("#error").css('display', 'none');
 	$("#hierarchy").empty();
@@ -23,8 +25,12 @@ $(document).ajaxStart(function() {
 	$("#relation").empty();
 	$("#relationRadioSelection").empty();
 	$("#relationRadioSelectionDesc").empty();
+	$("#hierarchyLayoutMenu").css("display","none");
 });
-$(document).ajaxStop(function() {
+*/$(document).ajaxStop(function() {
+	$("#tabs").LoadingOverlay("hide");
+});
+$(document).ajaxComplete(function() {
 	$("#tabs").LoadingOverlay("hide");
 });
 $("#termSearch").autocomplete(
@@ -32,7 +38,7 @@ $("#termSearch").autocomplete(
 			minLength : 4,
 			delay : 200,
 			source : function(req, resp) {
-				$.ajax({
+				currentRequest = $.ajax({
 					url : 'rest/umls/search?term=' + $('#termSearch').val(),
 					success : function(data, status, response) {
 						resetGlobalVariable();
@@ -57,6 +63,20 @@ $("#termSearch").autocomplete(
 						displayError(error);
 						$("#loading").css('display', 'none');
 
+					},
+					beforeSend: function(){
+						if(currentRequest!=null){
+							currentRequest.abort();
+							$("#tabs").LoadingOverlay("hide");
+						}
+						$("#message").css('display', 'none');
+						$("#error").css('display', 'none');
+						$("#hierarchy").empty();
+						$("#hierarchyMessage").empty();
+						$("#relation").empty();
+						$("#relationRadioSelection").empty();
+						$("#relationRadioSelectionDesc").empty();
+						$("#hierarchyLayoutMenu").css("display","none");
 					}
 				});
 			},
@@ -67,10 +87,12 @@ $("#termSearch").autocomplete(
 				$("#tabs").LoadingOverlay("show");
 				$("#selectedConceptCUI").text(ui.item.value);
 				$("#termSearch").val(ui.item.label);
+				searchTerm = ui.item.label;
 				getCUI(ui.item.value);
 				$("#visual").empty();
 				return false;
 			},
+			
 		});
 
 function getCUI(cui) {
@@ -143,12 +165,12 @@ function getCUI(cui) {
 							}
 						}
 					}
-					dendogramRadial(M2J(toD3JFormat($('#termSearch').val(),
-							childObject)));
-					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation($(
-							'#termSearch').val(), defaultRelation)));
+					conceptMap = toD3JFormat(searchTerm,childObject);
+					dendogramRadial(M2J(conceptMap));
+					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation(searchTerm, defaultRelation)));
 					checkSelection(defaultRelation, true);
-					changeRelationText($('#termSearch').val(), defaultRelation);
+					changeRelationText(searchTerm, defaultRelation);
+					$("#hierarchyLayoutMenu").css("display","block");	
 				},
 				error : function(data, status, response) {
 					var error = "Response - " + JSON.stringify(response)
@@ -181,3 +203,34 @@ function getSynonyms(term){
 	});
 	displaySynonymsDialog();
 }
+
+function getDefinitions(term){
+	var cui = $("label#"+term).text();
+	if(term==searchTerm)
+		cui = $("#selectedConceptCUI").text();
+	var ele = $("#definitions");
+	ele.empty();
+	var innerText = "";
+	$.ajax({
+		url : 'rest/umls/searchdef?cui=' + cui,
+		success : function(data, status, response) {
+			var object = jQuery.parseJSON(data);
+			if(object!=null){
+				innerText+="<table class='definitionTable'><tbody>";
+				if(object.length!=0){
+					for(var def in object){
+						if(def%2==0)
+							innerText+="<tr class='even'><td>"+object[def]+"</td></tr>";
+						else
+							innerText+="<tr><td>"+object[def]+"</td></tr>";
+					}
+				}else
+					innerText+="<tr><td>No definition founds for <b>"+term+"</b></td></tr>";
+			}
+			innerText+="</tbody></table>";
+			ele.append(innerText);
+		}
+	});
+	displayDefinitionDialog();
+}
+

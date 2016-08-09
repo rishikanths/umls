@@ -12,7 +12,7 @@
 var processedConcepts = [];
 var unProcessedConcepts = [];
 var relationDescription = new Map();
-
+var conceptMap;
 $(function() {
 	relationDescription.set("AQ", "Allowed qualifier");
 	relationDescription.set("CHD",
@@ -73,6 +73,34 @@ function toD3JFormat(term, child) {
 		setMessage("hierarchyMessage",term+" doesn't have any childern.")
 	}
 	return conceptMap;
+}
+
+function toD3JTreeFormat(term){
+	
+	var data;
+	data = constructTree(term);
+	function constructTree(term){
+		var temp = {};
+		var child = [];
+		temp.name=term;
+		var children = conceptMap.get(term);
+		if(children.length!=0){
+			for(var c in children){
+				var t = constructTree(children[c]);
+				if(temp.children==null){
+					temp.children=[];
+					temp.children.push(t);
+				}else{
+					var arr = temp.children;
+					arr.push(t);
+					temp.children =arr;
+				}
+			}
+		}
+		return temp;
+		
+	}
+	return data;
 }
 
 function M2J(conceptMap) {

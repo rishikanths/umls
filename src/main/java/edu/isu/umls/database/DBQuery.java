@@ -309,6 +309,32 @@ public class DBQuery {
 		return concept;
 	}
 
+	public List<String> getConceptDefinitons(String cui){
+		ResultSet result = null;
+		List<String> results = new ArrayList<String>();
+		try {
+			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_DEFINITION);
+			
+			LoggerUtil.logInfo(logger, "Get Definition on CUI - " + cui);
+	
+			prepStatement.setString(1, cui);
+			prepStatement.executeQuery();
+			result = prepStatement.getResultSet();
+			while(result.next()){
+				String son = result.getString(1);
+				String name = result.getString(2);
+				String def = result.getString(3);
+				String sab = result.getString(4);
+				results.add("According to "+son+"("+sab+"),<b>"+name+"</b> is defined as <i>"+def+"</i>");
+			}
+		}catch(Exception e){
+			LoggerUtil.logError(logger, e);
+		}
+		
+		return results;
+	}
+	
+	
 	public List<RelationTo> getAdjaceny(String cui) {
 
 		return null;

@@ -62,6 +62,13 @@
 						</div>
 						<div id="hierarchyMessage" style="margin-top: 10px;"></div>
 						<div id="synonymsText" style="text-align: left"></div>
+						<div id="hierarchyLayoutMenu" style="display: none;text-align: left">
+							<label>Select a Layout:</label>
+							<select id="hierarchyLayoutSelection">
+								<option value="radial">Radial</option>
+								<option value="tree">Tree</option>
+							</select>
+						</div>
 						<div id="hierarchy"></div>
 					</div>
 					<div id="relationDiv" style="text-align: center;">
@@ -69,9 +76,9 @@
 							<img src="images/information.png" width="25" height="25" />
 							<p id="relationViewInfo">
 								Relation View tab renders all the <b>relationships (other
-								then isa relationship)</b> of the search term.For example,
-								Fever 'maybe_treated_by' Advil, that means the terms Fever and
-								Advil are related using 'maybe_treated_by' relationship.
+									then isa relationship)</b> of the search term.For example, Fever
+								'maybe_treated_by' Advil, that means the terms Fever and Advil
+								are related using 'maybe_treated_by' relationship.
 						</div>
 						<div id="relationMessage"></div>
 						<div id="synonymsText" style="text-align: left"></div>
@@ -85,6 +92,7 @@
 				</div>
 				<div id="information" title="Details"></div>
 				<div id="synonyms" title="Synonyms"></div>
+				<div id="definitions" title="Definitions"></div>
 			</div>
 			<div id="CUI_Info" style="display: none"></div>
 			<div id="footer"></div>
@@ -92,6 +100,7 @@
 	</div>
 	<script type="text/javascript" src="js/search.js"></script>
 	<script type="text/javascript" src="js/packages.js"></script>
+	<script type="text/javascript" src="js/tree_layout.js"></script>
 	<script type="text/javascript" src="js/bundle.js"></script>
 	<script type="text/javascript" src="js/bundle_adjacency.js"></script>
 	<script type="text/javascript" src="js/format.js"></script>
