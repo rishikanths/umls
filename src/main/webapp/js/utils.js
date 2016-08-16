@@ -42,4 +42,6 @@ function resetGlobalVariable(){
 	conceptMap = new Map();
 	if ($("#information").dialog("instance") != null)
 		$("#information").dialog("close");
+	if ($("#definitions").dialog("instance") != null)
+		$("#definitions").dialog("close");
 }
