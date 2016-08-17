@@ -151,6 +151,10 @@
 .even{
 	background-color:beige 
 }
+.treeMouseOver{
+	cursor: pointer;
+}
+
 .ui-dialog {
 	position: fixed;
 	overflow: hidden;

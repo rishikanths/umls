@@ -44,4 +44,5 @@ function resetGlobalVariable(){
 		$("#information").dialog("close");
 	if ($("#definitions").dialog("instance") != null)
 		$("#definitions").dialog("close");
+	$("#termSearch").focus();
 }

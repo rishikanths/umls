@@ -3441,7 +3441,7 @@ jQuery.support = (function( support ) {
 			support.noCloneEvent = false;
 		});
 
-		div.cloneNode( true ).click();
+		div.cloneNode( true ).treeNodeClick();
 	}
 
 	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
@@ -5291,7 +5291,7 @@ jQuery.event = {
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
 				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
-					this.click();
+					this.treeNodeClick();
 					return false;
 				}
 			},

@@ -87,7 +87,7 @@ function displayDefinitionDialog(){
 		appendTo: "#main",
 		maxHeight: 250,
 		closeOnEscape: true,
-		hide:false,
+		hide:true,
 		position:{my:"right top", at:"right-100 top+100"}
 	});
 }

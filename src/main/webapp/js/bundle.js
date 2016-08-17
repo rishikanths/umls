@@ -3,7 +3,7 @@ var INC_CONST = 20;
 var len = LEN_CONST;
 var inc=INC_CONST; 
 
-var w = 1280, h = 800, rx = w / 2, ry = h / 2, m0, rotate = 0;
+var width = 1280, height = 800, rx = width / 2, ry = height / 2, m0, rotate = 0;
 
 var splines = [];
 
@@ -20,7 +20,7 @@ var line = d3.svg.line.radial().interpolate("bundle").tension(.85).radius(
 	return d.x / 180 * Math.PI;
 });
 
-var div, svg;
+var div, radialSVG;
 function dendogramRadial(data) {
 
 	/**
@@ -30,10 +30,10 @@ function dendogramRadial(data) {
 	div = d3.select("#hierarchy").insert("div", "h2").style("height", w + "px")
 			.style("-webkit-backface-visibility","hidden");
 	var ryTemp = parseInt(ry)+200;
-	svg = div.append("svg:svg").attr("width", w).attr("height", w).append(
+	radialSVG = div.append("svg:svg").attr("width", w).attr("height", w).append(
 			"svg:g").attr("transform", "translate(" + rx + "," + ryTemp + ")");
 
-	svg.append("svg:path").attr("class", "arc").attr(
+	radialSVG.append("svg:path").attr("class", "arc").attr(
 			"d",d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0)
 					.endAngle(2 * Math.PI)).on("mousedown", mousedown);
 
@@ -43,7 +43,7 @@ function updateHierarchy(heirarchyData) {
 
 	var nodes = cluster.nodes(getHierarchy(heirarchyData)), links = getImports(nodes), splines = bundle(links);
 
-	var path = svg.selectAll("path.link").data(links).enter()
+	var path = radialSVG.selectAll("path.link").data(links).enter()
 			.append("svg:path").attr(
 					"class",
 					function(d) {
@@ -53,7 +53,7 @@ function updateHierarchy(heirarchyData) {
 				return line(splines[i]);
 			});
 
-	svg.selectAll("g.node").data(nodes.filter(function(n) {
+	radialSVG.selectAll("g.node").data(nodes.filter(function(n) {
 		return !n.children;
 	})).enter().append("svg:g").attr("class", "node").attr("id", function(d) {
 		return "node-" + d.key;
@@ -76,7 +76,7 @@ function updateHierarchy(heirarchyData) {
 		});
 	});
 	
-	formatGraphText(svg);
+	formatGraphText(radialSVG);
 }
 
 
@@ -90,18 +90,18 @@ function mousedown() {
 }
 
 function mouseover(d) {
-	svg.selectAll("path.link.target-" + d.key).classed("target", true).each(
+	radialSVG.selectAll("path.link.target-" + d.key).classed("target", true).each(
 			updateNodes("source", true,d.name));
 
-	svg.selectAll("path.link.source-" + d.key).classed("source", true).each(
+	radialSVG.selectAll("path.link.source-" + d.key).classed("source", true).each(
 			updateNodes("target", true,d.name));
 }
 
 function mouseout(d) {
-	svg.selectAll("path.link.source-" + d.key).classed("source", false).each(
+	radialSVG.selectAll("path.link.source-" + d.key).classed("source", false).each(
 			updateNodes("target", false));
 
-	svg.selectAll("path.link.target-" + d.key).classed("target", false).each(
+	radialSVG.selectAll("path.link.target-" + d.key).classed("target", false).each(
 			updateNodes("source", false));
 }
 
@@ -111,7 +111,7 @@ function updateNodes(name, value, term) {
 			detailedInformation(d, term);
 		if (value)
 			this.parentNode.appendChild(this);
-		svg.select("#node-" + d[name].key).classed(name, value);
+		radialSVG.select("#node-" + d[name].key).classed(name, value);
 	};
 }
 
