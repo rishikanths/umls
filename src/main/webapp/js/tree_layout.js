@@ -3,7 +3,7 @@ var treeMargin = {
 	right : 20,
 	bottom : 30,
 	left : 20
-}, treeSVG, treeWidth = 960 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeMargin * .8;
+}, treeSVG, treeWidth = 960 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeWidth * .8;
 
 var i = 0, duration = 400, treeData;
 
@@ -15,15 +15,15 @@ var diagonal = d3.svg.diagonal().projection(function(d) {
 var nodes;
 
 /*
- * var svg = d3.select("body").append("svg").attr("width", treeMargin + treeMargin.left +
+ * var treeSVG = d3.select("body").append("svg").attr("width", treeWidth + treeMargin.left +
  * treeMargin.right).append("g").attr("transform", "translate(" + treeMargin.left + "," +
  * treeMargin.top + ")");
  */
 function treeLayout(data) {
 	$("#hierarchy").empty();
 	div = d3.select("#hierarchy").insert("div", "h2").style("height",
-			treeMargin + "px").style("-webkit-backface-visibility", "hidden");
-	treeSVG = div.append("svg:svg").attr("width", treeMargin).attr("height", treeMargin)
+			treeWidth + "px").style("-webkit-backface-visibility", "hidden");
+	treeSVG = div.append("svg:svg").attr("width", treeWidth).attr("height", treeWidth)
 			.append("svg:g").attr("transform",
 					"translate(" + treeMargin.left + "," + treeMargin.top + ")");
 	treeData = data
@@ -54,7 +54,7 @@ function updateTree(source) {
 	});
 
 	// Update the nodes…
-	var node = svg.selectAll("g.node").data(nodes, function(d) {
+	var node = treeSVG.selectAll("g.node").data(nodes, function(d) {
 		return d.id || (d.id = ++i);
 	});
 
@@ -93,7 +93,7 @@ function updateTree(source) {
 	}).style("opacity", 1e-6).remove();
 
 	// Update the links…
-	var link = svg.selectAll("path.link").data(tree.links(nodes), function(d) {
+	var link = treeSVG.selectAll("path.link").data(tree.links(nodes), function(d) {
 		return d.target.id;
 	});
 
