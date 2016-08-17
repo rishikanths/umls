@@ -47,6 +47,7 @@ $("#termSearch").autocomplete(
 							var msg = "No matches found for term - <b>"
 									+ $('#termSearch').val() + "</b>";
 							displayMessage(msg);
+							setFocus();
 						} else {
 							resp($.map(object, function(item) {
 								return {
@@ -62,7 +63,7 @@ $("#termSearch").autocomplete(
 								+ "\nStatus - " + JSON.stringify(status);
 						displayError(error);
 						$("#loading").css('display', 'none');
-
+						setFocus();
 					},
 					beforeSend: function(){
 						if(currentRequest!=null){
@@ -170,6 +171,7 @@ function getCUI(cui) {
 					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation(searchTerm, defaultRelation)));
 					checkSelection(defaultRelation, true);
 					changeRelationText(searchTerm, defaultRelation);
+					$("#hierarchyLayoutSelection").val("radial");
 					$("#hierarchyLayoutMenu").css("display","block");	
 				},
 				error : function(data, status, response) {
@@ -177,6 +179,7 @@ function getCUI(cui) {
 							+ "\nData - " + JSON.stringify(data)
 							+ "\nStatus - " + JSON.stringify(status);
 					displayError(error);
+					setFocus();
 				}
 			})
 }

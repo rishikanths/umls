@@ -52,6 +52,10 @@ function setMessage(ele, message){
 	var ele = $("#"+ele);
 	ele.append("<p style='padding:10px;background-color: #f6f6f6;'><b>"+message+"</b></p>");
 }
+
+function setFocus(){
+	$("#termSearch").focus();
+}
 $(function() {
 	$( document ).tooltip();
 	$("#tabs").tabs({
