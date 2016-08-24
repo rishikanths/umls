@@ -33,8 +33,11 @@ function detailedRelationInformation(d, term){
 				if(rel=="N/A")
 					rel = "unknow_relationship"
 				$( "#information" ).append("<p><span id='"+d.source.name+"' class='termInfo'>"+d.source.name+"</span> "
+						+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.source.name+"')\">def</a>) </span></span>"
 						+"<span class='relationInfo'>"+key.substr(0,key.indexOf('*'))+"</span> "
-						+"<span id='"+d.target.name+"'class='termInfo'>"+d.target.name+"</span><hr/><br/> "
+						+"<span id='"+d.target.name+"'class='termInfo'>"+d.target.name
+						+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.target.name+"')\">def</a>) </span></span>"
+						+"</span><hr/><br/> "
 						+"The relationship <span class='relationInfo'>"+rel
 						+" </span> is of type <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
 						+".</span> <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
@@ -60,6 +63,9 @@ function getSemanticType(source,target){
 	return typeInfo;
 }
 function displayDialog(){
+	if ($("#definitions").dialog("instance") != null)
+		$("#definitions").dialog("close");
+
 	$( "#information" ).dialog({
 		width:500,
 		appendTo: "#main",

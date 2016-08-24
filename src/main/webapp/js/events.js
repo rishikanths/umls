@@ -39,12 +39,19 @@ function formatGraphText(svg){
 		inc=INC_CONST;
 		if(len>=d.name.length)
 			el.text(d.name);
-		while(len<d.name.length){
-			var tspan = el.append('tspan').text(d.name.slice(len-inc,len));
+		/*var sIdnex = 0;
+		  while(len<d.name.length){
+			var tspan = el.append('tspan').text(d.name.slice(sIndex,inc+sIndex));
+			tspan.attr('x', 0).attr('dy', 15);
+			sIndex = sIndex+inc;
+		}
+		var tspan = el.append('tspan').text(d.name.slice(len-inc));*/
+		if(len<d.name.length){
+			var tspan = el.append('tspan').text(d.name.slice(0,30));
 			tspan.attr('x', 0).attr('dy', 15);
 			len = len+inc;
 		}
-		var tspan = el.append('tspan').text(d.name.slice(len-inc));
+		var tspan = el.append('tspan').text( "....");
 		tspan.attr('x', 0).attr('dy', 15);
 	});
 }
@@ -57,6 +64,7 @@ function setFocus(){
 	$("#termSearch").focus();
 }
 $(function() {
+	setFocus();
 	$( document ).tooltip();
 	$("#tabs").tabs({
 		activate: function( event, ui ) {

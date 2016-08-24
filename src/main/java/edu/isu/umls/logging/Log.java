@@ -47,9 +47,10 @@ public class Log {
 	public static void addHandlers(Logger logger){
 		if(fileHandler==null){
 			getLog();
+		}else{
+			logger.addHandler(fileHandler);
+			logger.addHandler(consoleHandler);
 		}
-		logger.addHandler(fileHandler);
-		logger.addHandler(consoleHandler);
 	}
 	
 }

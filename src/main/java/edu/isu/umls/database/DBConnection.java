@@ -18,11 +18,11 @@ public class DBConnection {
 	
 	private static DBConnection dbConn = null;
 	
-	private String dbURL = "jdbc:mysql://localhost:3306/umls";
+	private String dbURL = "jdbc:mysql://138.87.238.34:3306/umls";
 	
 	private String userName = "root";
 	
-	private String password = "rishi";
+	private String password = "umls123";
 	
 	private Connection connnection = null;
 	
