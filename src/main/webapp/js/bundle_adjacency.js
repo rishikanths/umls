@@ -77,6 +77,7 @@ function updateRelation(relationData) {
 	});
 	
 	formatGraphText(svg_rel);
+	enableDownload();
 }
 
 function mousedown_rel() {

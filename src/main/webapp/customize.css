@@ -154,7 +154,13 @@
 .treeMouseOver{
 	cursor: pointer;
 }
-
+.download{
+	font-size:medium;
+	padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    background-color:#a8cbee;
+}
 .ui-dialog {
 	position: fixed;
 	overflow: hidden;

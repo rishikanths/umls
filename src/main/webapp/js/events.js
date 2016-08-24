@@ -14,8 +14,8 @@ function checkSelection(name, value){
 function changeRelationText(term,relation){
 	var ele = $("#relationRadioSelectionDesc");
 	ele.empty();
-	ele.append("<p>The chart shows how <span id='termInfo'>"+term
-			+"</span> is connected with other terms using  <span id='relationInfo'>"
+	ele.append("<p style='background:#f1f8ff'>The chart shows how <span class='termInfo'>"+term
+			+"</span> is connected with other terms with  <span class='relationInfo'>"
 			+relation+"</span> relation.</p>");
 }
 function displayError(error){
@@ -63,6 +63,10 @@ function setMessage(ele, message){
 function setFocus(){
 	$("#termSearch").focus();
 }
+function enableDownload(){
+	$("#downloadHDiv").css("display","block");
+	$("#downloadRDiv").css("display","block");
+}
 $(function() {
 	setFocus();
 	$( document ).tooltip();
@@ -86,5 +90,11 @@ $(function() {
          else if(val == 'tree')
         	 treeLayout(toD3JTreeFormat(searchTerm))
         	 
+	});
+	$(".download").on("click",function(){
+		if($("#relationDiv").css("display")=="none")
+			saveSvgAsPng($("#hierarchy").find("svg")[0], searchTerm+"_hierarchy.png");
+		else
+			saveSvgAsPng($("#relation").find("svg")[0], searchTerm+"_relation.png");
 	});
 });
