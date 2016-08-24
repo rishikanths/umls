@@ -47,7 +47,7 @@ function updateRelation(relationData) {
 			.append("svg:path").attr(
 					"class",
 					function(d) {
-						return "link source-" + d.source.key + " target-"
+						return "linkRel source-" + d.source.key + " target-"
 								+ d.target.key;
 					}).attr("d", function(d, i) {
 				return line(splines_rel[i]);
@@ -85,19 +85,19 @@ function mousedown_rel() {
 }
 
 function mouseover_rel(d) {
-	svg_rel.selectAll("path.link.target-" + d.key).classed("target", true).each(
+	svg_rel.selectAll("path.linkRel.target-" + d.key).classed("target", true).each(
 			updateNodes_rel("source", true, d.name));
 
-	svg_rel.selectAll("path.link.source-" + d.key).classed("source", true).each(
+	svg_rel.selectAll("path.linkRel.source-" + d.key).classed("source", true).each(
 			updateNodes_rel("target", true, d.name));
 
 }
 
 function mouseout_rel(d) {
-	svg_rel.selectAll("path.link.source-" + d.key).classed("source", false).each(
+	svg_rel.selectAll("path.linkRel.source-" + d.key).classed("source", false).each(
 			updateNodes_rel("target", false));
 
-	svg_rel.selectAll("path.link.target-" + d.key).classed("target", false).each(
+	svg_rel.selectAll("path.linkRel.target-" + d.key).classed("target", false).each(
 			updateNodes_rel("source", false));
 }
 

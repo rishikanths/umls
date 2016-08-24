@@ -307,7 +307,7 @@ path.arc {
 .link {
 	fill: none;
 	stroke: #1f77b4;
-	stroke-opacity: .4;
+	stroke-opacity: .8;
 	pointer-events: none;
 }
 
@@ -330,4 +330,26 @@ path.arc {
 
 .link.target {
 	stroke: #2ca02c;
+}
+
+
+.linkRel {
+	fill: none;
+	stroke: #1f77b4;
+	stroke-opacity: .8;
+	pointer-events: none;
+}
+
+
+.linkRel.source, .linkRel.target {
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+.linkRel.source {
+	stroke: #d62728;
+}
+
+.linkRel.target {
+	stroke: #800080;
 }
