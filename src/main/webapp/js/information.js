@@ -63,15 +63,16 @@ function getSemanticType(source,target){
 	return typeInfo;
 }
 function displayDialog(){
-	if ($("#definitions").dialog("instance") != null)
+	if ($("#definitions").dialog("instance") != null &&
+			$("#definitions").dialog("isOpen"))
 		$("#definitions").dialog("close");
 
 	$( "#information" ).dialog({
 		width:500,
 		appendTo: "#main",
 		maxHeight: 400,
-		closeOnEscape: true,
-		hide:false,
+		closeOnEscape: false,
+		hide:true,
 		position:{my:"right center", at:"right-80 center"}
 	});
 }
@@ -81,7 +82,7 @@ function displaySynonymsDialog(){
 		width:600,
 		appendTo: "#main",
 		maxHeight: 200,
-		closeOnEscape: true,
+		closeOnEscape: false,
 		hide:true,
 		position:{my:"left center", at:"left-80 center"}
 	});
@@ -92,7 +93,7 @@ function displayDefinitionDialog(){
 		width:800,
 		appendTo: "#main",
 		maxHeight: 250,
-		closeOnEscape: true,
+		closeOnEscape: false,
 		hide:true,
 		position:{my:"right top", at:"right-100 top+100"}
 	});

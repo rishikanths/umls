@@ -70,7 +70,6 @@ function enableDownload(){
 }
 $(function() {
 	setFocus();
-	$(document).tooltip();
 	$("#tabs").tabs({
 		activate : function(event, ui) {
 			if (ui.newTab.attr('id') == "hierarchyView") {
@@ -93,9 +92,11 @@ $(function() {
 	});
 	$(document).keyup(function(e) {
 		if (e.keyCode == KEYCODE_ESC) {
-			if ($("#definitions").dialog("instance") != null)
+			if ($("#definitions").dialog("instance") != null && 
+					$("#definitions").dialog("isOpen"))
 				$("#definitions").dialog("close");
-			else if ($("#information").dialog("instance") != null)
+			else if ($("#information").dialog("instance") != null && 
+					$("#information").dialog("isOpen"))
 				$("#information").dialog("close");
 		}
 	});
