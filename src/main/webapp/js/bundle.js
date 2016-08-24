@@ -75,7 +75,7 @@ function updateHierarchy(heirarchyData) {
 			return line(splines[i]);
 		});
 	});
-	
+	enableDownload();
 	formatGraphText(radialSVG);
 }
 
