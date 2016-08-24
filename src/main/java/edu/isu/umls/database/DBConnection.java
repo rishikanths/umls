@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.isu.umls.logging.Log;
+import edu.isu.umls.logging.UMLSLog;
 import edu.isu.umls.utils.LoggerUtil;
 
 /**
@@ -18,7 +18,7 @@ public class DBConnection {
 	
 	private static DBConnection dbConn = null;
 	
-	private String dbURL = "jdbc:mysql://138.87.238.34:3306/umls";
+	private String dbURL = "jdbc:mysql://138.87.238.34:3306/";
 	
 	private String userName = "root";
 	
@@ -28,10 +28,10 @@ public class DBConnection {
 	
 	private DBConnection(){
 		try{
-			Log.addHandlers(logger);
+			UMLSLog.addFileHandler(logger);
 			Class.forName("com.mysql.jdbc.Driver");
 			connnection = DriverManager.getConnection(dbURL,userName,password);
-			LoggerUtil.logInfo(logger, "Connected to the database");
+			LoggerUtil.logFine(logger, "Connected to the database");
 		}catch(Exception e){
 			logger.log(Level.SEVERE, e.getMessage(),e);
 		}

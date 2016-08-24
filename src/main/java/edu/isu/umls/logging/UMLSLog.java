@@ -7,18 +7,21 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class Log {
+public class UMLSLog {
 
 	private static FileHandler fileHandler = null;
 	private static ConsoleHandler consoleHandler = null;
-	private static Log log = null;
-	private Logger logger = Logger.getLogger(Log.class.getName());
+	private static JDBCHandler jdbcHandler = null;
+	private static UMLSLog log = null;
+	private Logger logger = Logger.getLogger(UMLSLog.class.getName());
 	
-	private Log(){
+	private UMLSLog(){
 		try{
-            LogManager.getLogManager().readConfiguration(Log.class.getResourceAsStream("logger.properties"));
+            LogManager.getLogManager().readConfiguration(UMLSLog.class.getResourceAsStream("logger.properties"));
 			fileHandler = new FileHandler();
 			consoleHandler = new ConsoleHandler();
+			jdbcHandler = new JDBCHandler();
+			logger.addHandler(jdbcHandler);
 			logger.addHandler(fileHandler);
 			logger.addHandler(consoleHandler);
 		}catch(Exception e){
@@ -28,26 +31,34 @@ public class Log {
 	
 	public static Handler getFileHandler(){
 		if(fileHandler==null)
-			log = new Log();
+			log = new UMLSLog();
 		return fileHandler;
 	}
 	
 	public static Handler getConsoleHandler(){
 		if(consoleHandler==null)
-			log = new Log();
+			log = new UMLSLog();
 		return consoleHandler;
 	}
 	
-	public static Log getLog(){
+	public static UMLSLog getLog(){
 		if(log==null)
-			log = new Log();
+			log = new UMLSLog();
 		return log;
 	}
-	
-	public static void addHandlers(Logger logger){
+	public static void addFileHandler(Logger logger){
 		if(fileHandler==null){
 			getLog();
 		}else{
+			logger.addHandler(fileHandler);
+			logger.addHandler(consoleHandler);
+		}
+	}
+	public static void addAllHandlers(Logger logger){
+		if(fileHandler==null || jdbcHandler ==null){
+			getLog();
+		}else{
+			logger.addHandler(jdbcHandler);
 			logger.addHandler(fileHandler);
 			logger.addHandler(consoleHandler);
 		}

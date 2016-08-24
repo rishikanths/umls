@@ -17,6 +17,7 @@ import edu.isu.umls.database.DBQuery;
 @Path("/umls")
 public class UMLSSearch {
 	
+	
 	@GET
 	@Path("/id")
 	@Produces({MediaType.APPLICATION_FORM_URLENCODED})

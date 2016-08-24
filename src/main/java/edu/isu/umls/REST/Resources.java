@@ -22,6 +22,7 @@ public class Resources extends Application{
 	private Set<Object> singletons = new HashSet<Object>();
     private Set<Class<?>> empty = new HashSet<Class<?>>();
  
+    
     public Resources() {
         // ADD YOUR RESTFUL RESOURCES HERE
         this.singletons.add(new UMLSSearch());
