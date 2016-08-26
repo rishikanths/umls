@@ -41,7 +41,9 @@ public class DBQuery {
 
 	private final int LIMIT = 30;
 
-	private final int DEPTH = 3;
+	private final int DEPTH = 2;
+	
+	private final int CONCEPT_LIMIT = 100;
 
 	public DBQuery() {
 		Log.addHandlers(logger);
@@ -222,7 +224,7 @@ public class DBQuery {
 					String rel = result.getString("REL");
 					String conceptCUI2 = result.getString("CUI1");
 					AbstractConcept cui2 = searchByCUI(conceptCUI2);
-
+					cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
 					/*
 					 * if(rel.equals("CHD")) concept.addToHierarchy(cui2); else
 					 */
@@ -234,9 +236,17 @@ public class DBQuery {
 							AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(), depth, null);
 							depth--;
 							concept.addToChildern(t);
+							if(concept.getChildren().size() == CONCEPT_LIMIT){
+								System.out.println("Breaking off  .... "+depth);
+								break;
+							}
 						} else {
 							concept.addToChildern(cui2);
 							System.out.println("Final Child - " + cui2.getName() + " - " + depth);
+							if(concept.getChildren().size() == CONCEPT_LIMIT){
+								System.out.println("Breaking off  .... "+depth);
+								break;
+							}
 							continue;
 						}
 					}
@@ -401,8 +411,11 @@ public class DBQuery {
 	}
 	public static void main(String args[]) {
 
-		DBQuery test = new DBQuery();
-		test.getAdjacencyInfomationByCUI("C0024530", null);
+		//DBQuery test = new DBQuery();
+		//test.getAdjacencyInfomationByCUI("C0024530", null);
+		
+		String t = "Burkitt's_tumor_or_lymphoma__lymph_nodes_of_head__face__and_neck";
+		System.out.println(ConceptMapper.normalizeName(t));
 
 	}
 

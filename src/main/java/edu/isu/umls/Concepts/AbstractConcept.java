@@ -78,5 +78,8 @@ public abstract class AbstractConcept {
 	public void setCui(String cui) {
 		this.cui = cui;
 	}
-
+	
+	public List<AbstractConcept> getChildren(){
+		return children;
+	}
 }

@@ -3,7 +3,7 @@ var treeMargin = {
 	right : 20,
 	bottom : 30,
 	left : 20
-}, treeSVG, treeWidth = 960 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeWidth * .8;
+}, treeSVG, treeWidth = 1200 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeWidth * .8;
 
 var i = 0, duration = 400, treeData;
 

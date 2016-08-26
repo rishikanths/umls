@@ -51,7 +51,7 @@ public class ConceptMapper {
 	}
 	
 	public static String normalizeName(String name){
-		return name.replaceAll("[^\\w0-9]","_").replaceAll(" ", "_");
+		return name.replaceAll("'", "").replaceAll("[^\\w0-9]","_").replaceAll(" ", "_");
 	}
 	
 }

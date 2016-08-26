@@ -101,9 +101,19 @@ $(function() {
 		}
 	});
 	$(".download").on("click",function(){
-		if($("#relationDiv").css("display")=="none")
+		if($("#relationDiv").css("display")=="none"){
+			/*canvg("canvas", d3.select("#hierarchy svg").attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg").node().parentNode.innerHTML);
+			var canvas = document.querySelector("canvas");
+			canvas.toDataURL("image/png");
+			$("#hiddenPng").attr('href', theImage);
+			$("#hiddenPng").click()*/
 			saveSvgAsPng($("#hierarchy").find("svg")[0], searchTerm+"_hierarchy.png");
-		else
+		}
+		else{
+			/*canvg('canvas', $("#relation").find("svg")[0]);
+			$("#canvas").toDataURL("image/png");*/
 			saveSvgAsPng($("#relation").find("svg")[0], searchTerm+"_relation.png");
+		}
+			
 	});
 });
