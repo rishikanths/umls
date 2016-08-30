@@ -1,6 +1,7 @@
 package edu.isu.umls.REST;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,6 +34,8 @@ public class UMLSSearch {
 		
 		List<AbstractConcept> concepts = query.searchByString(term);
 		
+		query.closeConnection();
+		
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concepts));
 	}
 	
@@ -45,6 +48,8 @@ public class UMLSSearch {
 		AbstractConcept concept = new Term();
 		query.getHierarchyInfomationByCUI(cui,0,concept);
 		query.getAdjacencyInfomationByCUI(cui, concept);
+		query.closeConnection();
+		
 		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(concept));
 	}
 	
@@ -54,7 +59,9 @@ public class UMLSSearch {
 	public Response searchSynonyms(@QueryParam("cui") String cui){
 		
 		DBQuery query = new DBQuery();
-		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(query.getSynonyms(cui)));
+		Map<String,List<String>> synonyms = query.getSynonyms(cui);
+		query.closeConnection();
+		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(synonyms));
 	}
 	
 	
@@ -64,7 +71,9 @@ public class UMLSSearch {
 	public Response searchDefinition(@QueryParam("cui") String cui){
 		
 		DBQuery query = new DBQuery();
-		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(query.getConceptDefinitons(cui)));
+		List<String> definitions = query.getConceptDefinitons(cui);
+		query.closeConnection();
+		return RESTUtils.buildSuccessResponse(RESTUtils.getJSON(definitions));
 	}
 	
 	@GET

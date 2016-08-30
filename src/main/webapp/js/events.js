@@ -17,9 +17,11 @@ function checkSelection(name, value) {
 function changeRelationText(term, relation) {
 	var ele = $("#relationRadioSelectionDesc");
 	ele.empty();
-	ele.append("<p style='background:#f1f8ff'>The chart shows how <span class='termInfo'>"+term
-			+"</span> is connected with other terms with  <span class='relationInfo'>"
-			+relation+"</span> relation.</p>");
+	ele
+			.append("<p style='background:#f1f8ff'>The chart shows how <span class='termInfo'>"
+					+ term
+					+ "</span> is connected with other terms with  <span class='relationInfo'>"
+					+ relation + "</span> relation.</p>");
 }
 function displayError(error) {
 	$("#error").empty();
@@ -64,9 +66,9 @@ function setMessage(ele, message) {
 function setFocus() {
 	$("#termSearch").focus();
 }
-function enableDownload(){
-	$("#downloadHDiv").css("display","block");
-	$("#downloadRDiv").css("display","block");
+function enableDownload() {
+	$("#downloadHDiv").css("display", "block");
+	$("#downloadRDiv").css("display", "block");
 }
 $(function() {
 	setFocus();
@@ -90,30 +92,51 @@ $(function() {
 			treeLayout(toD3JTreeFormat(searchTerm))
 
 	});
-	$(document).keyup(function(e) {
-		if (e.keyCode == KEYCODE_ESC) {
-			if ($("#definitions").dialog("instance") != null && 
-					$("#definitions").dialog("isOpen"))
-				$("#definitions").dialog("close");
-			else if ($("#information").dialog("instance") != null && 
-					$("#information").dialog("isOpen"))
-				$("#information").dialog("close");
-		}
-	});
-	$(".download").on("click",function(){
-		if($("#relationDiv").css("display")=="none"){
-			/*canvg("canvas", d3.select("#hierarchy svg").attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg").node().parentNode.innerHTML);
-			var canvas = document.querySelector("canvas");
-			canvas.toDataURL("image/png");
-			$("#hiddenPng").attr('href', theImage);
-			$("#hiddenPng").click()*/
-			saveSvgAsPng($("#hierarchy").find("svg")[0], searchTerm+"_hierarchy.png");
-		}
-		else{
-			/*canvg('canvas', $("#relation").find("svg")[0]);
-			$("#canvas").toDataURL("image/png");*/
-			saveSvgAsPng($("#relation").find("svg")[0], searchTerm+"_relation.png");
-		}
+	$(document).keyup(
+			function(e) {
+				if (e.keyCode == KEYCODE_ESC) {
+					if ($("#definitions").dialog("instance") != null
+							&& $("#definitions").dialog("isOpen"))
+						$("#definitions").dialog("close");
+					else if ($("#information").dialog("instance") != null
+							&& $("#information").dialog("isOpen"))
+						$("#information").dialog("close");
+				}
+			});
+
+	/*$(document).ready(function() {
+		$(window).bind("beforeunload", function() {
+			$.ajax({
+				url : 'rest/umls/close',
+				success : function(data, status, response) {}
 			
-	});
+			});
+		});
+	});*/
+
+	$(".download").on(
+			"click",
+			function() {
+				if ($("#relationDiv").css("display") == "none") {
+					/*
+					 * canvg("canvas", d3.select("#hierarchy
+					 * svg").attr("version", 1.1).attr("xmlns",
+					 * "http://www.w3.org/2000/svg").node().parentNode.innerHTML);
+					 * var canvas = document.querySelector("canvas");
+					 * canvas.toDataURL("image/png");
+					 * $("#hiddenPng").attr('href', theImage);
+					 * $("#hiddenPng").click()
+					 */
+					saveSvgAsPng($("#hierarchy").find("svg")[0], searchTerm
+							+ "_hierarchy.png");
+				} else {
+					/*
+					 * canvg('canvas', $("#relation").find("svg")[0]);
+					 * $("#canvas").toDataURL("image/png");
+					 */
+					saveSvgAsPng($("#relation").find("svg")[0], searchTerm
+							+ "_relation.png");
+				}
+
+			});
 });

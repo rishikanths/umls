@@ -2,7 +2,7 @@ package edu.isu.umls.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.logging.Level;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import edu.isu.umls.logging.Log;
@@ -16,36 +16,35 @@ public class DBConnection {
 
 	private static Logger logger = Logger.getLogger(DBConnection.class.getName());
 	
-	private static DBConnection dbConn = null;
-	
 	private String dbURL = "jdbc:mysql://138.87.238.34:3306/umls";
 	
 	private String userName = "root";
 	
 	private String password = "umls123";
 	
-	private Connection connnection = null;
+	private Connection connection = null;
 	
-	private DBConnection(){
+	public DBConnection(){
 		try{
 			Log.addHandlers(logger);
 			Class.forName("com.mysql.jdbc.Driver");
-			connnection = DriverManager.getConnection(dbURL,userName,password);
+			connection = DriverManager.getConnection(dbURL,userName,password);
 			LoggerUtil.logInfo(logger, "Connected to the database");
 		}catch(Exception e){
-			logger.log(Level.SEVERE, e.getMessage(),e);
+			LoggerUtil.logError(logger, e);
 		}
 	}
 	
-	public static DBConnection getDBConnection(){
-		if(dbConn == null)
-			dbConn = new DBConnection();
-		return dbConn;
+	public Connection getConnection(){
+		return connection;
 	}
 	
-	public Connection getConnection(){
-		if(connnection==null)
-			getDBConnection();
-		return connnection;
+	public void closeConnection(){
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			LoggerUtil.logError(logger, e);
+		}
 	}
+	
 }

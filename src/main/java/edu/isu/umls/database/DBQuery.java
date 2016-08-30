@@ -39,15 +39,17 @@ public class DBQuery {
 
 	private PreparedStatement prepStatement = null;
 
+	private DBConnection dbConn = null;
+	
 	private final int LIMIT = 30;
-
 	private final int DEPTH = 2;
 	
 	private final int CONCEPT_LIMIT = 100;
 
 	public DBQuery() {
 		Log.addHandlers(logger);
-		connection = DBConnection.getDBConnection().getConnection();
+		dbConn = new DBConnection();
+		connection = dbConn.getConnection();
 	}
 
 	/**
@@ -77,6 +79,7 @@ public class DBQuery {
 
 			prepStatement.clearParameters();
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -109,6 +112,7 @@ public class DBQuery {
 			concept.setSemanticType(getSemanticType(cui));
 
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -147,6 +151,7 @@ public class DBQuery {
 
 			prepStatement.clearParameters();
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -178,6 +183,7 @@ public class DBQuery {
 			type = ConceptMapper.toAbstractType(resultSet);
 			prepStatement.clearParameters();
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -261,6 +267,7 @@ public class DBQuery {
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -312,6 +319,7 @@ public class DBQuery {
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -337,6 +345,8 @@ public class DBQuery {
 				String sab = result.getString(4);
 				results.add("According to "+son+"("+sab+"),<b>"+name+"</b> is defined as <i>"+def+"</i>");
 			}
+			prepStatement.close();
+			
 		}catch(Exception e){
 			LoggerUtil.logError(logger, e);
 		}
@@ -372,7 +382,7 @@ public class DBQuery {
 
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
-
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -404,18 +414,24 @@ public class DBQuery {
 				results.put(resultSet.getString("SOURCE"), temp);
 			}
 			prepStatement.close();
+			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
 		return results;
 	}
+	
+	public void closeConnection(){
+		dbConn.closeConnection();
+	}
+	
 	public static void main(String args[]) {
 
-		//DBQuery test = new DBQuery();
-		//test.getAdjacencyInfomationByCUI("C0024530", null);
+		DBQuery test = new DBQuery();
+		test.searchByString("mala");
 		
-		String t = "Burkitt's_tumor_or_lymphoma__lymph_nodes_of_head__face__and_neck";
-		System.out.println(ConceptMapper.normalizeName(t));
+		//String t = "Burkitt's_tumor_or_lymphoma__lymph_nodes_of_head__face__and_neck";
+		//System.out.println(ConceptMapper.normalizeName(t));
 
 	}
 
