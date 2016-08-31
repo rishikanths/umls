@@ -16,28 +16,22 @@ public class DBConnection {
 
 	private static Logger logger = Logger.getLogger(DBConnection.class.getName());
 	
-	private String dbURL = "jdbc:mysql://138.87.238.34:3306/umls";
-	
-	private String userName = "root";
-	
-	private String password = "umls123";
-	
 	private static Connection connection = null;
 	
-	private DBConnection(){
+	private DBConnection(String dbURL, String dbUser, String dbPwd){
 		try{
 			Log.addHandlers(logger);
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(dbURL,userName,password);
+			connection = DriverManager.getConnection(dbURL,dbUser,dbPwd);
 			LoggerUtil.logInfo(logger, "Connected to the database");
 		}catch(Exception e){
 			LoggerUtil.logError(logger, e);
 		}
 	}
 	
-	public static void initConnection(){
+	public static void initConnection(String dbURL, String dbUser, String dbPwd){
 		if(connection == null)
-			new DBConnection();
+			new DBConnection(dbURL, dbUser,dbPwd);
 	}
 	
 	public static Connection getConnection(){

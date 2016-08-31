@@ -22,8 +22,11 @@ public class AppContextListener implements ServletContextListener
 	public void contextInitialized(ServletContextEvent contextEvent)
 	{
 		try{
-			LoggerUtil.logInfo(logger, "Initiating Connection .... ");
-			DBConnection.initConnection();
+			LoggerUtil.logInfo(logger, "Initiating database connection .... ");
+			String dbURL = contextEvent.getServletContext().getInitParameter("dbURL");
+			String dbUser = contextEvent.getServletContext().getInitParameter("dbUser");
+			String dbPwd = contextEvent.getServletContext().getInitParameter("dbPwd");
+			DBConnection.initConnection(dbURL, dbUser,dbPwd);
 			LoggerUtil.logInfo(logger, "Connected to the database.... ");
 		}catch(Exception e){
 			LoggerUtil.logError(logger, e);

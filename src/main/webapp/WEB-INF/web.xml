@@ -8,20 +8,18 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-<!-- 
 	<context-param>
 		<param-name>dbURL</param-name>
-		<param-value>jdbc:mysql://localhost:3306/umls</param-value>
+		<param-value>jdbc:mysql://138.87.238.34:3306/umls</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbUser</param-name>
 		<param-value>root</param-value>
 	</context-param>
 	<context-param>
-		<param-name>dbUserPwd</param-name>
-		<param-value>rishi</param-value>
+		<param-name>dbPwd</param-name>
+		<param-value>umls123</param-value>
 	</context-param>
- -->
  </web-app>
 <!-- <?xml version="1.0" encoding="UTF-8"?> <web-app xmlns="http://java.sun.com/xml/ns/javaee" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 

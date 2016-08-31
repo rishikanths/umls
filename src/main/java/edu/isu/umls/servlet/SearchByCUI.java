@@ -2,7 +2,6 @@ package edu.isu.umls.servlet;
 
 import java.util.logging.Logger;
 
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +14,7 @@ import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
 
-@WebServlet(description="Search by String input",displayName="Search",value="/searchwithcui",
-			initParams={@WebInitParam(name="cui", value="cui")})
+@WebServlet(description="Search with CUI",displayName="SearchWithCUI",value="/searchwithcui")
 public class SearchByCUI extends HttpServlet {
 
 	private static final long serialVersionUID = 2576576107023471288L;

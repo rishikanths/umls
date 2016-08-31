@@ -3,7 +3,6 @@ package edu.isu.umls.servlet;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +13,7 @@ import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
 
-@WebServlet(description="Search by String input",displayName="Search",value="/searchdef",
-			initParams={@WebInitParam(name="cui", value="cui")})
+@WebServlet(description="Search definition of the term",displayName="Search Definition",value="/searchdef")
 public class SearchDefinition extends HttpServlet {
 
 	private static final long serialVersionUID = 2747526324366947009L;
