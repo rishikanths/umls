@@ -59,7 +59,7 @@ $("#termSearch").autocomplete(
 					},
 					error : function(data, status, response) {
 						var error = "Response - " + JSON.stringify(response)
-								+ "\nData - " + JSON.stringify(data)
+								//+ "\nData - " + JSON.stringify(data)
 								+ "\nStatus - " + JSON.stringify(status);
 						displayError(error);
 						$("#loading").css('display', 'none');
@@ -176,7 +176,7 @@ function getCUI(cui) {
 				},
 				error : function(data, status, response) {
 					var error = "Response - " + JSON.stringify(response)
-							+ "\nData - " + JSON.stringify(data)
+							//+ "\nData - " + JSON.stringify(data)
 							+ "\nStatus - " + JSON.stringify(status);
 					displayError(error);
 					setFocus();
