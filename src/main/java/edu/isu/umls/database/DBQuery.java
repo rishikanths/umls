@@ -17,7 +17,7 @@ import edu.isu.umls.Concepts.RelationTo;
 import edu.isu.umls.Concepts.Relationship;
 import edu.isu.umls.Concepts.SemanticType;
 import edu.isu.umls.Concepts.Term;
-import edu.isu.umls.logging.Log;
+import edu.isu.umls.logging.UMLSLog;
 import edu.isu.umls.utils.ConceptMapper;
 import edu.isu.umls.utils.LoggerUtil;
 
@@ -45,7 +45,7 @@ public class DBQuery {
 	private final int CONCEPT_LIMIT = 100;
 
 	public DBQuery() {
-		Log.addHandlers(logger);
+		UMLSLog.addAllHandlers(logger);
 		connection = DBConnection.getConnection();
 	}
 
@@ -62,7 +62,7 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_QUERY);
 
-			LoggerUtil.logInfo(logger, "Search for String with pattern - " + value);
+			LoggerUtil.logFine(logger, "Search for String with pattern - " + value);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, value + "%");
@@ -70,7 +70,7 @@ public class DBQuery {
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			concepts = ConceptMapper.term2Concept(result);
 
@@ -97,14 +97,14 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_BY_CUI);
 			prepStatement.clearParameters();
-			LoggerUtil.logInfo(logger, "Search for CUI - " + cui);
+			LoggerUtil.logFine(logger, "Search for CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 			concept = ConceptMapper.term2Concept(result).get(0);
 			concept.setSemanticType(getSemanticType(cui));
 
@@ -132,14 +132,14 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_BY_AUI);
 
-			LoggerUtil.logInfo(logger, "Search for AUI - " + aui);
+			LoggerUtil.logFine(logger, "Search for AUI - " + aui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, aui);
 			result = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 			while (result.next())
 				cui = result.getString("CUI");
 
@@ -169,14 +169,14 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_SEMANTIC_TYPE_BY_CUI);
 
-			LoggerUtil.logInfo(logger, "Search for Semantic type of - " + cui);
+			LoggerUtil.logFine(logger, "Search for Semantic type of - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			resultSet = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 			type = ConceptMapper.toAbstractType(resultSet);
 			prepStatement.clearParameters();
 			prepStatement.close();
@@ -200,7 +200,7 @@ public class DBQuery {
 		ResultSet result = null;
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
-			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
+			LoggerUtil.logFine(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
@@ -261,7 +261,7 @@ public class DBQuery {
 				concept.addSemanticType(type);
 			}
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			prepStatement.close();
 			
@@ -276,7 +276,7 @@ public class DBQuery {
 		ResultSet result = null;
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_RELATIONS);
-			LoggerUtil.logInfo(logger, "Get Information on CUI - " + cui);
+			LoggerUtil.logFine(logger, "Get Information on CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
@@ -313,7 +313,7 @@ public class DBQuery {
 				concept.addToAdjacency(relTo);
 			}
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			prepStatement.close();
 			
@@ -330,7 +330,7 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_CONCEPT_DEFINITION);
 			
-			LoggerUtil.logInfo(logger, "Get Definition on CUI - " + cui);
+			LoggerUtil.logFine(logger, "Get Definition on CUI - " + cui);
 	
 			prepStatement.setString(1, cui);
 			prepStatement.executeQuery();
@@ -370,7 +370,7 @@ public class DBQuery {
 	public ResultSet executeQuery(String query) {
 		ResultSet result = null;
 		try {
-			LoggerUtil.logInfo(logger, query);
+			LoggerUtil.logFine(logger, query);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			statement = connection.createStatement();
@@ -379,7 +379,6 @@ public class DBQuery {
 
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
-			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -393,14 +392,14 @@ public class DBQuery {
 		try {
 			prepStatement = connection.prepareStatement(DBStatements.SEARCH_SYNONYMS);
 			prepStatement.clearParameters();
-			LoggerUtil.logInfo(logger, "Synonyms for CUI - " + cui);
+			LoggerUtil.logFine(logger, "Synonyms for CUI - " + cui);
 			long start = Calendar.getInstance().getTimeInMillis();
 
 			prepStatement.setString(1, cui);
 			resultSet = prepStatement.executeQuery();
 
 			long end = Calendar.getInstance().getTimeInMillis();
-			LoggerUtil.logInfo(logger, "Executed in - " + (end - start) + " milli seconds");
+			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
 			while(resultSet.next()){
 				String source = resultSet.getString("SOURCE");
