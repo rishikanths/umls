@@ -28,6 +28,6 @@ public interface DBStatements {
 	public String SEARCH_CONCEPT_DEFINITION = "SELECT DISTINCT s.SON ,c.STR, d.DEF,d.SAB FROM umls.MRDEF as d, umls.MRCONSO as c, umls.MRSAB as s  "
 			+ "WHERE d.CUI = c.CUI AND c.CUI = ? AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y' AND d.SAB = s.RSAB";
 
-	public String JDBC_LOG = "INSERT into logger.log (level,logger,message,sequence,"
-			+ "sourceClass,sourceMethod,threadID,timeEntered) values(?,?,?,?,?,?,?,?)";
+	public String JDBC_LOG = "INSERT into logger.log (level,logger,message,thrown, stacktrace, sequence,"
+			+ "sourceClass,sourceMethod,threadID,timeEntered) values(?,?,?,?,?,?,?,?,?,?)";
 }

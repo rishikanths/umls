@@ -16,7 +16,6 @@ public class LoggerUtil {
 	}
 	
 	public static void logInfo(Logger logger, String message){
-		
 		logger.log(Level.INFO,message);
 	}
 	
