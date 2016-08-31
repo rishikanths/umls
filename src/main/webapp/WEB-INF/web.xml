@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
-
+	id="WebApp_ID" version="3.0"   metadata-complete="false"  
+	>
 	<display-name>UMLS Visualization</display-name>
-
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+<!-- 
 	<context-param>
-		<param-name>resteasy.scan</param-name>
-		<param-value>true</param-value>
+		<param-name>dbURL</param-name>
+		<param-value>jdbc:mysql://localhost:3306/umls</param-value>
 	</context-param>
-
-	<!-- this need same with resteasy servlet url-pattern -->
 	<context-param>
-		<param-name>resteasy.servlet.mapping.prefix</param-name>
-		<param-value>/rest</param-value>
+		<param-name>dbUser</param-name>
+		<param-value>root</param-value>
 	</context-param>
-	<listener>
-		<listener-class>
-			org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
-		</listener-class>
-	</listener>
-	<servlet>
-		<servlet-name>resteasy-servlet</servlet-name>
-		<servlet-class>
-			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
-		</servlet-class>
-		<init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>edu.isu.umls.REST.Resources</param-value>
-        </init-param>
-	</servlet>
-     
-	<servlet-mapping>
-		<servlet-name>resteasy-servlet</servlet-name>
-		<url-pattern>/rest/*</url-pattern>
-	</servlet-mapping>
-
-</web-app>
+	<context-param>
+		<param-name>dbUserPwd</param-name>
+		<param-value>rishi</param-value>
+	</context-param>
+ -->
+ </web-app>
+<!-- <?xml version="1.0" encoding="UTF-8"?> <web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0"> <display-name>UMLS 
+	Visualization</display-name> <context-param> <param-name>resteasy.servlet.mapping.prefix</param-name> 
+	<param-value>/rest</param-value> </context-param> <listener> <listener-class> 
+	org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class> 
+	</listener> <listener> <listener-class> edu.isu.umls.servlet.listner.AppListener</listener-class> 
+	</listener> <listener> <listener-class> edu.isu.umls.servlet.listner.ApplicationSessionListener</listener-class> 
+	</listener> <servlet> <servlet-name>resteasy-servlet</servlet-name> <servlet-class> 
+	org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class> 
+	<init-param> <param-name>javax.ws.rs.Application</param-name> <param-value>edu.isu.umls.REST.Resources</param-value> 
+	</init-param> </servlet> <servlet-mapping> <servlet-name>resteasy-servlet</servlet-name> 
+	<url-pattern>/rest/*</url-pattern> </servlet-mapping> </web-app> -->

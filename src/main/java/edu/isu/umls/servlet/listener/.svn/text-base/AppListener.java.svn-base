@@ -1,0 +1,39 @@
+package edu.uconn.neag.dbr.config.web.listner;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.xml.DOMConfigurator;
+
+import edu.uconn.neag.dbr.common.constants.AC;
+import edu.uconn.neag.dbr.db.DAOService;
+
+/**
+ * @author Herak Sen
+ * 
+ */
+public class AppListener implements ServletContextListener
+{
+
+	private static Log log = LogFactory.getLog(AppListener.class);
+
+	public void contextDestroyed(ServletContextEvent contextEvent)
+	{
+		log.info("Shutting:: DBR..");
+		DAOService.shutDown();
+		log.info("Shutting completed :: DBR");
+	}
+
+	public void contextInitialized(ServletContextEvent contextEvent)
+	{
+		DOMConfigurator.configure(Loader.getResource(AC.LOG_CONFIG));
+		log.info("Starting :: DBR application");
+		log.info("Logger Configured");
+		DAOService.start();
+		log.info("Started :: DBR application");
+	}
+
+}

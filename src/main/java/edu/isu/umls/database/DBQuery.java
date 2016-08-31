@@ -39,8 +39,6 @@ public class DBQuery {
 
 	private PreparedStatement prepStatement = null;
 
-	private DBConnection dbConn = null;
-	
 	private final int LIMIT = 30;
 	private final int DEPTH = 2;
 	
@@ -48,8 +46,7 @@ public class DBQuery {
 
 	public DBQuery() {
 		Log.addHandlers(logger);
-		dbConn = new DBConnection();
-		connection = dbConn.getConnection();
+		connection = DBConnection.getConnection();
 	}
 
 	/**
@@ -419,10 +416,6 @@ public class DBQuery {
 			LoggerUtil.logError(logger, e);
 		}
 		return results;
-	}
-	
-	public void closeConnection(){
-		dbConn.closeConnection();
 	}
 	
 	public static void main(String args[]) {

@@ -22,9 +22,9 @@ public class DBConnection {
 	
 	private String password = "umls123";
 	
-	private Connection connection = null;
+	private static Connection connection = null;
 	
-	public DBConnection(){
+	private DBConnection(){
 		try{
 			Log.addHandlers(logger);
 			Class.forName("com.mysql.jdbc.Driver");
@@ -35,11 +35,16 @@ public class DBConnection {
 		}
 	}
 	
-	public Connection getConnection(){
+	public static void initConnection(){
+		if(connection == null)
+			new DBConnection();
+	}
+	
+	public static Connection getConnection(){
 		return connection;
 	}
 	
-	public void closeConnection(){
+	public static void closeConnection(){
 		try {
 			connection.close();
 		} catch (SQLException e) {

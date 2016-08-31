@@ -39,7 +39,7 @@ $("#termSearch").autocomplete(
 			delay : 200,
 			source : function(req, resp) {
 				currentRequest = $.ajax({
-					url : 'rest/umls/search?term=' + $('#termSearch').val(),
+					url : '/umls/search?term=' + $('#termSearch').val(),
 					success : function(data, status, response) {
 						resetGlobalVariable();
 						var object = jQuery.parseJSON(data);
@@ -99,7 +99,7 @@ $("#termSearch").autocomplete(
 function getCUI(cui) {
 	$
 			.ajax({
-				url : 'rest/umls/searchwithcui?cui=' + cui,
+				url : '/umls/searchwithcui?cui=' + cui,
 				success : function(data, status, response) {
 					var object = jQuery.parseJSON(data);
 					adjacencyMap.clear();
@@ -190,7 +190,7 @@ function getSynonyms(term){
 	ele.empty();
 	var innerText = "";
 	$.ajax({
-		url : 'rest/umls/searchsynonyms?cui=' + cui,
+		url : '/umls/searchsynonyms?cui=' + cui,
 		success : function(data, status, response) {
 			var object = jQuery.parseJSON(data);
 			if(object!=null){
@@ -215,7 +215,7 @@ function getDefinitions(term){
 	ele.empty();
 	var innerText = "";
 	$.ajax({
-		url : 'rest/umls/searchdef?cui=' + cui,
+		url : '/umls/searchdef?cui=' + cui,
 		success : function(data, status, response) {
 			var object = jQuery.parseJSON(data);
 			if(object!=null){

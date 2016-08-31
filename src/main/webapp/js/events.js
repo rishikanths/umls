@@ -107,7 +107,7 @@ $(function() {
 	/*$(document).ready(function() {
 		$(window).bind("beforeunload", function() {
 			$.ajax({
-				url : 'rest/umls/close',
+				url : '/umls/close',
 				success : function(data, status, response) {}
 			
 			});

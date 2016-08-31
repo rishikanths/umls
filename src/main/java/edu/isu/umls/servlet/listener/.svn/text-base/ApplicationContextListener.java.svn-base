@@ -1,0 +1,27 @@
+package edu.uconn.neag.dbr.config.web.listner;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import edu.uconn.neag.dbr.action.BaseAction;
+import edu.uconn.neag.dbr.common.constants.ContextParameters;
+
+public class ApplicationContextListener extends BaseAction 
+		implements ServletContextListener{
+
+	private static final long serialVersionUID = 3774070982196412837L;
+
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent arg0) {
+		String url = arg0.getServletContext().getInitParameter("server-url");
+		ContextParameters.setServerURL(url);
+		
+	}
+
+}

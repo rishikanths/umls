@@ -1,0 +1,52 @@
+package edu.uconn.neag.dbr.config.web.listner;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+import edu.uconn.neag.dbr.action.BaseAction;
+import edu.uconn.neag.dbr.bo.BOFactory;
+import edu.uconn.neag.dbr.common.constants.AC;
+import edu.uconn.neag.dbr.common.util.Util;
+import edu.uconn.neag.dbr.db.DAOService;
+import edu.uconn.neag.dbr.vo.UserSessionVO;
+
+public class ApplicationSessionListener extends BaseAction implements
+		HttpSessionListener {
+
+	private static final long serialVersionUID = 4708934510614704863L;
+
+	@Override
+	public void sessionCreated(HttpSessionEvent sessionEvent) {
+
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent sessionEvent) {
+		UserSessionVO userProfile = (UserSessionVO) sessionEvent.getSession()
+				.getAttribute(AC.USER_LOGIN_SESS);
+		try {
+			if (userProfile != null) {
+				String logoutDateString = Util.formatDate(Calendar
+						.getInstance().getTime());
+				String logoutTimeString = Util.formatTime(Calendar
+						.getInstance().getTime());
+				Date logoutDate = Util.getDate(logoutDateString);
+				Date logoutTime = Util.getTime(logoutTimeString);
+				userProfile.setLogoffTime(logoutTime);
+				userProfile.setLogoffDate(logoutDate);
+				userProfile.setSessionLogOut(false);
+				DAOService.beginTransaction();
+				BOFactory.getUserSessionBO().save(userProfile);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (userProfile != null)
+				DAOService.closeTransaction(true);
+		}
+	}
+}
