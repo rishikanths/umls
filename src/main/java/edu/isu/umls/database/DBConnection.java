@@ -16,9 +16,9 @@ public class DBConnection {
 
 	private static Logger logger = Logger.getLogger(DBConnection.class.getName());
 	
-	private static Connection connection = null;
+	private Connection connection = null;
 	
-	private DBConnection(String dbURL, String dbUser, String dbPwd){
+	public DBConnection(String dbURL, String dbUser, String dbPwd){
 		try{
 			UMLSLog.addFileHandler(logger);
 			Class.forName("com.mysql.jdbc.Driver");
@@ -29,16 +29,11 @@ public class DBConnection {
 		}
 	}
 	
-	public static void initConnection(String dbURL, String dbUser, String dbPwd){
-		if(connection == null)
-			new DBConnection(dbURL, dbUser,dbPwd);
-	}
-	
-	public static Connection getConnection(){
+	public Connection getConnection(){
 		return connection;
 	}
 	
-	public static void closeConnection(){
+	public void closeConnection(){
 		try {
 			connection.close();
 		} catch (SQLException e) {

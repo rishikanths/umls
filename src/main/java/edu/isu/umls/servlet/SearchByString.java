@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.isu.umls.Concepts.AbstractConcept;
+import edu.isu.umls.database.DBConnection;
 import edu.isu.umls.database.DBQuery;
+import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
@@ -25,8 +27,8 @@ public class SearchByString extends HttpServlet {
 		try{
 			
 			request.getSession();
-			
-			DBQuery query = new DBQuery();
+			DBConnection db = (DBConnection)getServletContext().getAttribute(DBStatements.DB_CONN);
+			DBQuery query = new DBQuery(db);
 			List<AbstractConcept> concepts = query.searchByString(request.getParameter("term"));
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(concepts));

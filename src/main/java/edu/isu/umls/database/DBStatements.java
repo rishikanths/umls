@@ -1,6 +1,8 @@
 package edu.isu.umls.database;
 
 public interface DBStatements {
+	
+	public String DB_CONN = "DB_CONNECCTION";
 
 	public String SEARCH_QUERY = "SELECT CUI, STR from umls.MRCONSO WHERE TS = 'P' AND STT='PF' AND ISPREF='Y'"
 			+ " AND STR LIKE ? LIMIT ?";

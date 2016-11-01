@@ -3,6 +3,7 @@ package edu.isu.umls.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -25,7 +26,8 @@ public class JDBCHandler extends StreamHandler {
 		try {
 			UMLSLog.addFileHandler(logger);
 			logger.setLevel(Level.INFO);
-			connection = DBConnection.getConnection();
+			LogDBHandler logDBHandler = new LogDBHandler();
+			this.connection = logDBHandler.getConnection();
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -86,6 +88,25 @@ public class JDBCHandler extends StreamHandler {
 		}
 	}
 
+	private class LogDBHandler{
+		
+		private Connection connection = null;
+		private Logger logger = Logger.getLogger(LogDBHandler.class.getName());
+		public LogDBHandler(){
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				connection = DriverManager.getConnection("jdbc:mysql://138.87.238.34:3306/logger","root","umls123");
+			}catch (Exception e){
+				LoggerUtil.logError(logger, e);
+			}
+		}
+		
+		public Connection getConnection(){
+			return connection;
+		}
+		
+	}
+	
 	public static void main(String argv[]) {
 		JDBCHandler jdbcHandler = new JDBCHandler();
 		Logger l = jdbcHandler.getLogger();

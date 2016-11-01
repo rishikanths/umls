@@ -44,9 +44,9 @@ public class DBQuery {
 	
 	private final int CONCEPT_LIMIT = 100;
 
-	public DBQuery() {
+	public DBQuery(DBConnection connection) {
 		UMLSLog.addAllHandlers(logger);
-		connection = DBConnection.getConnection();
+		this.connection = connection.getConnection();
 	}
 
 	/**
@@ -419,7 +419,7 @@ public class DBQuery {
 	
 	public static void main(String args[]) {
 
-		DBQuery test = new DBQuery();
+		DBQuery test = new DBQuery(null);
 		test.searchByString("mala");
 		
 		//String t = "Burkitt's_tumor_or_lymphoma__lymph_nodes_of_head__face__and_neck";

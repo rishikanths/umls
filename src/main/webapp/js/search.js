@@ -1,4 +1,6 @@
 /*
+ * author @Rishi Saripalle
+ * 
  * adjacencyMap - the map that stores the relationships between the search term and other terms. 
  * The key is the relationship (e.g., "may_be_treated_by") and the value is an array of terms. 
  * For example, Malaria relationships will be formated as {"may_be_treated_by" => ["XXX", "YYY"], "R2"=>[...]}

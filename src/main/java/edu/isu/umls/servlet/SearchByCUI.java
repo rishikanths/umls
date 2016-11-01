@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.isu.umls.Concepts.AbstractConcept;
 import edu.isu.umls.Concepts.Term;
+import edu.isu.umls.database.DBConnection;
 import edu.isu.umls.database.DBQuery;
+import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
@@ -25,8 +27,8 @@ public class SearchByCUI extends HttpServlet {
 		try{
 			
 			request.getSession();
-			
-			DBQuery query = new DBQuery();
+			DBConnection db = (DBConnection)getServletContext().getAttribute(DBStatements.DB_CONN);
+			DBQuery query = new DBQuery(db);
 			AbstractConcept concept = new Term();
 			query.getHierarchyInfomationByCUI(request.getParameter("cui"),0,concept);
 			query.getAdjacencyInfomationByCUI(request.getParameter("cui"), concept);

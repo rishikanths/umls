@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import edu.isu.umls.database.DBConnection;
+
 public class UMLSLog {
 
 	private static FileHandler fileHandler = null;
@@ -14,9 +16,10 @@ public class UMLSLog {
 	private static JDBCHandler jdbcHandler = null;
 	private static UMLSLog log = null;
 	private Logger logger = Logger.getLogger(UMLSLog.class.getName());
-	
+	private DBConnection db= null;
 	private UMLSLog(){
 		try{
+			
             LogManager.getLogManager().readConfiguration(UMLSLog.class.getResourceAsStream("logger.properties"));
 			fileHandler = new FileHandler();
 			consoleHandler = new ConsoleHandler();
@@ -28,7 +31,6 @@ public class UMLSLog {
 			logger.log(Level.SEVERE, e.getMessage(),e);
 		}
 	}
-	
 	public static Handler getFileHandler(){
 		if(fileHandler==null)
 			log = new UMLSLog();

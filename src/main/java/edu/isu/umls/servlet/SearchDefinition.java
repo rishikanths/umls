@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.isu.umls.database.DBConnection;
 import edu.isu.umls.database.DBQuery;
+import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
@@ -24,8 +26,8 @@ public class SearchDefinition extends HttpServlet {
 		try{
 			
 			request.getSession();
-			
-			DBQuery query = new DBQuery();
+			DBConnection db = (DBConnection)getServletContext().getAttribute(DBStatements.DB_CONN);
+			DBQuery query = new DBQuery(db);
 			List<String> definitions = query.getConceptDefinitons(request.getParameter("cui"));
 			
 			response.setContentType("application/text");
