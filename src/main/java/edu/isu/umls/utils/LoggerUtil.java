@@ -1,27 +1,25 @@
 package edu.isu.umls.utils;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Logger;
 
 public class LoggerUtil {
 
 	public static void logFine(Logger logger, String message){
-		
-		logger.log(Level.FINE,message);
+		logger.info(message);
 	}
 	
 	public static void logError(Logger logger, Exception e){
 		
-		logger.log(Level.SEVERE,e.getMessage(),e);
+		logger.error(e.getMessage(),e);
 	}
 	
 	public static void logInfo(Logger logger, String message){
-		logger.log(Level.INFO,message);
+		logger.info(message);
 	}
 	
 	public static void logWarning(Logger logger, String message){
 		
-		logger.log(Level.WARNING,message);
+		logger.warn(message);
 	}
 	
 }

@@ -2,12 +2,14 @@ package edu.isu.umls.servlet;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.isu.umls.database.DBConnection;
 import edu.isu.umls.database.DBQuery;
@@ -21,7 +23,7 @@ public class SearchSynonyms extends HttpServlet {
 
 	private static final long serialVersionUID = 6333034216749213108L;
 
-	private static Logger log = Logger.getLogger(SearchSynonyms.class.getName());
+	private final static Logger logger = LogManager.getLogger(SearchSynonyms.class.getName());
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
@@ -33,9 +35,10 @@ public class SearchSynonyms extends HttpServlet {
 			
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(synonyms));
+			synonyms.clear();
 			
 		}catch(Exception e){
-			LoggerUtil.logError(log, e);
+			LoggerUtil.logError(logger, e);
 		}
     }
 	

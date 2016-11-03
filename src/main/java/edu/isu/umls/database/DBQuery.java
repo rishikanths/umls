@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.isu.umls.Concepts.AbstractConcept;
 import edu.isu.umls.Concepts.AbstractType;
@@ -17,7 +19,6 @@ import edu.isu.umls.Concepts.RelationTo;
 import edu.isu.umls.Concepts.Relationship;
 import edu.isu.umls.Concepts.SemanticType;
 import edu.isu.umls.Concepts.Term;
-import edu.isu.umls.logging.UMLSLog;
 import edu.isu.umls.utils.ConceptMapper;
 import edu.isu.umls.utils.LoggerUtil;
 
@@ -31,7 +32,8 @@ import edu.isu.umls.utils.LoggerUtil;
  */
 public class DBQuery {
 
-	private Logger logger = Logger.getLogger(DBQuery.class.getName());
+	
+	private final static Logger logger = LogManager.getLogger(DBQuery.class.getName());
 
 	private Connection connection = null;
 
@@ -45,7 +47,6 @@ public class DBQuery {
 	private final int CONCEPT_LIMIT = 100;
 
 	public DBQuery(DBConnection connection) {
-		UMLSLog.addAllHandlers(logger);
 		this.connection = connection.getConnection();
 	}
 
@@ -108,7 +109,9 @@ public class DBQuery {
 			concept = ConceptMapper.term2Concept(result).get(0);
 			concept.setSemanticType(getSemanticType(cui));
 
+			result.close();
 			prepStatement.close();
+			
 			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
@@ -145,7 +148,8 @@ public class DBQuery {
 
 			concept = searchByCUI(cui);
 			concept.setSemanticType(getSemanticType(cui));
-
+			
+			result.close();
 			prepStatement.clearParameters();
 			prepStatement.close();
 			
@@ -178,6 +182,8 @@ public class DBQuery {
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 			type = ConceptMapper.toAbstractType(resultSet);
+			
+			resultSet.close();
 			prepStatement.clearParameters();
 			prepStatement.close();
 			
@@ -232,22 +238,22 @@ public class DBQuery {
 					 * if(rel.equals("CHD")) concept.addToHierarchy(cui2); else
 					 */
 					if (rel.equals("PAR")) {
-						System.out.println("Parent - " + concept.getName() + " - " + depth);
+						//System.out.println("Parent - " + concept.getName() + " - " + depth);
 						if (depth != DEPTH) {
 							depth++;
-							System.out.println("Child - " + cui2.getName() + " - " + depth);
+							//System.out.println("Child - " + cui2.getName() + " - " + depth);
 							AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(), depth, null);
 							depth--;
 							concept.addToChildern(t);
 							if(concept.getChildren().size() == CONCEPT_LIMIT){
-								System.out.println("Breaking off  .... "+depth);
+								//System.out.println("Breaking off  .... "+depth);
 								break;
 							}
 						} else {
 							concept.addToChildern(cui2);
-							System.out.println("Final Child - " + cui2.getName() + " - " + depth);
+							//System.out.println("Final Child - " + cui2.getName() + " - " + depth);
 							if(concept.getChildren().size() == CONCEPT_LIMIT){
-								System.out.println("Breaking off  .... "+depth);
+								//System.out.println("Breaking off  .... "+depth);
 								break;
 							}
 							continue;
@@ -263,6 +269,7 @@ public class DBQuery {
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
+			result.close();
 			prepStatement.close();
 			
 		} catch (Exception e) {
@@ -315,6 +322,7 @@ public class DBQuery {
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
+			result.close();
 			prepStatement.close();
 			
 		} catch (Exception e) {
@@ -342,6 +350,7 @@ public class DBQuery {
 				String sab = result.getString(4);
 				results.add("According to "+son+"("+sab+"),<b>"+name+"</b> is defined as <i>"+def+"</i>");
 			}
+			result.close();
 			prepStatement.close();
 			
 		}catch(Exception e){

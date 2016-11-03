@@ -1,11 +1,12 @@
 package edu.isu.umls.servlet;
 
-import java.util.logging.Logger;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.isu.umls.Concepts.AbstractConcept;
 import edu.isu.umls.Concepts.Term;
@@ -21,7 +22,7 @@ public class SearchByCUI extends HttpServlet {
 
 	private static final long serialVersionUID = 2576576107023471288L;
 
-	private static Logger log = Logger.getLogger(SearchByCUI.class.getName());
+	private final static Logger logger = LogManager.getLogger(SearchByCUI.class.getName());
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
@@ -35,9 +36,11 @@ public class SearchByCUI extends HttpServlet {
 			
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(concept));
+			concept.clear();
+			concept = null;
 			
 		}catch(Exception e){
-			LoggerUtil.logError(log, e);
+			LoggerUtil.logError(logger, e);
 		}
     }
 	

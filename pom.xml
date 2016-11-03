@@ -8,6 +8,27 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.7</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
@@ -16,7 +37,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.6</version>
+			<version>5.1.38</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -40,50 +61,37 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			 <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>2.6</version>
-            <executions>
-                <execution>
-                    <id>copy-resource</id>
-                    <phase>process-classes</phase>
-                    <goals>
-                        <goal>copy-resources</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${basedir}/target/classes</outputDirectory>
-                        <encoding>UTF-8</encoding>
-                        <resources>
-                            <resource>
-                                <directory>${basedir}/src/main/java</directory>
-                                <includes>
-                                    <include>**/*.properties</include>
-                                </includes>
-                            </resource>
-                        </resources>
-                    </configuration>
-                </execution>
-                <!-- <execution>
-                    <id>copy-resource2</id>
-                    <phase>process-classes</phase>
-                    <goals>
-                        <goal>copy-resources</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${basedir}</outputDirectory>
-                        <encoding>UTF-8</encoding>
-                        <resources>
-                            <resource>
-                                <directory>${basedir}/src/main/resources</directory>
-                                <includes>
-                                    <include>**/*.*</include>
-                                </includes>
-                            </resource>
-                        </resources>
-                    </configuration>
-                </execution> -->
-            </executions>
-        </plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resource</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
+							<encoding>UTF-8</encoding>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/main/java</directory>
+									<includes>
+										<include>**/*.properties</include>
+										<include>**/*.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<!-- <execution> <id>copy-resource2</id> <phase>process-classes</phase> 
+						<goals> <goal>copy-resources</goal> </goals> <configuration> <outputDirectory>${basedir}</outputDirectory> 
+						<encoding>UTF-8</encoding> <resources> <resource> <directory>${basedir}/src/main/resources</directory> 
+						<includes> <include>**/*.*</include> </includes> </resource> </resources> 
+						</configuration> </execution> -->
+				</executions>
+			</plugin>
 			<!-- <plugin> <artifactId>maven-war-plugin</artifactId> <version>2.5</version> 
 				<configuration> <warSourceDirectory>WebContent</warSourceDirectory> <webXml>src\main\webapp\WEB-INF\web.xml</webXml> 
 				</configuration> </plugin> -->

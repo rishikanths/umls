@@ -1,10 +1,11 @@
 package edu.isu.umls.servlet.listener;
 
-import java.util.logging.Logger;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.isu.umls.database.DBConnection;
 import edu.isu.umls.database.DBStatements;
@@ -18,7 +19,7 @@ import edu.isu.umls.utils.LoggerUtil;
 public class AppContextListener implements ServletContextListener
 {
 
-	private static Logger logger = Logger.getLogger(AppContextListener.class.getName());
+	private final static Logger logger = LogManager.getLogger(AppContextListener.class.getName());
 
 	public void contextInitialized(ServletContextEvent contextEvent)
 	{

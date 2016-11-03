@@ -82,4 +82,12 @@ public abstract class AbstractConcept {
 	public List<AbstractConcept> getChildren(){
 		return children;
 	}
+	
+	public void clear(){
+		semanticTypes.clear();
+		hierarchy.clear();
+		adjacency.clear();
+		children.clear();
+	}
+	
 }
