@@ -3,6 +3,7 @@ package edu.isu.umls.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,8 +47,8 @@ public class DBQuery {
 	
 	private final int CONCEPT_LIMIT = 100;
 
-	public DBQuery(DBConnection connection) {
-		this.connection = connection.getConnection();
+	public DBQuery(Connection connection)throws Exception {
+		this.connection = connection;
 	}
 
 	/**
@@ -322,8 +323,8 @@ public class DBQuery {
 			long end = Calendar.getInstance().getTimeInMillis();
 			LoggerUtil.logFine(logger, "Executed in - " + (end - start) + " milli seconds");
 
-			result.close();
 			prepStatement.close();
+			result.close();
 			
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
@@ -426,10 +427,25 @@ public class DBQuery {
 		return results;
 	}
 	
+	public void closeConnection(){
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			LoggerUtil.logError(logger, e);
+		}
+	}
 	public static void main(String args[]) {
 
-		DBQuery test = new DBQuery(null);
-		test.searchByString("mala");
+		/*DBQuery test;
+		try {
+			//test = new DBQuery(DBConnectionNew.getPooledDBSource("jdbc:mysql://138.87.238.34:3306/umls", 
+			//		"umls", "umls123").getConnection());
+			//test.searchByString("mala");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
 		
 		//String t = "Burkitt's_tumor_or_lymphoma__lymph_nodes_of_head__face__and_neck";
 		//System.out.println(ConceptMapper.normalizeName(t));

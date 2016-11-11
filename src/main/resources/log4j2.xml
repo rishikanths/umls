@@ -36,11 +36,11 @@
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Root level="warn">
-			<AppenderRef ref="File-Appender" level = "warn"/>
-			<AppenderRef ref="RollingFile-Appender" level = "warn"/>
+		<Root level="WARN">
+			<AppenderRef ref="File-Appender" />
+			<AppenderRef ref="RollingFile-Appender"/>
 			<AppenderRef ref="Console-Appender" />
-			<AppenderRef ref="Database-Appender" level="error" />
+			<AppenderRef ref="Database-Appender"/>
 		</Root>
 	</Loggers>
 </Configuration>

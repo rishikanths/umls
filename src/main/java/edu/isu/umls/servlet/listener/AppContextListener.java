@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.isu.umls.database.DBConnection;
+import edu.isu.umls.database.DBConnectionNew;
 import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 
@@ -28,7 +28,8 @@ public class AppContextListener implements ServletContextListener
 			String dbURL = contextEvent.getServletContext().getInitParameter("dbURL");
 			String dbUser = contextEvent.getServletContext().getInitParameter("dbUser");
 			String dbPwd = contextEvent.getServletContext().getInitParameter("dbPwd");
-			DBConnection db = new DBConnection(dbURL, dbUser,dbPwd);
+			
+			DBConnectionNew db = DBConnectionNew.getPooledDBSource(dbURL, dbUser,dbPwd);
 			contextEvent.getServletContext().setAttribute(DBStatements.DB_CONN,db);
 			LoggerUtil.logInfo(logger, "Connected to the database.... ");
 		}catch(Exception e){
@@ -40,7 +41,7 @@ public class AppContextListener implements ServletContextListener
 	{
 		try{
 			LoggerUtil.logInfo(logger, "Destroying the context.... ");
-			DBConnection db =  (DBConnection)contextEvent.getServletContext().getAttribute(DBStatements.DB_CONN);
+			DBConnectionNew db =  (DBConnectionNew)contextEvent.getServletContext().getAttribute(DBStatements.DB_CONN);
 			if(db!=null){
 				db.closeConnection();
 			}

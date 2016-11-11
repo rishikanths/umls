@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.isu.umls.Concepts.AbstractConcept;
-import edu.isu.umls.database.DBConnection;
+import edu.isu.umls.database.DBConnectionNew;
 import edu.isu.umls.database.DBQuery;
 import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
@@ -29,9 +29,10 @@ public class SearchByString extends HttpServlet {
 		try{
 			
 			request.getSession();
-			DBConnection db = (DBConnection)getServletContext().getAttribute(DBStatements.DB_CONN);
-			DBQuery query = new DBQuery(db);
+			DBConnectionNew db = (DBConnectionNew)getServletContext().getAttribute(DBStatements.DB_CONN);
+			DBQuery query = new DBQuery(db.getConnection());
 			List<AbstractConcept> concepts = query.searchByString(request.getParameter("term"));
+			query.closeConnection();
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(concepts));
 			concepts.clear();

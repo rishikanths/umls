@@ -20,7 +20,6 @@ public class DBConnection {
 	
 	private Connection connection = null;
 	
-	private static Connection loggerConnection = null;
 	
 	public DBConnection(String dbURL, String dbUser, String dbPwd){
 		try{
@@ -30,19 +29,6 @@ public class DBConnection {
 		}catch(Exception e){
 			LoggerUtil.logError(logger, e);
 		}
-	}
-	
-	public static Connection getLoggerConnection(){
-		try{
-			if(loggerConnection == null){
-				Class.forName("com.mysql.jdbc.Driver");
-				loggerConnection = DriverManager.getConnection("jdbc:mysql://138.87.238.34:3306/logger",
-						"root","umls123");
-			}
-		}catch(Exception e){
-			LoggerUtil.logError(logger, e);
-		}
-		return loggerConnection;
 	}
 	
 	public Connection getConnection(){
