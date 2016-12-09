@@ -6,8 +6,9 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
-import edu.isu.umls.database.DBConnectionNew;
 import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 
@@ -25,12 +26,12 @@ public class AppContextListener implements ServletContextListener
 	{
 		try{
 			LoggerUtil.logInfo(logger, "Initiating database connection .... ");
-			String dbURL = contextEvent.getServletContext().getInitParameter("dbURL");
-			String dbUser = contextEvent.getServletContext().getInitParameter("dbUser");
-			String dbPwd = contextEvent.getServletContext().getInitParameter("dbPwd");
 			
-			DBConnectionNew db = DBConnectionNew.getPooledDBSource(dbURL, dbUser,dbPwd);
-			contextEvent.getServletContext().setAttribute(DBStatements.DB_CONN,db);
+			Configuration config = new Configuration();
+			config.configure("/edu/isu/umls/database/hibernate.cfg.xml");
+			SessionFactory factory = config.buildSessionFactory();
+			
+			contextEvent.getServletContext().setAttribute(DBStatements.HIBERNATE_SESSION_FACTORY,factory);
 			LoggerUtil.logInfo(logger, "Connected to the database.... ");
 		}catch(Exception e){
 			LoggerUtil.logError(logger, e);
@@ -41,9 +42,9 @@ public class AppContextListener implements ServletContextListener
 	{
 		try{
 			LoggerUtil.logInfo(logger, "Destroying the context.... ");
-			DBConnectionNew db =  (DBConnectionNew)contextEvent.getServletContext().getAttribute(DBStatements.DB_CONN);
-			if(db!=null){
-				db.closeConnection();
+			SessionFactory factory =  (SessionFactory)contextEvent.getServletContext().getAttribute(DBStatements.HIBERNATE_SESSION_FACTORY);
+			if(factory!=null){
+				factory.close();
 			}
 			LoggerUtil.logInfo(logger, "Database connection closed .... ");
 		}catch(Exception e){

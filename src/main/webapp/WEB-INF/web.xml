@@ -20,7 +20,7 @@
 	</welcome-file-list>
 	<context-param>
 		<param-name>dbURL</param-name>
-		<param-value>jdbc:mysql://138.87.238.34:3306/umls</param-value>
+		<param-value>jdbc:mysql://138.87.238.34:3306/umls?autoReconnect=true</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbUser</param-name>

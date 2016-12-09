@@ -4,7 +4,6 @@
  */
 package edu.isu.umls.utils;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,27 +23,26 @@ import edu.isu.umls.Concepts.Term;
 public class ConceptMapper {
 
 	
-	public static List<AbstractConcept> term2Concept(ResultSet resultSet) throws Exception{
+	public static List<AbstractConcept> term2Concept(List<Object[]> resultSet) throws Exception{
 		
 		List<AbstractConcept> concepts = new ArrayList<AbstractConcept>();
-		while(resultSet.next()){
+		for(Object[] o:resultSet){
 			Term concept = new Term();
-			concept.setCui(resultSet.getString("CUI"));
-			concept.setName(resultSet.getString("STR").replace(" ", "_").replace(",", "_"));
+			concept.setCui(o[0].toString());
+			concept.setName(o[1].toString().replace(" ", "_").replace(",", "_"));
 			concepts.add(concept);
 		}
 		return concepts;
 	}
-	
 		
-	public static List<AbstractType> toAbstractType(ResultSet resultSet) throws Exception{
+	public static List<AbstractType> toAbstractType(List<Object[]> resultSet) throws Exception{
 		
 		List<AbstractType> type = new ArrayList<AbstractType>();
-		while(resultSet.next()){
+		for(Object[] o:resultSet){
 			AbstractType tempType = null;
 			tempType = new SemanticType();
-			tempType.setName(resultSet.getString("STY"));
-			tempType.setTypeId(resultSet.getString("TUI"));
+			tempType.setName(o[1].toString());
+			tempType.setTypeId(o[0].toString());
 			type.add(tempType);
 		}
 		return type;
@@ -53,5 +51,4 @@ public class ConceptMapper {
 	public static String normalizeName(String name){
 		return name.replaceAll("'", "").replaceAll("[^\\w0-9]","_").replaceAll(" ", "_");
 	}
-	
 }

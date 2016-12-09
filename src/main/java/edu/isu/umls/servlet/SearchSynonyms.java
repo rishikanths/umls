@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
-import edu.isu.umls.database.DBConnectionNew;
 import edu.isu.umls.database.DBQuery;
 import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
@@ -29,10 +30,13 @@ public class SearchSynonyms extends HttpServlet {
 		try{
 			
 			request.getSession();
-			DBConnectionNew db = (DBConnectionNew)getServletContext().getAttribute(DBStatements.DB_CONN);
-			DBQuery query = new DBQuery(db.getConnection());			
+			SessionFactory factory = (SessionFactory)getServletContext().getAttribute(DBStatements.HIBERNATE_SESSION_FACTORY);
+			Session session = factory.openSession();
+			
+			DBQuery query = new DBQuery(session);
 			Map<String,List<String>> synonyms = query.getSynonyms(request.getParameter("cui"));
-			query.closeConnection();
+			
+			session.close();
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(synonyms));
 			synonyms.clear();
