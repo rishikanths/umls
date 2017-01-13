@@ -1,14 +1,3 @@
-/*
-
-	Design by TEMPLATED
-	http://templated.co
-	Released for free under the Creative Commons Attribution License
-
-	Name       : Eponymous
-	Version    : 1.0
-	Released   : 20130222
-	
-*/
 * {
 	margin: 0;
 	padding: 0;
@@ -151,18 +140,17 @@ ul {
 
 #header {
 	position: relative;
-	padding: 30px 30px 0px 30px;
+	padding: 10px 10px 0px 10px;
 	height: 80px;
 	width: 90%;
 }
 
 #logo {
 	position: absolute;
-	top: 30px;
-	left: 30px;
-	height: 80px;
-	line-height: 80px;
-	letter-spacing: -1px;
+	top: 10px;
+	left: 10px;
+	height: 50px;
+	line-height: 50px;
 }
 
 #logo a {
@@ -172,7 +160,6 @@ ul {
 
 #logo h1 {
 	font-size: 2.75em;
-	font-family: Arvo, serif;
 }
 
 #banner img {
@@ -195,9 +182,8 @@ ul {
 #nav {
 	position: absolute;
 	right: 30px;
-	height: 48px;
-	top: 55px;
-	font-family: Arvo, serif;
+	height: 30px;
+	top: 10px;
 	font-size: 1.1em;
 }
 
@@ -278,7 +264,6 @@ ul {
 	padding-top: 0;
 	border-top: 0;
 }
-
 
 .node {
 	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;

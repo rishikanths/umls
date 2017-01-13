@@ -10,7 +10,7 @@ function detailedInformation(d, term){
 		var tcui = $("#"+d.target.name).innerHTML;
 		$( "#information" ).append("<p><span id='"+d.target.name+"' class='termInfo'>"+d.target.name
 				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.target.name+"')\">def</a>) </span></span>"
-				+"<a href='https://en.wikipedia.org/wiki/Is-a' target='_blank'>"
+				+"<a href='https://en.wikipedia.org/wiki/Is-a' target='_blank'>  "
 				+"<span class='relationInfo'> is a </span></a> "
 				+"<span id='"+d.source.name+"' class='termInfo'>"+d.source.name
 				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.source.name+"')\">def</a>) </span></span>"
@@ -37,7 +37,9 @@ function detailedRelationInformation(d, term){
 						+"<span class='relationInfo'>"+key.substr(0,key.indexOf('*'))+"</span> "
 						+"<span id='"+d.target.name+"'class='termInfo'>"+d.target.name
 						+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.target.name+"')\">def</a>) </span></span>"
-						+"</span><hr/><br/> "
+						+"</span>"
+						+"</p>");
+						/*
 						+"The relationship <span class='relationInfo'>"+rel
 						+" </span> is of type <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
 						+".</span> <span class='termInfo'>"+key.substr(key.indexOf('*')+1)
@@ -45,6 +47,7 @@ function detailedRelationInformation(d, term){
 						+relationDescription.get(key.substr(key.indexOf('*')+1))
 						+"</span>.<br/>Please refer to <a target='_blank'" +
 						"href='https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/abbreviations.html'>UMLS Abbreviations</a></p>");
+						*/
 				$( "#information" ).append(getSemanticType(d.source.name,d.target.name));
 			}
 		});
@@ -54,11 +57,16 @@ function detailedRelationInformation(d, term){
 }
 
 function getSemanticType(source,target){
-	var typeInfo = "<hr/><p id = 'semanticTypeBg'><span class='termInfo'>" +source
-	+"</span><b> is of semantic type </b><span class='termInfo'>"+arr2String(termSemanticTypes.get(source))
-	+"</span><br/><span class='termInfo'>"+ target
-	+"</span> <b>is of semantic type </b><span class='termInfo'>"
-	+arr2String(termSemanticTypes.get(target))+"</span></p><hr/>";
+	var typeInfo= "";
+	if(arr2String(termSemanticTypes.get(target)) == arr2String(termSemanticTypes.get(source)))
+		typeInfo = "<hr/><p id = 'semanticTypeBg'><span class='termInfo'>" +source
+	+"</span><b> and <span class='termInfo'>"+ target +" </span> are of type </b><span class='termInfo'>"+arr2String(termSemanticTypes.get(source));	
+	else
+		typeInfo = "<hr/><p id = 'semanticTypeBg'><span class='termInfo'>" +source
+		+"</span><b> is of type </b><span class='termInfo'>"+arr2String(termSemanticTypes.get(source))
+		+"</span><br/><span class='termInfo'>"+ target
+		+"</span> <b>is of type </b><span class='termInfo'>"
+		+arr2String(termSemanticTypes.get(target))+"</span></p><hr/>";
 	
 	return typeInfo;
 }
@@ -68,7 +76,7 @@ function displayDialog(){
 		$("#definitions").dialog("close");
 
 	$( "#information" ).dialog({
-		width:500,
+		width:600,
 		appendTo: "#main",
 		maxHeight: 400,
 		closeOnEscape: false,
@@ -98,7 +106,6 @@ function displayDefinitionDialog(){
 		position:{my:"right top", at:"right-100 top+100"}
 	});
 }
-
 
 function findSynonyms(){
 	$("#information span").hover(function(){

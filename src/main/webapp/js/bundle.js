@@ -3,11 +3,9 @@ var INC_CONST = 20;
 var len = LEN_CONST;
 var inc=INC_CONST; 
 
-var width = 1280, height = 800, rx = width / 2, ry = height / 2, m0, rotate = 0;
-
+var width = 800, height = 800, rx = width / 2, ry = height / 2, m0, rotate = 0;
 var splines = [];
-
-var cluster = d3.layout.cluster().size([ 360, ry - 120 ]).sort(function(a, b) {
+var cluster = d3.layout.cluster().size([360,ry-120]).sort(function(a, b) {
 	return d3.ascending(a.key, b.key);
 });
 
