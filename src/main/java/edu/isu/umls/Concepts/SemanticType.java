@@ -5,7 +5,7 @@
 package edu.isu.umls.Concepts;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
  * @date Sep 28, 2015
  * @time 4:56:51 PM
  *

@@ -41,9 +41,7 @@ function formatGraphText(svg) {
 				if (el.text() == searchTerm)
 					el.attr("class", "searchTerm");
 				el.text('');
-				len = LEN_CONST;
-				inc = INC_CONST;
-				if (len >= d.name.length)
+				if (d.name.length<=50)
 					el.text(d.name);
 				/*
 				 * var sIdnex = 0; while(len<d.name.length){ var tspan =
@@ -51,7 +49,7 @@ function formatGraphText(svg) {
 				 * tspan.attr('x', 0).attr('dy', 15); sIndex = sIndex+inc; } var
 				 * tspan = el.append('tspan').text(d.name.slice(len-inc));
 				 */
-				if (len < d.name.length) {
+				if (d.name.length>50) {
 					var tspan = el.append('tspan').text(
 							d.name.slice(0, 30) + " .. ...");
 				}

@@ -5,12 +5,8 @@
 package edu.isu.umls.Concepts;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
  * @date Sep 28, 2015
- * @time 4:18:12 PM
- *
- * Statement
- *
  */
 public class RelationTo {
 

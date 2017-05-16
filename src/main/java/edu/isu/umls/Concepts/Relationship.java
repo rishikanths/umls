@@ -7,7 +7,7 @@ package edu.isu.umls.Concepts;
 import java.util.List;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
  * @date Sep 25, 2015
  * @time 1:54:48 PM
  *

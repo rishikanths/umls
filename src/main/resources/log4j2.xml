@@ -15,6 +15,7 @@
 		<File name="File-Appender" fileName="${LOG_PATH}/xmlfilelog.log">
 			<PatternLayout pattern="${PATTERN}" />
 		</File>
+		<!-- 
 		<JDBC name="Database-Appender" tableName="logger">
 			<ConnectionFactory class="edu.isu.umls.database.LoggerDBConnection"
 				method="getLoggerConnection" />
@@ -25,6 +26,7 @@
 			<Column name="THROWABLE" pattern="%ex{full}" />
 
 		</JDBC>
+		 -->
 		<RollingFile name="RollingFile-Appender" fileName="${LOG_PATH}/rollingfile.log"
 			filePattern="${ARCHIVE}/rollingfile.log.%d{yyyy-MM-dd-hh-mm}.gz">
 			<PatternLayout pattern="${PATTERN}" />
@@ -40,7 +42,7 @@
 			<AppenderRef ref="File-Appender" />
 			<AppenderRef ref="RollingFile-Appender"/>
 			<AppenderRef ref="Console-Appender" />
-			<AppenderRef ref="Database-Appender"/>
+			<!-- <AppenderRef ref="Database-Appender"/> -->
 		</Root>
 	</Loggers>
 </Configuration>

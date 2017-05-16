@@ -1,5 +1,7 @@
 package edu.isu.umls.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +10,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import edu.isu.umls.Concepts.AbstractConcept;
 import edu.isu.umls.Concepts.AbstractType;
@@ -21,27 +21,47 @@ import edu.isu.umls.utils.ConceptMapper;
 import edu.isu.umls.utils.LoggerUtil;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
  * @date Sep 28, 2015
  * @time 4:36:14 PM
  *
- *       DBQuery
- *
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DBQuery {
 
 	private final static Logger logger = LogManager.getLogger(DBQuery.class.getName());
 
-	private Session session = null;
-
+	// private Session session = null;
+	private Connection dbConnection = null;
 	private final int LIMIT = 30;
 	private final int DEPTH = 2;
 
 	private final int CONCEPT_LIMIT = 100;
 
-	public DBQuery(Session session) throws Exception {
-		this.session = session;
+	/**
+	 * Obtains a data connection from the data source Check
+	 * {@link DataConnection}
+	 */
+	private void getConnection() {
+		try {
+			dbConnection = DataConnection.getConnection();
+		} catch (Exception e) {
+			LoggerUtil.logError(logger, e);
+		}
+	}
+
+	/**
+	 * Closes the connection obtained from the data source Check
+	 * {@link DataConnection}
+	 */
+	private void closeConnection() {
+		try {
+			if (dbConnection != null) {
+				dbConnection.close();
+				dbConnection = null;
+			}
+		} catch (Exception e) {
+			LoggerUtil.logError(logger, e);
+		}
 	}
 
 	/**
@@ -53,14 +73,24 @@ public class DBQuery {
 	 */
 	public List<AbstractConcept> searchByString(String value) {
 		List<AbstractConcept> concepts = null;
+		List<Object[]> results = new ArrayList<>();
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_QUERY);
-			query.setParameter("concept", value + "%");
-			query.setMaxResults(LIMIT);
-
-			List<Object[]> results = query.getResultList();
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_QUERY);
+				stmt.setString(1, value + "%");
+				stmt.setMaxRows(LIMIT);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[2];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
 			concepts = ConceptMapper.term2Concept(results);
-
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -76,12 +106,23 @@ public class DBQuery {
 	 */
 	public AbstractConcept searchByCUI(String cui) {
 		AbstractConcept concept = null;
+		List<Object[]> results = new ArrayList<>();
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_BY_CUI);
-			query.setParameter("cui", cui);
-
-			List<Object[]> results = query.getResultList();
-
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_BY_CUI);
+				stmt.setString(1, cui);
+				stmt.setMaxRows(LIMIT);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[2];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
 			concept = ConceptMapper.term2Concept(results).get(0);
 			concept.setSemanticType(getSemanticType(cui));
 
@@ -104,12 +145,16 @@ public class DBQuery {
 		AbstractConcept concept = null;
 		String cui = "";
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_BY_AUI);
-			query.setParameter("aui", aui);
-
-			List<Object[]> results = query.getResultList();
-			for (Object[] o : results)
-				cui = o[0].toString();
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_BY_AUI);
+				stmt.setString(1, aui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next())
+					cui = rs.getString(1);
+				stmt.close();
+			}
+			closeConnection();
 			concept = searchByCUI(cui);
 			concept.setSemanticType(getSemanticType(cui));
 
@@ -128,11 +173,23 @@ public class DBQuery {
 	 */
 	public List<AbstractType> getSemanticType(String cui) {
 		List<AbstractType> type = null;
+		List<Object[]> results = new ArrayList<>();
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_SEMANTIC_TYPE_BY_CUI);
-			query.setParameter("cui", cui);
 
-			List<Object[]> results = query.getResultList();
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_SEMANTIC_TYPE_BY_CUI);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[2];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
 			type = ConceptMapper.toAbstractType(results);
 
 		} catch (Exception e) {
@@ -151,20 +208,35 @@ public class DBQuery {
 	 * @return {@link AbstractConcept}
 	 */
 	public AbstractConcept getHierarchyInfomationByCUI(String cui, int depth, AbstractConcept concept) {
+		List<Object[]> results = new ArrayList<>();
 		try {
-			
-			Query query = session.createNativeQuery(DBStatements.SEARCH_CONCEPT_HIERARCHY);
-			query.setParameter("cui", cui);
-			
-			List<Object[]> results = query.getResultList();
-					
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[7];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					o[2] = (Object) rs.getString(3);
+					o[3] = (Object) rs.getString(4);
+					o[4] = (Object) rs.getString(5);
+					o[5] = (Object) rs.getString(6);
+					o[6] = (Object) rs.getString(7);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+
 			if (concept == null)
 				concept = new Term();
 			boolean setOnce = true;
 
 			int rows = results.size();
 			if (rows != 0) {
-				for (Object[] o: results) {
+				for (Object[] o : results) {
 					if (setOnce) {
 						concept.setName(ConceptMapper.normalizeName(o[2].toString()));
 						concept.setCui(cui);
@@ -223,17 +295,32 @@ public class DBQuery {
 	}
 
 	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept) {
+		List<Object[]> results = new ArrayList<>();
 		try {
-			
-			Query query = session.createNativeQuery(DBStatements.SEARCH_CONCEPT_RELATIONS);
-			query.setParameter("cui", cui);
-			
-			List<Object[]> results = query.getResultList();
-			
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_RELATIONS);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[7];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					o[2] = (Object) rs.getString(3);
+					o[3] = (Object) rs.getString(4);
+					o[4] = (Object) rs.getString(5);
+					o[5] = (Object) rs.getString(6);
+					o[6] = (Object) rs.getString(7);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+
 			if (concept == null)
 				concept = new Term();
 			boolean setOnce = true;
-			for(Object[] o: results) {
+			for (Object[] o : results) {
 				if (setOnce) {
 					concept.setName(ConceptMapper.normalizeName(o[2].toString()));
 					concept.setCui(cui);
@@ -243,11 +330,11 @@ public class DBQuery {
 					concept.addSemanticType(type);
 					setOnce = false;
 				}
-				
+
 				String rela = "N/A";
-				if(o[4]!=null)
+				if (o[4] != null)
 					rela = o[4].toString();
-				String conceptCUI2 =o[0].toString();
+				String conceptCUI2 = o[0].toString();
 				AbstractConcept cui2 = searchByCUI(conceptCUI2);
 				cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
 				Relationship relationship = new Relationship();
@@ -273,13 +360,25 @@ public class DBQuery {
 
 	public List<String> getConceptDefinitons(String cui) {
 		List<String> results = new ArrayList<String>();
+		List<Object[]> queryResults = new ArrayList<>();
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_CONCEPT_DEFINITION);
-			query.setParameter("cui", cui);
-
-			List<Object[]> queryResults = query.getResultList();
-			
-			for(Object[] o:queryResults) {
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_DEFINITION);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[3];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					o[1] = (Object) rs.getString(3);
+					o[1] = (Object) rs.getString(4);
+					queryResults.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+			for (Object[] o : queryResults) {
 				String son = o[0].toString();
 				String name = o[1].toString();
 				String def = o[2].toString();
@@ -309,11 +408,20 @@ public class DBQuery {
 	 * @return Returns the SQL {@link ResultSet}
 	 */
 	public List<Object[]> executeQuery(String nativeQuery) {
-		List<Object[]> result = null;
+		List<Object[]> result = new ArrayList<>();
 		try {
-
-			Query qurey = session.createNativeQuery(nativeQuery);
-			result = qurey.getResultList();
+			getConnection();
+			{
+				ResultSet rs = dbConnection.createStatement().executeQuery(nativeQuery);
+				int columns = rs.getMetaData().getColumnCount();
+				while (rs.next()) {
+					Object o[] = new Object[columns];
+					for(int i=0;i<columns;i++)
+						o[i] = (Object) rs.getString(i+1);
+					result.add(o);
+				}
+			}
+			closeConnection();
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -322,13 +430,25 @@ public class DBQuery {
 
 	public Map<String, List<String>> getSynonyms(String cui) {
 		Map<String, List<String>> results = new HashMap<String, List<String>>();
+		List<Object[]> queryResults = new ArrayList<>();
 		try {
-			Query query = session.createNativeQuery(DBStatements.SEARCH_SYNONYMS);
-			query.setParameter("cui", cui);
-
-			List<Object[]> queryResults = query.getResultList();
 			
-			for(Object[] o:queryResults) {
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_SYNONYMS);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[2];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					queryResults.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+			
+			for (Object[] o : queryResults) {
 				String source = o[1].toString();
 				List<String> temp = results.get(source);
 				if (temp == null)

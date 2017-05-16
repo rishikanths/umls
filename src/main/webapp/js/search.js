@@ -1,4 +1,4 @@
-/*
+/**
  * author @Rishi Saripalle
  * 
  * adjacencyMap - the map that stores the relationships between the search term and other terms. 
@@ -13,23 +13,13 @@ var termSemanticTypes = new Map();
 var defaultRelation = "";
 var searchTerm = "";
 var currentRequest  = null;
-/*
+/**
  * Auto complete for term search.
  */
 $(document).ajaxSend(function() {
 	// $("#tabs").LoadingOverlay("show");
 });
-/*$(document).ajaxStart(function() {
-	$("#message").css('display', 'none');
-	$("#error").css('display', 'none');
-	$("#hierarchy").empty();
-	$("#hierarchyMessage").empty();
-	$("#relation").empty();
-	$("#relationRadioSelection").empty();
-	$("#relationRadioSelectionDesc").empty();
-	$("#hierarchyLayoutMenu").css("display","none");
-});
-*/$(document).ajaxStop(function() {
+$(document).ajaxStop(function() {
 	$("#tabs").LoadingOverlay("hide");
 });
 $(document).ajaxComplete(function() {

@@ -1,9 +1,11 @@
 package edu.isu.umls.exception;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
  *
  * UMLSException class is a custom exception handler for UMLS Visualization
+ * 
+ * TODO: Need to use this exception instead of other exceptions
  */
 @SuppressWarnings("serial")
 public class UMLSException extends Exception {

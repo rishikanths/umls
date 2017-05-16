@@ -1,68 +1,48 @@
-var treeMargin = {
-	top : 30,
-	right : 20,
-	bottom : 30,
-	left : 20
-}, treeSVG, treeWidth = 1200 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeWidth * .8;
-
-var i = 0, duration = 400, treeData;
-
-var tree = d3.layout.tree().nodeSize([ 20, 60 ]);
-
-var treeDiagonal = d3.svg.diagonal().projection(function(d) {
-	return [ d.y, d.x ];
-});
-var treeNodes, treeDiv;
 
 /*
  * var treeSVG = d3.select("body").append("svg").attr("width", treeWidth + treeMargin.left +
  * treeMargin.right).append("g").at tr("transform", "translate(" + treeMargin.left + "," +
  * treeMargin.top + ")");
  */
+var treeSVG;
 function treeLayout(data) {
+	var treeMargin = {
+			top : 30,right : 20,bottom : 30,left : 20 },
+			treeWidth = 1200 - treeMargin.left - treeMargin.right, barHeight = 50, barWidth = treeWidth * .8;
+		var i = 0, duration = 400;
+		var tree = d3.layout.tree().nodeSize([ 20, 60 ]);
+		var treeDiagonal = d3.svg.diagonal().projection(function(d) {
+			return [ d.y, d.x ];
+		});
+		var treeNodes, treeDiv;
+		treeNodes = tree.nodes(data);
+		var height = Math.max(500, treeNodes.length * barHeight + treeMargin.top
+				+ treeMargin.bottom);
+
 	$("#hierarchy").empty();
 	treeDiv = d3.select("#hierarchy").insert("div", "h2").style("height",
 			treeWidth + "px").style("-webkit-backface-visibility", "hidden");
 	treeSVG = treeDiv.append("svg:svg").attr("width", treeWidth).attr("height", treeWidth)
 			.append("svg:g").attr("transform",
 					"translate(" + treeMargin.left + "," + treeMargin.top + ")");
-	treeData = data
-	treeData.x0 = 0;
-	treeData.y0 = 0;
-	updateTree(treeData);
-	//collapse();
-}
-
-function updateTree(source) {
-
-	// Compute the flattened node list. TODO use d3.layout.hierarchy.
-	treeNodes = tree.nodes(treeData);
+	data.x0 = 0;
+	data.y0 = 0;
 	
-	var height = Math.max(500, treeNodes.length * barHeight + treeMargin.top
-			+ treeMargin.bottom);
-
+	
 	d3.select("svg").transition().duration(duration).attr("height", height);
-
 	d3.select(self.frameElement).transition().duration(duration).style(
 			"height", height + "px");
-	treeNodes.forEach(function(d) {
-		d.y = d.depth * 90;
-	});
+	treeNodes.forEach(function(d) {d.y = d.depth * 90;});
 	// Compute the "layout".
-	treeNodes.forEach(function(n, i) {
-		n.x = i * barHeight;
-	});
-
+	treeNodes.forEach(function(n, i) {n.x = i * barHeight;});
 	// Update the nodes…
 	var node = treeSVG.selectAll("g.node").data(treeNodes, function(d) {
 		return d.id || (d.id = ++i);
 	});
-
 	var nodeEnter = node.enter().append("g").attr("class", treeNodeClass).attr(
 			"transform", function(d) {
-				return "translate(" + source.y0 + "," + source.x0 + ")";
+				return "translate(" + data.y0 + "," + data.x0 + ")";
 			}).style("opacity", 1e-6);
-
 	// Enter any new nodes at the parent's previous position.
 	nodeEnter.append("rect").attr("y", -barHeight / 2)
 			.attr("height", barHeight).attr("width", barWidth).style("fill",
@@ -70,28 +50,20 @@ function updateTree(source) {
 			.on("click", treeNodeClick)
 			.on("mouseover", treeLayoutMouseOver)
 			.on("mouseout", treeLayoutMouseOut);
-	/*
-	 * nodeEnter.append("rect").attr("y", -barHeight / 2) .attr("height",
-	 * barHeight-5).attr("width", barWidth-10).style("fill", treeNodeColor).on("click",
-	 * click);
-	 */
 
 	nodeEnter.append("text").attr("dy", 3.5).attr("dx", 5.5).text(function(d) {
 		return d.name;
 	});
-
 	// Transition nodes to their new position.
 	nodeEnter.transition().duration(duration).attr("transform", function(d) {
 		return "translate(" + d.y + "," + d.x + ")";
 	}).style("opacity", 1);
-
 	node.transition().duration(duration).attr("transform", function(d) {
 		return "translate(" + d.y + "," + d.x + ")";
 	}).style("opacity", 1).select("rect").style("fill", treeNodeColor);
-
 	// Transition exiting nodes to the parent's new position.
 	node.exit().transition().duration(duration).attr("transform", function(d) {
-		return "translate(" + source.y + "," + source.x + ")";
+		return "translate(" + data.y + "," + data.x + ")";
 	}).style("opacity", 1e-6).remove();
 
 	// Update the links…
@@ -113,8 +85,8 @@ function updateTree(source) {
 				}).attr("d",
 					function(d) {
 						var o = {
-							x : source.x0,
-							y : source.y0
+							x : data.x0,
+							y : data.y0
 						};
 						return treeDiagonal({
 							source : o,
@@ -128,8 +100,8 @@ function updateTree(source) {
 	// Transition exiting nodes to the parent's new position.
 	link.exit().transition().duration(duration).attr("d", function(d) {
 		var o = {
-			x : source.x,
-			y : source.y
+			x : data.x,
+			y : data.y
 		};
 		return treeDiagonal({
 			source : o,
@@ -167,7 +139,6 @@ function treeNodeColor(d) {
 			: d.children ? "rgba(93, 165, 232, 0.34)"
 					: "rgba(163, 163, 163, 0.25)";
 }
-
 
 function treeLayoutMouseOver(d) {
 	treeSVG.selectAll("path.link.target-" + d.name).classed("target", true).each(

@@ -1,6 +1,7 @@
 /**
  * processedConcepts - keeps track of processed concepts, i.e. the terms that
- * have been added to the map unProcessedConcepts - keeps track of unprocessed
+ * have been added to the map 
+ * unProcessedConcepts - keeps track of unprocessed
  * concepts. This is required due to the cyclic nature of the UMLS
  * metathesaurus. For example, term Malaria can be related to itself using any
  * relationship. Hence, if "Malaria" is processed, the next time the term is

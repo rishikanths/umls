@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author rsaripa
+ * @author Rishi Saripalle
+ * 
  * Captures the knowledge related to a relationship that connect two concepts {@link AbstractConcept}
  */
 public abstract class AbstractRelation {

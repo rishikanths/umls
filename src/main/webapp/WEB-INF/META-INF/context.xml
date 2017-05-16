@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/umls">
+	<Resource 
+	    name="jdbc/MySqlUMLSDS"
+	    auth="Container"
+		type="javax.sql.DataSource"
+		factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+		username="root"
+		password="rishi" 
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/umls" 
+		maxActive="5"
+		maxIdle="3" 
+		validationQuery="SELECT 1"
+		removeAbandoned="true"
+		removeAbandonedTimeout="300"
+		logAbandoned="true"
+		/>
+		<!-- 
+		<Resource 
+	    name="jdbc/MySqlLoggerDS"
+	    auth="Container"
+		type="javax.sql.DataSource"
+		factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+		username="root"
+		password="rishi" 
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/logger" 
+		maxActive="2"
+		maxIdle="1" 
+		validationQuery="SELECT 1"
+		removeAbandoned="true"
+		removeAbandonedTimeout="300"
+		logAbandoned="true"
+		/> -->
+	
+</Context>

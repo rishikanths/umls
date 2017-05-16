@@ -21,7 +21,7 @@ function getHierarchy(classes) {
 	return map[""];
 }
 
-function getImports(nodes) {
+function getLinks(nodes) {
 	var map = {}, imports = [];
 	nodes.forEach(function(d) {
 		map[d.name] = d;

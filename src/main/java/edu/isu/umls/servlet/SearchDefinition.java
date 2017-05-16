@@ -9,14 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import edu.isu.umls.database.DBQuery;
-import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
+/**
+ * @author Rishi Saripalle
+ * 
+ * Service point to search for a definition(s) of a UMLS term.
+ */
 
 @WebServlet(description="Search definition of the term",displayName="Search Definition",value="/searchdef")
 public class SearchDefinition extends HttpServlet {
@@ -29,13 +31,9 @@ public class SearchDefinition extends HttpServlet {
 		try{
 			
 			request.getSession();
-			SessionFactory factory = (SessionFactory)getServletContext().getAttribute(DBStatements.HIBERNATE_SESSION_FACTORY);
-			Session session = factory.openSession();
-			
-			DBQuery query = new DBQuery(session);
+			DBQuery query = new DBQuery();
 			List<String> definitions = query.getConceptDefinitons(request.getParameter("cui"));
 			
-			session.close();
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(definitions));
 			definitions.clear();

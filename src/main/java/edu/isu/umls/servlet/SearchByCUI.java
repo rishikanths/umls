@@ -7,16 +7,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import edu.isu.umls.Concepts.AbstractConcept;
 import edu.isu.umls.Concepts.Term;
 import edu.isu.umls.database.DBQuery;
-import edu.isu.umls.database.DBStatements;
 import edu.isu.umls.utils.LoggerUtil;
 import edu.isu.umls.utils.ResponseUtils;
 
+/**
+ * @author Rishi Saripalle
+ * Service point to search the UMLS database for a given CUI
+ */
 
 @WebServlet(description="Search with CUI",displayName="SearchWithCUI",value="/searchwithcui")
 public class SearchByCUI extends HttpServlet {
@@ -29,15 +30,11 @@ public class SearchByCUI extends HttpServlet {
 		try{
 			
 			request.getSession();
-			SessionFactory factory = (SessionFactory)getServletContext().getAttribute(DBStatements.HIBERNATE_SESSION_FACTORY);
-			Session session = factory.openSession();
-			
-			DBQuery query = new DBQuery(session);
+			DBQuery query = new DBQuery();
 			AbstractConcept concept = new Term();
 			query.getHierarchyInfomationByCUI(request.getParameter("cui"),0,concept);
 			query.getAdjacencyInfomationByCUI(request.getParameter("cui"), concept);
 			
-			session.close();
 			response.setContentType("application/text");
 			response.getWriter().write(ResponseUtils.getJSON(concept));
 			concept.clear();
