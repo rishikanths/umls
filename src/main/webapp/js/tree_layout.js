@@ -32,6 +32,7 @@ function treeLayout(data) {
 	d3.select("svg").transition().duration(duration).attr("height", height);
 	d3.select(self.frameElement).transition().duration(duration).style(
 			"height", height + "px");
+	treeNodes.forEach(function(d) {d.key = d.name; d.name = formatName(d.name);});
 	treeNodes.forEach(function(d) {d.y = d.depth * 90;});
 	// Compute the "layout".
 	treeNodes.forEach(function(n, i) {n.x = i * barHeight;});
@@ -80,8 +81,8 @@ function treeLayout(data) {
 
 	// Enter any new links at the parent's previous position.
 	link.enter().insert("path", "g").attr("class", function(d) {
-				return "link source-" + d.source.name + 
-				" target-" + d.target.name;
+				return "link source-" + d.source.key + 
+				" target-" + d.target.key;
 				}).attr("d",
 					function(d) {
 						var o = {
@@ -141,18 +142,18 @@ function treeNodeColor(d) {
 }
 
 function treeLayoutMouseOver(d) {
-	treeSVG.selectAll("path.link.target-" + d.name).classed("target", true).each(
-			updateTreeNodes("source", true,d.name,d));
+	treeSVG.selectAll("path.link.target-" + d.key).classed("target", true).each(
+			updateTreeNodes("source", true,d.key,d));
 
-	treeSVG.selectAll("path.link.source-" + d.name).classed("source", true).each(
-			updateTreeNodes("target", true,d.name,d));
+	treeSVG.selectAll("path.link.source-" + d.key).classed("source", true).each(
+			updateTreeNodes("target", true,d.key,d));
 }
 
 function treeLayoutMouseOut(d) {
-	treeSVG.selectAll("path.link.source-" + d.name).classed("source", false).each(
+	treeSVG.selectAll("path.link.source-" + d.key).classed("source", false).each(
 			updateTreeNodes("target", false));
 
-	treeSVG.selectAll("path.link.target-" + d.name).classed("target", false).each(
+	treeSVG.selectAll("path.link.target-" + d.key).classed("target", false).each(
 			updateTreeNodes("source", false));
 }
 

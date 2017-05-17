@@ -61,7 +61,7 @@ function dendogramRadial(hierarchyData) {
 	}).attr("transform", function(d) {
 		return d.x < 180 ? null : "rotate(180)";
 	}).text(function(d) {
-		return d.key;
+		return formatName(d.key);
 	}).on("mouseover", mouseoverSVGH).on("mouseout", mouseoutSVGH);
 
 	d3.select("input[type=range]").on("change", function() {
@@ -84,10 +84,10 @@ function mousedownSVGH() {
 
 function mouseoverSVGH(d) {
 	svgHierarchy.selectAll("path.link.target-" + d.key).classed("target", true).each(
-			updateNodesSVGH("source", true,d.name));
+			updateNodesSVGH("source", true,d.key));
 
 	svgHierarchy.selectAll("path.link.source-" + d.key).classed("source", true).each(
-			updateNodesSVGH("target", true,d.name));
+			updateNodesSVGH("target", true,d.key));
 }
 
 function mouseoutSVGH(d) {
@@ -102,8 +102,10 @@ function updateNodesSVGH(name, value, term) {
 	return function(d) {
 		if(value)
 			detailedInformation(d, term);
-		if (value)
+		if (!value){
 			this.parentNode.appendChild(this);
+			focusTerm = "";
+		}
 		svgHierarchy.select("#node-" + d[name].key).classed(name, value);
 	};
 }

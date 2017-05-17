@@ -4,13 +4,14 @@ function getHierarchy(classes) {
 		var node = map[name], i;
 		if (!node) {
 			node = map[name] = data || {
-				name : name,
+				name : (name),
 				children : []
 			};
 			if (name.length) {
 				node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
 				node.parent.children.push(node);
 				node.key = name.substring(i + 1);
+				node.name = formatName(node.name);
 			}
 		}
 		return node;
@@ -24,13 +25,13 @@ function getHierarchy(classes) {
 function getLinks(nodes) {
 	var map = {}, imports = [];
 	nodes.forEach(function(d) {
-		map[d.name] = d;
+		map[d.key] = d;
 	});
 	nodes.forEach(function(d) {
 		if (d.imports)
 			d.imports.forEach(function(i) {
 				imports.push({
-					source : map[d.name],
+					source : map[d.key],
 					target : map[i]
 				});
 			});

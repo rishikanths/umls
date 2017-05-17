@@ -368,11 +368,11 @@ public class DBQuery {
 				stmt.setString(1, cui);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					Object o[] = new Object[3];
+					Object o[] = new Object[4];
 					o[0] = (Object) rs.getString(1);
 					o[1] = (Object) rs.getString(2);
-					o[1] = (Object) rs.getString(3);
-					o[1] = (Object) rs.getString(4);
+					o[2] = (Object) rs.getString(3);
+					o[3] = (Object) rs.getString(4);
 					queryResults.add(o);
 				}
 				stmt.close();

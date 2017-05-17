@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/umls">
+	<Resource 
+	    name="jdbc/MySqlUMLSDS"
+	    auth="Container"
+		type="javax.sql.DataSource"
+		factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+		username="xxxxxxx"
+		password="xxxxx" 
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://abcd:3306/xxxx" 
+		maxActive="5"
+		maxIdle="3" 
+		validationQuery="SELECT 1"
+		removeAbandoned="true"
+		removeAbandonedTimeout="300"
+		logAbandoned="true"
+		/>
+</Context>

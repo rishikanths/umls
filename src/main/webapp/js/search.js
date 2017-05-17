@@ -220,12 +220,12 @@ function getDefinitions(term){
 							innerText+="<tr><td>"+object[def]+"</td></tr>";
 					}
 				}else
-					innerText+="<tr><td>No definition founds for <b>"+term+"</b></td></tr>";
+					innerText+="<tr><td>No definition founds for <b>"+formatName(term)+"</b></td></tr>";
 			}
 			innerText+="</tbody></table>";
 			ele.append(innerText);
 		}
 	});
-	displayDefinitionDialog();
+	displayDefinitionDialog(formatName(term));
 }
 

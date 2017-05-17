@@ -84,10 +84,10 @@ function mousedownSVGR() {
 
 function mouseoverSVGR(d) {
 	svgRelation.selectAll("path.linkRel.target-" + d.key).classed("target", true).each(
-			updateNodesSVGR("source", true, d.name));
+			updateNodesSVGR("source", true, d.key));
 
 	svgRelation.selectAll("path.linkRel.source-" + d.key).classed("source", true).each(
-			updateNodesSVGR("target", true, d.name));
+			updateNodesSVGR("target", true, d.key));
 
 }
 
@@ -103,8 +103,10 @@ function updateNodesSVGR(name, value, term) {
 	return function(d) {
 		if(value)
 			detailedRelationInformation(d, term);
-		if (value)
+		if (!value){
 			this.parentNode.appendChild(this);
+			focusTerm="";
+		}
 		svgRelation.select("#node-" + d[name].key).classed(name, value);
 	};
 }

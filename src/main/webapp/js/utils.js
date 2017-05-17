@@ -46,3 +46,7 @@ function resetGlobalVariable(){
 		$("#definitions").dialog("close");
 	setFocus();
 }
+
+function formatName(name){
+	return name.replace(/_/g," ");
+}
