@@ -16,7 +16,7 @@ body {
 	font-size: 12pt;
 	line-height: 1.75em;
 	font-family: sans-serif;
-	background: #030707 url('images/grey.png');
+	background: #030707 url('../images/grey.png');
 	color: #0a0b0b;
 }
 
@@ -55,12 +55,12 @@ ul {
 }
 
 #bg {
-	background: url('images/shadow.png') top left repeat-x;
+	background: url('../images/shadow.png') top left repeat-x;
 	padding: 10px 0 40px 0;
 }
 
 #banner {
-	/*background-image: url("images/strip.jpg");*/
+	/*background-image: url("../images/strip.jpg");*/
 	background-repeat: repeat-x;
 	padding-bottom: 20px;
 }
@@ -146,7 +146,7 @@ ul {
 }
 
 #logo {
-	position: absolute;
+	/* position: absolute; */
 	top: 10px;
 	left: 10px;
 	height: 50px;
@@ -210,9 +210,24 @@ ul {
 	color: #d9dada;
 }
 
-#nav ul li.active a {
+#menu td.active a {
 	color: #ffffff;
 }
+
+
+#menu td:HOVER:not(#logo) {
+	background: #007fff;
+}
+
+#menu td.active {
+	background: #007fff;
+}
+
+#menu td a {
+	text-decoration: none;
+	color: #d9dada;
+}
+
 
 #outer {
 	position: relative;

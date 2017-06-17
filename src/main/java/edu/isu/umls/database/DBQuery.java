@@ -207,6 +207,75 @@ public class DBQuery {
 	 *            The CUI of the UMLS concept
 	 * @return {@link AbstractConcept}
 	 */
+	public AbstractConcept getHierarchyInfomationByCUI(String cui, AbstractConcept concept) {
+		List<Object[]> results = new ArrayList<>();
+		try {
+			getConnection();
+			{
+				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Object o[] = new Object[7];
+					o[0] = (Object) rs.getString(1);
+					o[1] = (Object) rs.getString(2);
+					o[2] = (Object) rs.getString(3);
+					o[3] = (Object) rs.getString(4);
+					o[4] = (Object) rs.getString(5);
+					o[5] = (Object) rs.getString(6);
+					o[6] = (Object) rs.getString(7);
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+
+			if (concept == null)
+				concept = new Term();
+			boolean setOnce = true;
+
+			int rows = results.size();
+			if (rows != 0) {
+				for (Object[] o : results) {
+					if (setOnce) {
+						concept.setName(ConceptMapper.normalizeName(o[2].toString()));
+						concept.setCui(cui);
+						AbstractType type = new SemanticType();
+						type.setName(o[6].toString());
+						type.setTypeId(o[5].toString());
+						concept.addSemanticType(type);
+						setOnce = false;
+					}
+					String rel = o[3].toString();
+					String conceptCUI2 = o[0].toString();
+					AbstractConcept cui2 = searchByCUI(conceptCUI2);
+					cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
+					if (rel.equals("PAR")) {
+						concept.addToChildern(cui2);
+					}
+				}
+			} else {
+				concept = searchByCUI(cui);
+				concept.setName(ConceptMapper.normalizeName(concept.getName()));
+				AbstractType type = getSemanticType(cui).get(0);
+				concept.addSemanticType(type);
+			}
+		} catch (Exception e) {
+			LoggerUtil.logError(logger, e);
+		}
+
+		return concept;
+	}
+
+	
+	/**
+	 * Get all the information associated with a CUI, which includes its name,
+	 * relationships and assigned semantic type(s)
+	 * 
+	 * @param cui
+	 *            The CUI of the UMLS concept
+	 * @return {@link AbstractConcept}
+	 */
 	public AbstractConcept getHierarchyInfomationByCUI(String cui, int depth, AbstractConcept concept) {
 		List<Object[]> results = new ArrayList<>();
 		try {
@@ -384,7 +453,7 @@ public class DBQuery {
 				String def = o[2].toString();
 				String sab = o[3].toString();
 				results.add(
-						"According to " + son + "(" + sab + "),<b>" + name + "</b> is defined as <i>" + def + "</i>");
+						"According to <span id='definitionSource'>" + son + "(" + sab + ")</span>, <b>" + name + "</b> is defined as <i>" + def + "</i>");
 			}
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unified Medical Language System (UMLS) Visualization</title>
+<link rel="icon" href="images/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width">
+<script src="js/libraries/jquery-2.1.4.min.js"></script>
+<script src="js/libraries/jquery-ui-1.11.4/jquery-ui.js"></script>
+<script src="js/libraries/jquery.bxslider.js"></script>
+<link rel="stylesheet" href="css/jquery.bxslider.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/customize.css" />
+<link rel="stylesheet" href="css/introduction.css" />
+
+</head>
+<body>
+	<div id="bg">
+		<div id="overlay-details"></div>
+		<div id="outer">
+			<div id="header">
+				<!-- <div id="logo">
+					<h1>
+						<a href="index.html">UMLS Visualization</a>
+					</h1>
+				</div>
+				<div id="nav">
+					<ul>
+						<li style="font-size: 18px"><a href="index.html">Search</a></li>
+						<li class=""><a href="tutorial.html">Tutorial</a></li>
+						<li class=""><a href="about.html">Project</a></li>
+						<li class=""><a href="umls.html">About UMLS</a></li>
+						<li class=""><a href="contact.html">Contact</a></li>
+					</ul>
+					<br class="clear">
+				</div> -->
+				<table style="width: 100%;text-align: center" id = "menu">
+					<tbody>
+						<tr>
+							<td id="logo">
+							<h1>
+								<a href="index.html">UMLS Visualization</a>
+							</h1>
+							</td>
+							<td><a href="index.html">Search</a></td>
+							<td><a href="tutorial.html">Tutorial</a></td>
+							<td><a href="about.html">Project</a></td>
+							<td><a href="umls.html">About UMLS</a></td>
+							<td><a href="contact.html">Contact</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="main">
+				<div id="introductionDiv">
+					<div id="slides">
+						<ul class="bxslider">
+							<li><img src="images/introduction/Picture8.png"></li>
+							<li><img src="images/introduction/Picture1.png"></li>
+							<li><img src="images/introduction/Picture2.png"></li>
+							<li><img src="images/introduction/Picture3.png"></li>
+							<li><img src="images/introduction/Picture4.png"></li>
+							<li><img src="images/introduction/Picture5.png"></li>
+							<li><img src="images/introduction/Picture6.png"></li>
+							<li><img src="images/introduction/Picture7.png"></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer"></div>
+	</div>
+	<script>
+		$(function() {
+			$('.bxslider').bxSlider({
+				mode : 'fade',
+				adaptiveHeight : true,
+			});
+		});
+
+		(function(i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r;
+			i[r] = i[r] || function() {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date();
+			a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+			a.async = 1;
+			a.src = g;
+			m.parentNode.insertBefore(a, m)
+		})(window, document, 'script',
+				'https://www.google-analytics.com/analytics.js', 'ga');
+
+		ga('create', 'UA-83324675-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+</body>
+</html>

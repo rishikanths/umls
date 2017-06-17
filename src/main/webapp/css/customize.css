@@ -21,10 +21,15 @@
 }
 
 #information {
+	min-height:40px !important;
 	text-align: center;
-	font-size: 12px;
+	font-size: 10px;
 }
-
+.rightArrow{
+	padding-right: 8px;
+	padding-left: 8px;
+	vertical-align: sub;
+}
 #hierarchy {
 	overflow: auto;
 }
@@ -47,7 +52,8 @@
 .termInfo {
 	color: #0101DF;
 	font-family: monospace;
-	font-size: 12px;
+	font-size: 13px;
+	font-weight: bold;
 }
 
 .relationInfo {
@@ -151,7 +157,10 @@
     color: #0a5a0a;
     font-weight: bold;
 }
-
+#definitionSource{
+	color: #4343e3;
+    font-weight: bold;
+}
 #definition a{
 	text-decoration: none;
 }
@@ -160,6 +169,7 @@
 }
 .definitionTable{
 	font-size: 12px;
+	line-height: 20px;
 }
 .even{
 	background-color:beige 

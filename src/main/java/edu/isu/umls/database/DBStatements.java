@@ -28,5 +28,5 @@ public interface DBStatements {
 			+ "AND c.sab = v.rsab";
 	
 	public String SEARCH_CONCEPT_DEFINITION = "SELECT DISTINCT s.SON ,c.STR, d.DEF,d.SAB FROM umls.MRDEF as d, umls.MRCONSO as c, umls.MRSAB as s  "
-			+ "WHERE d.CUI = c.CUI AND c.CUI = ? AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y' AND d.SAB = s.RSAB";
+			+ "WHERE d.CUI = c.CUI AND c.CUI = ? AND c.TS = 'P' AND c.STT='PF' AND c.ISPREF='Y' AND d.SAB = s.RSAB GROUP BY d.SAB";
 }

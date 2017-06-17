@@ -44,9 +44,13 @@ function resetGlobalVariable(){
 		$("#information").dialog("close");
 	if ($("#definitions").dialog("instance") != null)
 		$("#definitions").dialog("close");
+	$("#hierarchyMessage").empty();
 	setFocus();
 }
 
 function formatName(name){
 	return name.replace(/_/g," ");
+}
+function reFormatName(name){
+	return name.replace(/ /g,"_");
 }

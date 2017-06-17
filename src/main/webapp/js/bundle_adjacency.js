@@ -54,6 +54,8 @@ function dendogramRadialRelation(relationalData) {
 		return !n.children;
 	})).enter().append("svg:g").attr("class", "node").attr("id", function(d) {
 		return "node-" + d.key;
+	}).attr("cui",function(d){
+		return $("#"+d.key).text();
 	}).attr("transform", function(d) {
 		return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
 	}).append("svg:text").attr("dx", function(d) {
@@ -73,7 +75,7 @@ function dendogramRadialRelation(relationalData) {
 		});
 	});
 	
-	formatGraphText(svgRelation);
+	formatGraphText(svgRelation, false);
 	enableDownload();
 }
 

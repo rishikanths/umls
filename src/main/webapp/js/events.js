@@ -34,25 +34,30 @@ function displayMessage(msg) {
 	$("#message").css('display', 'block');
 }
 
-function formatGraphText(svg) {
+function formatGraphText(svg,addLink) {
+	var isSearchTerm = false;
 	svg.selectAll('text').each(
 			function(d) {
 				var el = d3.select(this);
-				if (el.text() == searchTerm)
+				if (el.text() == formatName(searchTerm) || el.text() == searchTerm){
 					el.attr("class", "searchTerm");
+					isSearchTerm = true;
+				}
 				el.text('');
-				if (d.name.length<=50)
-					el.text(d.name);
-				/*
-				 * var sIdnex = 0; while(len<d.name.length){ var tspan =
-				 * el.append('tspan').text(d.name.slice(sIndex,inc+sIndex));
-				 * tspan.attr('x', 0).attr('dy', 15); sIndex = sIndex+inc; } var
-				 * tspan = el.append('tspan').text(d.name.slice(len-inc));
-				 */
-				if (d.name.length>50) {
-					var tspan = el.append('tspan').text(
+				if (d.name.length<=50){
+					if(!isSearchTerm && addLink){
+						var cui = $("#"+d.key).text();
+						el.append('a').attr('href','javascript:getCUI(\''+cui+'\',\''+d.key+'\',true)').text(d.name);
+					}
+					else
+						el.text(d.name);
+				}
+				else{
+					var cui = $("#"+d.key).text();
+					el.append('a').attr('href','javascript:getCUI(\''+cui+'\',\''+d.key+'\',true)').text(
 							d.name.slice(0, 30) + " .. ...");
 				}
+				isSearchTerm = false;
 			});
 }
 function setMessage(ele, message) {

@@ -1,18 +1,21 @@
 /**
- * author @Rishi Saripalle
+ * author
  * 
- * adjacencyMap - the map that stores the relationships between the search term and other terms. 
- * The key is the relationship (e.g., "may_be_treated_by") and the value is an array of terms. 
- * For example, Malaria relationships will be formated as {"may_be_treated_by" => ["XXX", "YYY"], "R2"=>[...]}
+ * @Rishi Saripalle
  * 
- * termSemanticTypes - the map will hold the semantic type of the concept or relation. For example, Malaria is
- * of semantic type Disease_or_Syndrome, etc. 
+ * adjacencyMap - the map that stores the relationships between the search term
+ * and other terms. The key is the relationship (e.g., "may_be_treated_by") and
+ * the value is an array of terms. For example, Malaria relationships will be
+ * formated as {"may_be_treated_by" => ["XXX", "YYY"], "R2"=>[...]}
+ * 
+ * termSemanticTypes - the map will hold the semantic type of the concept or
+ * relation. For example, Malaria is of semantic type Disease_or_Syndrome, etc.
  */
 var adjacencyMap = new Map();
 var termSemanticTypes = new Map();
 var defaultRelation = "";
 var searchTerm = "";
-var currentRequest  = null;
+var currentRequest = null;
 /**
  * Auto complete for term search.
  */
@@ -34,6 +37,8 @@ $("#termSearch").autocomplete(
 					url : '/umls/search?term=' + $('#termSearch').val(),
 					success : function(data, status, response) {
 						resetGlobalVariable();
+						conceptPath = [];
+						$("#conceptPath").empty();
 						var object = jQuery.parseJSON(data);
 						if (object.length == 0) {
 							var msg = "No matches found for term - <b>"
@@ -43,7 +48,7 @@ $("#termSearch").autocomplete(
 						} else {
 							resp($.map(object, function(item) {
 								return {
-									label : item.name,
+									label : formatName(item.name),
 									value : item.cui
 								};
 							}));
@@ -51,14 +56,14 @@ $("#termSearch").autocomplete(
 					},
 					error : function(data, status, response) {
 						var error = "Response - " + JSON.stringify(response)
-								//+ "\nData - " + JSON.stringify(data)
-								+ "\nStatus - " + JSON.stringify(status);
+						// + "\nData - " + JSON.stringify(data)
+						+ "\nStatus - " + JSON.stringify(status);
 						displayError(error);
 						$("#loading").css('display', 'none');
 						setFocus();
 					},
-					beforeSend: function(){
-						if(currentRequest!=null){
+					beforeSend : function() {
+						if (currentRequest != null) {
 							currentRequest.abort();
 							$("#tabs").LoadingOverlay("hide");
 						}
@@ -69,7 +74,7 @@ $("#termSearch").autocomplete(
 						$("#relation").empty();
 						$("#relationRadioSelection").empty();
 						$("#relationRadioSelectionDesc").empty();
-						$("#hierarchyLayoutMenu").css("display","none");
+						$("#hierarchyLayoutMenu").css("display", "none");
 					}
 				});
 			},
@@ -80,25 +85,29 @@ $("#termSearch").autocomplete(
 				$("#tabs").LoadingOverlay("show");
 				$("#selectedConceptCUI").text(ui.item.value);
 				$("#termSearch").val(ui.item.label);
-				searchTerm = ui.item.label;
-				getCUI(ui.item.value);
+				searchTerm = reFormatName(ui.item.label);
+				getCUI(ui.item.value, searchTerm, true);
 				$("#visual").empty();
 				return false;
 			},
-			
+
 		});
 
-function getCUI(cui) {
+function getCUI(cui, term, displayPathFlag) {
 	$
 			.ajax({
 				url : '/umls/searchwithcui?cui=' + cui,
 				success : function(data, status, response) {
+					resetGlobalVariable();
 					var object = jQuery.parseJSON(data);
 					adjacencyMap.clear();
 					var radio = $("#relationRadioSelection");
 					radio.empty();
 					var CUIDiv = $("#CUI_Info");
 					CUIDiv.empty();
+					CUIDiv.append("<label id='" + term + "'>" + cui
+							+ "</label>");
+					searchTerm = term;
 					var parentNames = [], adjacencyNames = [], childNames = [];
 					var childObject, parentObject;
 					if (object != null) {
@@ -158,74 +167,82 @@ function getCUI(cui) {
 							}
 						}
 					}
-					conceptMap = toD3JFormat(searchTerm,childObject);
+					if (displayPathFlag)
+						displayPath(term);
+					conceptMap = toD3JFormat(searchTerm, childObject);
 					dendogramRadial(M2J(conceptMap));
-					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation(searchTerm, defaultRelation)));
+					dendogramRadialRelation(M2J(toD3JFormatSelectedRelation(
+							searchTerm, defaultRelation)));
 					checkSelection(defaultRelation, true);
 					changeRelationText(searchTerm, defaultRelation);
 					$("#hierarchyLayoutSelection").val("radial");
-					$("#hierarchyLayoutMenu").css("display","block");	
+					$("#hierarchyLayoutMenu").css("display", "block");
 				},
 				error : function(data, status, response) {
 					var error = "Response - " + JSON.stringify(response)
-							//+ "\nData - " + JSON.stringify(data)
-							+ "\nStatus - " + JSON.stringify(status);
+					// + "\nData - " + JSON.stringify(data)
+					+ "\nStatus - " + JSON.stringify(status);
 					displayError(error);
 					setFocus();
 				}
 			})
 }
 
-function getSynonyms(term){
-	var cui = $("label#"+term).text();
+function getSynonyms(term) {
+	var cui = $("label#" + term).text();
 	var ele = $("#synonyms");
 	ele.empty();
 	var innerText = "";
-	$.ajax({
-		url : '/umls/searchsynonyms?cui=' + cui,
-		success : function(data, status, response) {
-			var object = jQuery.parseJSON(data);
-			if(object!=null){
-				innerText+="<table><thead><tr><th>Name</th><th>Source</th></tr></thead><tbody>";
-				for(var source in object){
-					for(var i in object[source])
-						innerText+="<tr><td>"+object[source][i]+"</td><td>"+source+"</td></tr>";
+	$
+			.ajax({
+				url : '/umls/searchsynonyms?cui=' + cui,
+				success : function(data, status, response) {
+					var object = jQuery.parseJSON(data);
+					if (object != null) {
+						innerText += "<table><thead><tr><th>Name</th><th>Source</th></tr></thead><tbody>";
+						for ( var source in object) {
+							for ( var i in object[source])
+								innerText += "<tr><td>" + object[source][i]
+										+ "</td><td>" + source + "</td></tr>";
+						}
+					}
+					innerText += "</tbody></table>";
+					ele.append(innerText);
 				}
-			}
-			innerText+="</tbody></table>";
-			ele.append(innerText);
-		}
-	});
+			});
 	displaySynonymsDialog();
 }
 
-function getDefinitions(term){
-	var cui = $("label#"+term).text();
-	if(term==searchTerm)
+function getDefinitions(term) {
+	var cui = $("label#" + term).text();
+	if (term == searchTerm)
 		cui = $("#selectedConceptCUI").text();
 	var ele = $("#definitions");
 	ele.empty();
 	var innerText = "";
-	$.ajax({
-		url : '/umls/searchdef?cui=' + cui,
-		success : function(data, status, response) {
-			var object = jQuery.parseJSON(data);
-			if(object!=null){
-				innerText+="<table class='definitionTable'><tbody>";
-				if(object.length!=0){
-					for(var def in object){
-						if(def%2==0)
-							innerText+="<tr class='even'><td>"+object[def]+"</td></tr>";
-						else
-							innerText+="<tr><td>"+object[def]+"</td></tr>";
+	$
+			.ajax({
+				url : '/umls/searchdef?cui=' + cui,
+				success : function(data, status, response) {
+					var object = jQuery.parseJSON(data);
+					if (object != null) {
+						innerText += "<table class='definitionTable'><tbody>";
+						if (object.length != 0) {
+							for ( var def in object) {
+								if (def % 2 == 0)
+									innerText += "<tr class='even'><td style='padding:10px'>"
+											+ object[def] + "</td></tr>";
+								else
+									innerText += "<tr><td style='padding:10px'>"
+											+ object[def] + "</td></tr>";
+							}
+						} else
+							innerText += "<tr><td>No definition founds for <b>"
+									+ formatName(term) + "</b></td></tr>";
 					}
-				}else
-					innerText+="<tr><td>No definition founds for <b>"+formatName(term)+"</b></td></tr>";
-			}
-			innerText+="</tbody></table>";
-			ele.append(innerText);
-		}
-	});
+					innerText += "</tbody></table>";
+					ele.append(innerText);
+				}
+			});
 	displayDefinitionDialog(formatName(term));
 }
-
