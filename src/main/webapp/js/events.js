@@ -53,9 +53,12 @@ function formatGraphText(svg,addLink) {
 						el.text(d.name);
 				}
 				else{
-					var cui = $("#"+d.key).text();
-					el.append('a').attr('href','javascript:getCUI(\''+cui+'\',\''+d.key+'\',true)').text(
-							d.name.slice(0, 30) + " .. ...");
+					if(addLink){
+						var cui = $("#"+d.key).text();
+						el.append('a').attr('href','javascript:getCUI(\''+cui+'\',\''+d.key+'\',true)').text(d.name);
+					}
+					else
+						el.append('tspan').text(d.name.slice(0, 30) + " .. ...");
 				}
 				isSearchTerm = false;
 			});

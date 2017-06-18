@@ -6,15 +6,14 @@ function dendogramRadialRelation(relationalData) {
 	var nodes, links, splines, path;
 
 	width = $("#relation").width();
-	height = 900;
+	height = width/2;
 	rx = width / 2, ry = height / 2;
 	
-	var cluster = d3.layout.cluster().size([ 360, ry - ry/2 ]).sort(function(a, b) {
+	var cluster = d3.layout.cluster().size([360,ry/2]).sort(function(a, b) {
 		return d3.ascending(a.key, b.key);
 	});
 
 	var bundle = d3.layout.bundle();
-
 	var line = d3.svg.line.radial().interpolate("bundle").tension(.85).radius(
 			function(d) {
 				return d.y;
