@@ -1,0 +1,355 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	color: #d43535;
+	text-decoration: underline;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+body {
+	font-size: 12pt;
+	line-height: 1.75em;
+	font-family: sans-serif;
+	background: #030707 url('../images/grey.png');
+	color: #0a0b0b;
+}
+
+br.clear {
+	clear: both;
+}
+
+
+#main h2 {
+	color: #0e53ee;
+	font-size: 28px;
+	padding: 10px;
+	background-color: #ececec;
+	margin: 10px 0px 0px 10px;
+}
+
+img.left {
+	float: left;
+	margin: 5px 20px 20px 0;
+}
+
+img.top {
+	margin: 5px 0 20px 0;
+}
+
+ul {
+	margin-bottom: 1.5em;
+}
+
+.imageList {
+	list-style: none;
+}
+
+.imageList li {
+	clear: both;
+}
+
+#bg {
+	background: url('../images/shadow.png') top left repeat-x;
+	padding: 10px 0 40px 0;
+}
+
+#banner {
+	/*background-image: url("../images/strip.jpg");*/
+	background-repeat: repeat-x;
+	padding-bottom: 20px;
+}
+
+#box1 {
+	margin: 0px 0 25px 0;
+	overflow: hidden;
+}
+
+#box2 {
+	margin: 0px 0 25px 0;
+	overflow: hidden;
+}
+
+#visual {
+	min-height: 300px;
+	margin-top: 10px;
+	padding: 30px;
+	background: #ffffff;
+}
+
+#copyright {
+	margin: 40px 0 0 0;
+	text-align: center;
+	color: #707070;
+	font-size: 0.9em;
+}
+
+#copyright a {
+	color: #888888;
+}
+
+#footer {
+	margin-top: 2%;
+	position: relative;
+	padding: 30px;
+	background: #3ca9cd;
+	color: #addbea;
+}
+
+#footer a {
+	color: #e2f2f8;
+}
+
+#footer h2, #footer h3, #footer h4 {
+	color: #ffffff;
+}
+
+#footer ul {
+	list-style: none;
+	margin-bottom: 0;
+}
+
+#footer p {
+	margin-bottom: 0;
+}
+
+#footer ul li {
+	padding: 10px 0 10px 0;
+	border-top: dashed 1px #6dbfda;
+}
+
+#footer ul li.first {
+	padding-top: 0;
+	border-top: 0;
+}
+
+#footerContent {
+	width: 855px;
+	margin: 0px 0 0 265px;
+}
+
+#footerSidebar {
+	width: 180px;
+	float: left;
+}
+
+#header {
+	position: relative;
+	padding: 10px 10px 0px 10px;
+	height: 80px;
+	width: 90%;
+}
+
+#logo {
+	/* position: absolute; */
+	top: 10px;
+	left: 10px;
+	height: 50px;
+	line-height: 50px;
+}
+
+#logo a {
+	text-decoration: none;
+	color: #ffffff;
+}
+
+#logo h1 {
+	font-size: 2.75em;
+}
+
+#banner img {
+	width: 100%;
+	height: 10px;
+}
+
+#main {
+	position: relative;
+	padding: 0px;
+	margin: 10px 0 0 0;
+	width: 100%;
+	color: #0a0b0b;
+}
+
+#main a {
+	color: #262626;
+}
+
+#nav {
+	position: absolute;
+	right: 30px;
+	height: 30px;
+	top: 10px;
+	font-size: 1.1em;
+}
+
+#nav ul {
+	list-style: none;
+}
+
+#nav ul li {
+	float: left;
+	margin: 0 0.5em 0 0.5em;
+	padding: 0.25em 1.1em 0.25em 1.1em;
+}
+
+#nav ul li:HOVER {
+	background: #007fff;
+}
+
+#nav ul li.active {
+	background: #007fff;
+}
+
+#nav li a {
+	text-decoration: none;
+	color: #d9dada;
+}
+
+#menu td.active a {
+	color: #ffffff;
+}
+
+
+#menu td:HOVER:not(#logo) {
+	background: #007fff;
+}
+
+#menu td.active {
+	background: #007fff;
+}
+
+#menu td a {
+	text-decoration: none;
+	color: #d9dada;
+}
+
+
+#outer {
+	position: relative;
+	width: 90%;
+	margin: 0 auto;
+}
+
+#search input.button {
+	margin-left: 1em;
+	border: 0px;
+	color: #ffffff;
+	background: #d43535;
+	padding: 6px;
+}
+
+#search input.text {
+	border: dashed 1px #ffffff;
+	padding: 5px;
+}
+
+#leftSection {
+	/*float: left;*/
+	
+}
+
+#searchSection {
+	width: 100%;
+	color: #959797;
+}
+
+#searchSection a {
+	color: #d9dada;
+}
+
+#searchSection h2, #searchSection h3, #searchSection h4 {
+	color: #ffffff;
+}
+
+#searchSection ul {
+	list-style: none;
+}
+
+#searchSection ul li {
+	padding: 10px 0 10px 0;
+	border-top: dashed 1px #424545;
+}
+
+#searchSection ul li.first {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.node {
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: blue;
+	text-transform: capitalize;
+}
+
+.node:hover {
+	font: 300 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	fill: #000;
+	text-transform: capitalize;
+}
+
+.link {
+	stroke: black;
+	stroke-opacity: 1;
+	fill: none;
+	pointer-events: none;
+}
+
+path.arc {
+	cursor: move;
+	fill: #fff;
+}
+
+.link {
+	fill: none;
+	stroke: #1f77b4;
+	stroke-opacity: .8;
+	pointer-events: none;
+}
+
+.link.source, .link.target {
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+.node.target {
+	fill: #d62728 !important;
+}
+
+.link.source {
+	stroke: #d62728;
+}
+
+.node.source {
+	fill: #2ca02c;
+}
+
+.link.target {
+	stroke: #2ca02c;
+}
+
+
+.linkRel {
+	fill: none;
+	stroke: #1f77b4;
+	stroke-opacity: .8;
+	pointer-events: none;
+}
+
+
+.linkRel.source, .linkRel.target {
+	stroke-opacity: 1;
+	stroke-width: 2px;
+}
+
+.linkRel.source {
+	stroke: #d62728;
+}
+
+.linkRel.target {
+	stroke: #800080;
+}

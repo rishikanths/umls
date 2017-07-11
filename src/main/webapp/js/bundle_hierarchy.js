@@ -5,12 +5,12 @@ function dendogramRadial(hierarchyData) {
 	var width, height, rx, ry;
 	var div, bundle, line, cluster;
 	var nodes, splines, path;
-	
+	var offset = $("#hierarchy").offset();
 	width = $("#hierarchy").width();
-	height = 900;
+	height = width/2;
 	rx = width / 2, ry = height / 2;
 	
-	cluster = d3.layout.cluster().size([360,ry-ry/2]).sort(function(a, b) {
+	cluster = d3.layout.cluster().size([360,ry/2]).sort(function(a, b) {
 		return d3.ascending(a.key, b.key);
 	});
 
@@ -52,6 +52,8 @@ function dendogramRadial(hierarchyData) {
 		return !n.children;
 	})).enter().append("svg:g").attr("class", "node").attr("id", function(d) {
 		return "node-" + d.key;
+	}).attr("cui",function(d){
+		return $("#"+d.key).text();
 	}).attr("transform", function(d) {
 		return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
 	}).append("svg:text").attr("dx", function(d) {
@@ -71,7 +73,7 @@ function dendogramRadial(hierarchyData) {
 		});
 	});
 	enableDownload();
-	formatGraphText(svgHierarchy);
+	formatGraphText(svgHierarchy,true);
 }
 function mouse(e) {
 	return [ e.pageX - rx, e.pageY - ry ];

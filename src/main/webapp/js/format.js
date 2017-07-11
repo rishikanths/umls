@@ -71,7 +71,7 @@ function toD3JFormat(term, child) {
 		});
 	}else{
 		conceptMap.set(term,[]);
-		setMessage("hierarchyMessage",term+" doesn't have any childern.")
+		setMessage("hierarchyMessage",formatName(term)+" doesn't have any childern.")
 	}
 	return conceptMap;
 }

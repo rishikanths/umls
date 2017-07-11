@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>UMLS Visualizations</title>
+<title>Unified Medical Language System (UMLS) Visualization</title>
+<link rel="icon" href="images/favicon.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width">
 <script src="js/libraries/jquery-2.1.4.min.js"></script>
 <script src="js/libraries/jquery-ui-1.11.4/jquery-ui.js"></script>
 <script src="js/libraries/d3.js"></script>
 <script src="js/libraries/jquery.popupoverlay.js"></script>
+<script src="js/libraries/intro.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.5.0/introjs.css" />
 <link rel="stylesheet"
 	href="js/libraries/jquery-ui-1.11.4/jquery-ui.css" />
-<link rel="stylesheet" href="style.css" />
-<link rel="stylesheet" href="customize.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/introjs.min.css" />
+<link rel="stylesheet" href="css/customize.css" />
+<link rel="stylesheet" href="css/introduction.css" />
+
 </head>
 <body>
 	<div id="bg">
 		<div id="overlay-details"></div>
 		<div id="outer">
 			<div id="header">
-				<div id="logo">
+				<!-- <div id="logo">
 					<h1>
 						<a href="index.html">UMLS Visualization</a>
 					</h1>
@@ -25,84 +33,117 @@
 				<div id="nav">
 					<ul>
 						<li style="font-size: 18px"><a href="index.html">Search</a></li>
+						<li class=""><a href="tutorial.html">Tutorial</a></li>
 						<li class=""><a href="about.html">Project</a></li>
 						<li class=""><a href="umls.html">About UMLS</a></li>
 						<li class=""><a href="contact.html">Contact</a></li>
 					</ul>
 					<br class="clear">
-				</div>
+				</div> -->
+				<table style="width: 100%;text-align: center" id = "menu">
+					<tbody>
+						<tr>
+							<td id="logo">
+							<h1>
+								<a href="index.html">UMLS Visualization</a>
+							</h1>
+							</td>
+							<td><a href="index.html">Search</a></td>
+							<td><a href="tutorial.html">Tutorial</a></td>
+							<td><a href="about.html">Project</a></td>
+							<td><a href="umls.html">About UMLS</a></td>
+							<td><a href="contact.html">Contact</a></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			<div id="message"></div>
 			<div id="error"></div>
-			
 			<div id="main">
 				<div id="leftSection">
-					<div id="searchSection">
-						<input type="search" id="termSearch"
-							placeholder="Search UMLS for ......" autocomplete="on"> <input
-							type="text" id="selectedConceptCUI" style="display: none" />
+					<div id="searchSection"
+						data-intro='You can search for any medical concept by typing in the search box. 
+									As you type (more than 3 characters), the results will appear and you can make a selection as shown below.'
+						data-step="1">
+						<img src="images/information.jpg" width="30" height="30"
+							style="position: absolute; top: 5px; right: 10px;"
+							onclick="javascript:help(1);"> <input type="search"
+							id="termSearch" placeholder="Search UMLS for ......"
+							autocomplete="on"> <input type="text"
+							id="selectedConceptCUI" style="display: none" />
 					</div>
 				</div>
 				<div id="tabs">
 					<ul>
-						<!-- <li id="introduction"><a href="#introductionDiv">Introduction
-								</a></li>
-						-->
+						<!-- <li id="IntroductionView"><a href="#introductionDiv">Introduction</a></li> -->
 						<li id="hierarchyView"><a href="#hierarchyDiv">Hierarchy
 								View</a></li>
 						<li id="relationView"><a href="#relationDiv">Relations
 								View</a></li>
 					</ul>
-
 					<div id="hierarchyDiv" style="text-align: center">
 						<div id="info">
-							<img src="images/information.png" width="25" height="25" />
-							<p id="hierarchyViewInfo">
-								Hierarchy View tab renders all the <b>children (isa
-									relationship)</b> of the search term. For example, Apple 'isa'
-								Fruit and Banana 'isa' Fruit, that means Apples and Banana are
-								children of Fruit or Fruit is the parent of Apple and Banana.
+							<img src="images/information.png" width="25" height="25"
+								onclick="javascript:help(2);" />
+							<p id="hierarchyViewInfo"
+								data-intro="The Hierarchy View – displays all the direct children of the searched concept. For example
+									Fruit is a general term, Apple <b>is a</b> Fruit and further Gala Apple, Pink Lady, and Honey Crisp are also Apples. 
+									You can continue such hierarchy for Banana, Grapes, Organes, etc and all of the are children of Fruit. 	
+									Another example is our families. We are the children of our Parents, who are children of our grandparents and so on. "
+								data-step="2">
+								Hierarchy View tab renders all the direct <b>children (is-a
+									relationship)</b> of the search term.
+						</div>
+						<div id="conceptPathDiv" style="margin-top: 10px; display: none;">
+							<fieldset style="border: 1px dotted;" data-step="4"
+								data-intro="You can keep on browsing (click on term)to obtain the children of any term. The “Concept Path” 
+									shows the traversal path. It shows you where you have started and you current term. You can 
+									click on any term here to go back.">
+								<legend
+									style="text-align: center; font-size: 14px; font-weight: bold">Concept
+									Path <img src="images/information.png" width="13" style="padding:0 5px 0 5px;vertical-align: baseline;" height="13" 
+									onclick="javascript:help(4);"> </legend>
+								<div id="conceptPath" style="background-color: #e2ecfa"/>
+							</fieldset>
 						</div>
 						<div id="hierarchyMessage" style="margin-top: 10px;"></div>
 						<div id="synonymsText" style="text-align: left"></div>
-						<table style="width: 100%">
-							<tr>
-								<td>
-									<div id="hierarchyLayoutMenu"
-										style="display: none; text-align: left">
-										<label>Select a Layout:</label> <select
-											id="hierarchyLayoutSelection">
+						<div id="hierarchyLayoutMenu" style="display: none; text-align: left">
+							<table data-intro="You can switch the layout between Radial and Tree by changing the selection." data-step="3">
+								<tr>
+									<td><label>Select a Layout:</label> <select
+										id="hierarchyLayoutSelection">
 											<option value="radial">Radial</option>
 											<option value="tree">Tree</option>
-										</select>
-									</div>
-								</td>
-								<!-- <td>
-									<div id="downloadHDiv"
-										style="text-align: right; display: none;">
-										<input id="download" type="button" class="download"
-											value="Download Image" name="Download" />
-									</div>
-								</td> -->
-							</tr>
-						</table>
+									</select></td>
+									<td><img src="images/information.png" width="18" style="padding-left: 10px;vertical-align:sub;"
+										height="18" onclick="javascript:help(3);" /></td>
+								</tr>
+							</table>
+						</div>
 						<div id="hierarchy"></div>
 					</div>
 					<div id="relationDiv" style="text-align: center;">
 						<div id="info">
-							<img src="images/information.png" width="25" height="25" />
-							<p id="relationViewInfo">
+							<img src="images/information.png" width="25" height="25" onclick="javascript:help(5);"/>
+							<p id="relationViewInfo" data-intro="The Relations View shows all the relationships 
+										(apart from hierarchy) the search term has with the medical and non-medical terms. 
+										This similar to our regular relationships we encounter in your life. For example, 
+										“Dr. Saripalle” – “teaches at” – “Illinois State University” or 
+										“Fever” – “maybe treated by” – “Advil”.  Here, Fever and Advil are the term 
+										and “maybe treated by” is the relationship." data-step="5">
 								Relation View tab renders all the <b>relationships (other
-									then isa relationship)</b> of the search term.For example, Fever
-								'maybe_treated_by' Advil, that means the terms Fever and Advil
-								are related using 'maybe_treated_by' relationship.
+									then is-a )</b> of the search term.</p>
 						</div>
 						<div id="relationMessage"></div>
 						<div id="synonymsText" style="text-align: left"></div>
 						<div id="relationLabel">
-							<label>Select a Relationship</label>
+							<label> <img src="images/information.png" width="15" height="15" onclick="javascript:help(6);"/>
+								Select a Relationship</label>
 						</div>
-						<div id="relationRadioSelection"></div>
+						<div id="relationRadioSelection" data-intro="Only the selected relationships are displayed. 
+								The graph will change based on your selection. You can also hover over the terms to obtain the “Details” box with explanation 
+								and obtain the definition of the terms (similar to hierarchy)." data-step="6"></div>
 						<table style="width: 100%">
 							<tr>
 								<td><div id="relationRadioSelectionDesc"></div></td>
@@ -125,6 +166,9 @@
 		</div>
 	</div>
 	<script>
+		function help(step) {
+			introJs().goToStepNumber(step).start();
+		}
 		(function(i, s, o, g, r, a, m) {
 			i['GoogleAnalyticsObject'] = r;
 			i[r] = i[r] || function() {

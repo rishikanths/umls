@@ -32,7 +32,8 @@ public class SearchByCUI extends HttpServlet {
 			request.getSession();
 			DBQuery query = new DBQuery();
 			AbstractConcept concept = new Term();
-			query.getHierarchyInfomationByCUI(request.getParameter("cui"),0,concept);
+			query.getHierarchyInfomationByCUI(request.getParameter("cui"),concept);
+			//query.getHierarchyInfomationByCUI(request.getParameter("cui"),0,concept);
 			query.getAdjacencyInfomationByCUI(request.getParameter("cui"), concept);
 			
 			response.setContentType("application/text");

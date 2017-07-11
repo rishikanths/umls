@@ -1,0 +1,269 @@
+/* #overlay-details{
+	visibility: hidden;
+    width: 50%;
+    opacity: 1;
+    top: 15px !important;
+    padding: 20px;
+    position: fixed !important;
+    margin-left: -25%;
+    background: #fff;
+    max-height: 200px !important;
+    overflow:auto;
+}*/
+#termSearch {
+	height: 40px;
+	border-radius: 7px;
+	border-color: #CFD4CF;
+	text-align: center;
+	width: 100%;
+	padding: 5px;
+	font-size: 15px;
+}
+
+#information {
+	min-height:40px !important;
+	text-align: center;
+	font-size: 10px;
+}
+.rightArrow{
+	padding-right: 8px;
+	padding-left: 8px;
+	vertical-align: sub;
+}
+#hierarchy {
+	overflow: auto;
+}
+
+#hierarchyLayoutMenu select {
+	background: transparent;
+	width: 150px;
+	padding: 10px;
+	line-height: 1;
+	border: 1;
+	border-radius: 0;
+	height: 40px;
+}
+
+#hierarchyLayoutMenu select:HOVER {
+	border-color: #0128e2;
+	cursor: pointer;
+}
+
+.termInfo {
+	color: #0101DF;
+	font-family: monospace;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.relationInfo {
+	font-weight: bold;
+}
+
+#relationTypeDesc {
+	color: rgb(8, 162, 70)
+}
+
+#relationRadioSelection input {
+	margin-left: 15px;
+}
+
+#relationLabel {
+	text-align: left;
+	font-weight: bold;
+	padding: 15px 0 5px 20px;
+}
+
+#relationRadioSelectionDesc {
+	padding: 20px;
+}
+
+#semanticTypeBg {
+	background-color: beige;
+}
+
+#error {
+	display: none;
+	font-size: 120%;
+	background-color: #f7dfdf;
+	padding: 5px 0px 5px 0px;
+	text-align: center;
+	color: red;
+}
+
+#message {
+	display: none;
+	font-size: 120%;
+	background-color: #E6F8DD;
+	color: #006600;
+	text-align: center;
+	padding: 5px 0px 5px 0px;
+}
+
+.searchTerm { @extend node;
+	font-size: 120%;
+	fill: #3aa64a;
+	font-weight: bold;
+}
+
+#umls {
+	background-color: white;
+}
+
+#umls p {
+	padding: 10px 30px 10px 30px;
+}
+
+#about {
+	background-color: white;
+}
+
+#about p {
+	padding: 10px 30px 10px 30px;
+}
+
+#info {
+	text-align: left;
+	background-color: #f1f8ff;
+}
+
+#info p {
+	padding: 5px 0px 5px 15px;
+}
+
+#info img {
+	float: left;
+	padding: 5px 10px 0px 15px;
+}
+
+#contact {
+	background-color: #ffffff;
+	padding: 20px;
+	text-align: center;
+	font-size: 18px;
+}
+
+#meta ul {
+	padding-left: 90px;
+	padding-right: 90px;
+}
+
+#meta li {
+	list-style-type: circle;
+	list-style-position: outside;
+}
+#definition{
+	font-size: small;
+    color: #0a5a0a;
+    font-weight: bold;
+}
+#definitionSource{
+	color: #4343e3;
+    font-weight: bold;
+}
+#definition a{
+	text-decoration: none;
+}
+#definition a:HOVER{
+	cursor: pointer;
+}
+.definitionTable{
+	font-size: 12px;
+	line-height: 20px;
+}
+.even{
+	background-color:beige 
+}
+.treeMouseOver{
+	cursor: pointer;
+}
+.download{
+	font-size:medium;
+	padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    background-color:#a8cbee;
+}
+.ui-dialog {
+	position: fixed;
+	overflow: hidden;
+}
+/* loading - the AJAX indicator */
+.ui-autocomplete-loading {
+	background: white right center no-repeat;
+}
+
+/* scroll results */
+.ui-autocomplete {
+	max-height: 250px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 5px;
+}
+
+.ui-autocomplete li {
+	background: #EDEDED;
+	font-size: 16px;
+}
+
+.ui-autocomplete {
+	position: absolute;
+	cursor: default;
+}
+
+* html .ui-autocomplete {
+	width: 1px;
+} /* without this, the menu expands to 100% in IE6 */
+.ui-menu {
+	background-color: #EDEDED;
+	list-style: none;
+	padding-left: 20px;
+	padding-top: 15px;
+	display: block;
+	float: left;
+}
+
+.ui-menu {
+	margin-top: -3px;
+}
+
+.ui-menu .ui-menu-item {
+	margin: 0;
+	padding: 0;
+	zoom: 1;
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+.ui-menu .ui-menu-item a {
+	text-decoration: none;
+	display: block;
+	padding: .2em .4em;
+	line-height: 1.5;
+	zoom: 1;
+}
+
+.ui-menu .ui-menu-item a.ui-state-hover, .ui-menu .ui-menu-item a.ui-state-active
+	{
+	font-weight: normal;
+	margin: -1px;
+}
+
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+	height: 250px;
+}
+
+.ui-autocomplete li {
+	background: EDEDED;
+	color: black;
+	font-size: 16px;
+}
+
+.ui-autocomplete li:hover {
+	background-color: #F6FCB3;
+	font-weight: 550;
+}

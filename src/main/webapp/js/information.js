@@ -9,11 +9,11 @@ function detailedInformation(d, term){
 		focusTerm = term;
 	}
 	{
-		$( "#information" ).append("<p><span id='"+d.target.key+"' class='termInfo'>"+d.target.name
+		$( "#information" ).append("<span id='"+d.target.key+"' class='termInfo'>"+d.target.name
 				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.target.key+"')\">def</a>) </span></span>"
 				+"<a href='https://en.wikipedia.org/wiki/Is-a' target='_blank'> "
 				+"<span class='relationInfo'> is a </span></a> "
-				+"  <span id='"+d.source.key+"' class='termInfo'>"+d.source.name
+				+"&nbsp;<span id='"+d.source.key+"' class='termInfo'>"+d.source.name
 				+"<span id='definition' class='definition' title='Click for definiton'> (<a href=\"javascript:getDefinitions('"+d.source.key+"')\">def</a>) </span></span>"
 				+" or "
 				+"<span class='termInfo'>"+(d.source.name)+"</span> <span class='relationInfo'> is the parent of </span>" 
@@ -38,7 +38,7 @@ function detailedInformation(d, term){
 		 * horizontal:'center', vertical:'center', escape:true, outline:true });
 		 * $('#overlay-details').popup('show');
 		 */		
-		$( "#information" ).append(getSemanticType(d.source,d.target));
+		//$( "#information" ).append(getSemanticType(d.source,d.target));
 		displayDialog(focusTerm);
 		// findSynonyms();
 	}
@@ -73,7 +73,7 @@ function detailedRelationInformation(d, term){
 						 * "href='https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/abbreviations.html'>UMLS
 						 * Abbreviations</a></p>");
 						 */
-				$( "#information" ).append(getSemanticType(d.source,d.target));
+				//$( "#information" ).append(getSemanticType(d.source,d.target));
 				displayDialog(d.target.name);
 			}
 			if(searchTerm == term){
@@ -99,6 +99,7 @@ function getSemanticType(source,target){
 	
 	return typeInfo;
 }
+
 function displayDialog(titleName){
 	if ($("#definitions").dialog("instance") != null &&
 			$("#definitions").dialog("isOpen"))
@@ -146,3 +147,52 @@ function findSynonyms(){
 	});
 }
 
+var conceptPath = [];
+function displayPath(term){
+	var div, cui;
+	div= $("#conceptPath");
+	if(term!="")
+		cui = $("label#"+term).text();
+	if(conceptPath.length == 0){
+		div.append("<span class='termInfo' cui='"+cui+"' term='"+term+"'>"+"<a href=\"javascript:computeDisplayPath('"+cui+"')\">"+term+"</a>"+"</span>");
+		conceptPath = conceptPath.concat(Array.from(div.children()));
+		div.empty();
+	}
+	else{
+		div.empty();
+		for(i =0;i<conceptPath.length;i++){
+			div.append(conceptPath[i].outerHTML);
+		}
+		if(conceptPath.length == 1 || conceptPath.length%2 != 0)
+			div.append("<img class='rightArrow' width='16' height='16' src='images/rightArrow2.png'/>");
+		div.append("<span class='termInfo' cui='"+cui+"' term='"+term+"'>" +
+				"<a href=\"javascript:computeDisplayPath('"+cui+"')\">"+formatName(term)+"</a></span>");
+		conceptPath  = [];
+		conceptPath = conceptPath.concat(Array.from(div.children()));
+		$("#conceptPathDiv").css("display","inline");
+	}
+}
+
+function computeDisplayPath(cui){
+	var path = "", arr = [], e,img,i=0;
+	do{
+		e  = conceptPath[i];
+		arr.push(e);
+		i++;
+	}while(e.getAttribute("cui")!=cui);
+	e = conceptPath[i-1];
+	conceptPath = [];
+	var div= $("#conceptPath");
+	div.empty();
+	if(arr.length == 1){
+		conceptPath.push(e);
+		getCUI(e.getAttribute("cui"),e.getAttribute("term"),false);
+		$("#conceptPathDiv").css("display","none");
+	}else{
+		conceptPath = conceptPath.concat(arr);
+		for(i =0;i<arr.length;i++){
+			div.append(arr[i].outerHTML);
+		}
+		getCUI(e.getAttribute("cui"),e.getAttribute("term"),false);
+	}
+}

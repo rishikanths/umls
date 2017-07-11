@@ -40,8 +40,11 @@ function treeLayout(data) {
 	var node = treeSVG.selectAll("g.node").data(treeNodes, function(d) {
 		return d.id || (d.id = ++i);
 	});
-	var nodeEnter = node.enter().append("g").attr("class", treeNodeClass).attr(
-			"transform", function(d) {
+	var nodeEnter = node.enter().append("g")
+			.attr("class", treeNodeClass)
+			.attr("cui",function(d){
+					return $("#"+d.key).text();
+			}).attr("transform", function(d) {
 				return "translate(" + data.y0 + "," + data.x0 + ")";
 			}).style("opacity", 1e-6);
 	// Enter any new nodes at the parent's previous position.
@@ -115,6 +118,8 @@ function treeLayout(data) {
 		d.x0 = d.x;
 		d.y0 = d.y;
 	});
+	
+	formatGraphText(treeSVG,true);
 }
 
 function treeNodeClick(d) {
