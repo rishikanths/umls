@@ -1,6 +1,3 @@
-/**
- * 
- */
 
 function add2Map(map,key,value){
 	
@@ -27,24 +24,35 @@ function arr2String(value){
 	return str;
 }
 
+function setFocus() {
+	$("#termSearch").focus();
+}
+
+function setMessage(ele, message) {
+	$("#" + ele).append("<p style='padding:10px;background-color: #f6f6f6;'><b>"+ message + "</b></p>");
+}
+
+function displayError(error) {
+	$("#error").empty();
+	$("#error").append("<p>" + error + "</p>");
+	$("#error").css('display', 'block');
+}
+
+function displayMessage(msg) {
+	$("#message").empty();
+	$("#message").append("<p>" + msg + "</p>");
+	$("#message").css('display', 'block');
+}
+
 function resetGlobalVariable(){
 	
-	// From format.js;
 	processedConcepts = [];
 	unProcessedConcepts = [];
-	// From information.js
-	focusTerm = "";
-	//From search.js
-	adjacencyMap = new Map();
-	termSemanticTypes = new Map();
-	defaultRelation = "";
-	searchTerm = "";
-	conceptMap = new Map();
-	if ($("#information").dialog("instance") != null)
-		$("#information").dialog("close");
-	if ($("#definitions").dialog("instance") != null)
-		$("#definitions").dialog("close");
+	
 	$("#hierarchyMessage").empty();
+	information.reset();
+	dialogs.closeInfoDialog();
+	dialogs.closeDefinitionDialog();
 	setFocus();
 }
 

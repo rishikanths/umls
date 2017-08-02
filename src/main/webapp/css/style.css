@@ -141,16 +141,16 @@ ul {
 #header {
 	position: relative;
 	padding: 10px 10px 0px 10px;
-	height: 80px;
+	height: 60px;
 	width: 90%;
 }
 
 #logo {
-	/* position: absolute; */
 	top: 10px;
 	left: 10px;
 	height: 50px;
 	line-height: 50px;
+	text-align: left;
 }
 
 #logo a {
@@ -231,7 +231,7 @@ ul {
 
 #outer {
 	position: relative;
-	width: 90%;
+	width: 93%;
 	margin: 0 auto;
 }
 
@@ -352,4 +352,7 @@ path.arc {
 
 .linkRel.target {
 	stroke: #800080;
+}
+#tabs{
+	margin-top: 5px;
 }
