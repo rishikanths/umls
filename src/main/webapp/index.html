@@ -25,21 +25,6 @@
 		<div id="overlay-details"></div>
 		<div id="outer">
 			<div id="header">
-				<!-- <div id="logo">
-					<h1>
-						<a href="index.html">UMLS Visualization</a>
-					</h1>
-				</div>
-				<div id="nav">
-					<ul>
-						<li style="font-size: 18px"><a href="index.html">Search</a></li>
-						<li class=""><a href="tutorial.html">Tutorial</a></li>
-						<li class=""><a href="about.html">Project</a></li>
-						<li class=""><a href="umls.html">About UMLS</a></li>
-						<li class=""><a href="contact.html">Contact</a></li>
-					</ul>
-					<br class="clear">
-				</div> -->
 				<table style="width: 100%;text-align: center" id = "menu">
 					<tbody>
 						<tr>
@@ -75,7 +60,6 @@
 				</div>
 				<div id="tabs">
 					<ul>
-						<!-- <li id="IntroductionView"><a href="#introductionDiv">Introduction</a></li> -->
 						<li id="hierarchyView"><a href="#hierarchyDiv">Hierarchy
 								View</a></li>
 						<li id="relationView"><a href="#relationDiv">Relations
@@ -108,6 +92,7 @@
 						</div>
 						<div id="hierarchyMessage" style="margin-top: 10px;"></div>
 						<div id="synonymsText" style="text-align: left"></div>
+						
 						<div id="hierarchyLayoutMenu" style="display: none; text-align: left">
 							<table data-intro="You can switch the layout between Radial and Tree by changing the selection." data-step="3">
 								<tr>
@@ -123,19 +108,36 @@
 						</div>
 						<div id="hierarchy"></div>
 					</div>
+					
 					<div id="relationDiv" style="text-align: center;">
 						<div id="info">
-							<img src="images/information.png" width="25" height="25" onclick="javascript:help(5);"/>
-							<p id="relationViewInfo" data-intro="The Relations View shows all the relationships 
+							<table><tr><td><img src="images/information.png" width="25" height="25" onclick="javascript:help(5);"/></td>
+							<td><div><label id="relationViewInfo" data-intro="The Relations View shows all the relationships 
 										(apart from hierarchy) the search term has with the medical and non-medical terms. 
 										This similar to our regular relationships we encounter in your life. For example, 
 										“Dr. Saripalle” – “teaches at” – “Illinois State University” or 
 										“Fever” – “maybe treated by” – “Advil”.  Here, Fever and Advil are the term 
-										and “maybe treated by” is the relationship." data-step="5">
-								Relation View tab renders all the <b>relationships (other
-									then is-a )</b> of the search term.</p>
-						</div>
+										and “maybe treated by” is the relationship." data-step="5">Relation View tab renders all the <b>relationships (other then is-a)</b> of the search term.</label> <label id="relationRadioSelectionDesc"></label></div>
+							</td></tr></table>
 						<div id="relationMessage"></div>
+						<!-- <table style="width: 100%">
+							<tr id="relationNavigation" style="display:none">
+								<td>
+									<div id="relationNavigationDiv" style="background: #f1f8ff;">
+	    								<a id="leftLink" href="javascript:relationPagination(-1);" style="  padding-right: 30px;">
+	    									<img src="images/leftArrow2.png" height="20" width="20">
+	    								</a>
+	    								<span style="background:#f1f8ff;">Use arrows to explore other terms.</span> 
+	    								<a id="rightLink"  href="javascript:relationPagination(1)" style="padding-left: 30px;">
+	    									<img src="images/rightArrow2.png" height="20" width="20">
+	    								</a>
+    								</div>
+    							</td>
+							</tr>
+						</table> -->														
+					</div>
+					
+					<div id="relationListDiv">
 						<div id="synonymsText" style="text-align: left"></div>
 						<div id="relationLabel">
 							<label> <img src="images/information.png" width="15" height="15" onclick="javascript:help(6);"/>
@@ -144,17 +146,22 @@
 						<div id="relationRadioSelection" data-intro="Only the selected relationships are displayed. 
 								The graph will change based on your selection. You can also hover over the terms to obtain the “Details” box with explanation 
 								and obtain the definition of the terms (similar to hierarchy)." data-step="6"></div>
-						<table style="width: 100%">
-							<tr>
-								<td><div id="relationRadioSelectionDesc"></div></td>
-								<!-- <td><div id="downloadRDiv"
-										style="text-align: right; display: none;">
-										<input id="download" type="button" class="download"
-											value="Download Image" name="Download" />
-									</div></td> -->
-							</tr>
-						</table>
-						<div id="relation" style="text-align: center"></div>
+						
+					</div>
+					<div id = "relationSVGDiv">
+						<table style="width:100%"><tr><td>
+							<div id="relationNavigation" style="display:none">
+								<a id="leftLink" href="javascript:relationPagination(-1);" style="  padding-right: 30px;">
+			    					<img src="images/leftArrow2.png" height="30" width="30"></a>
+			    				<a id="rightLink"  href="javascript:relationPagination(1)" style="padding-left: 30px;">
+			    					<img src="images/rightArrow2.png" height="30" width="30">
+			    				</a>
+			    			</div>
+		    			</td></tr>
+		    			<tr><td>
+							<div id="relation" style="text-align: center;"></div>
+						</td></tr></table>
+					</div>
 					</div>
 				</div>
 				<div id="information" title="Details"></div>
@@ -162,7 +169,8 @@
 				<div id="definitions" title="Definitions"></div>
 			</div>
 			<div id="CUI_Info" style="display: none"></div>
-			<div id="footer"></div>
+			<label id="pagniationValue" style="display: none">0</label>
+			<div id="footer" style="clear:both"></div>
 		</div>
 	</div>
 	<script>
@@ -184,22 +192,16 @@
 		ga('create', 'UA-83324675-1', 'auto');
 		ga('send', 'pageview');
 	</script>
+	<script type="text/javascript" src="js/ajax.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
-	<script type="text/javascript" src="js/packages.js"></script>
-	<script type="text/javascript" src="js/tree_layout.js"></script>
+	<script type="text/javascript" src="js/graphHelper.js"></script>
 	<script type="text/javascript" src="js/bundle_hierarchy.js"></script>
 	<script type="text/javascript" src="js/bundle_adjacency.js"></script>
+	<script type="text/javascript" src="js/bundle_tree.js"></script>
 	<script type="text/javascript" src="js/format.js"></script>
 	<script type="text/javascript" src="js/events.js"></script>
 	<script type="text/javascript" src="js/information.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
 	<script type="text/javascript" src="js/loadingoverlay.min.js"></script>
-	<!-- <script type="text/javascript" src="js/saveSvgAsPng.js"></script>
-	<script type="text/javascript"
-		src="http://gabelerner.github.io/canvg/rgbcolor.js"></script>
-	<script type="text/javascript"
-		src="http://gabelerner.github.io/canvg/StackBlur.js"></script>
-	<script type="text/javascript"
-		src="http://gabelerner.github.io/canvg/canvg.js"></script> -->
 </body>
 </html>

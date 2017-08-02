@@ -52,12 +52,15 @@
 .termInfo {
 	color: #0101DF;
 	font-family: monospace;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: bold;
 }
 
 .relationInfo {
 	font-weight: bold;
+	font-size: 14px;
+	font-family: monospace;
+	color: green;
 }
 
 #relationTypeDesc {
@@ -75,7 +78,7 @@
 }
 
 #relationRadioSelectionDesc {
-	padding: 20px;
+	/* padding-top: 20px; */
 }
 
 #semanticTypeBg {
@@ -184,6 +187,43 @@
     font-weight: bold;
     background-color:#a8cbee;
 }
+
+#relationListDiv{
+	float: left;
+    width: 22%;
+    background: white;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: -1.4em;
+}
+#relationSVGDiv{
+	float: right;
+    width: 80%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 5px;
+    margin-right: -1.4em;
+    background: white;
+}
+#radioTable td{
+	text-align:left;
+	vertical-align: middle;
+	font-size: 13px;
+}
+#radioTable input[type="radio"]{
+    margin-right:2px;
+}
+#leftLink{
+	padding-left: 30px;
+    padding-top: 10px;
+    float: left;
+}
+#rightLink{
+	padding-right: 90px;
+    padding-top: 10px;
+    float: right;
+}
+
 .ui-dialog {
 	position: fixed;
 	overflow: hidden;

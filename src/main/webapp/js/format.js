@@ -14,6 +14,10 @@ var processedConcepts = [];
 var unProcessedConcepts = [];
 var relationDescription = new Map();
 var conceptMap;
+/**
+ * Every UMLS relationship has a type. The fully qualified type name if required. 
+ * The application initially displayed this information, but the users's didnt understand it or ignored it. 
+ */
 $(function() {
 	relationDescription.set("AQ", "Allowed qualifier");
 	relationDescription.set("CHD",
@@ -36,7 +40,21 @@ $(function() {
 			"has sibling relationship in a Metathesaurus source vocabulary.");
 	relationDescription.set("SY", "source asserted synonymy.");
 });
-
+/**
+ * toD3JFormat converts the search term child concepts into a format consumable
+ * by the d3js graph structure. This function was initially written to handle the following use case. 
+ * The application queried for all the child concepts of a search term until the depth of 4. 
+ * This means, if A is the search concept, then let B C D be the direct children (Level 1) of A.
+ * Then we search for all the child of B C D, Level 2 and so on.
+ * 
+ * In this version, we only show the direction children, i.e. B C D of A. The user can click on 
+ * B or C or D to get its direct children. This reduces information overload and graph clutter. 
+ * However, the function remains the same. 
+ * 
+ * @param term
+ * @param child
+ * @returns {Map}
+ */
 function toD3JFormat(term, child) {
 	addToList(term, "UP");
 	var conceptMap = new Map();
@@ -46,7 +64,7 @@ function toD3JFormat(term, child) {
 			var cName = c.name;
 			if ($.inArray(cName, unProcessedConcepts) == -1
 					&& $.inArray(cName, processedConcepts) == -1) {
-				add2Map(termSemanticTypes, cName, c.semanticTypes);
+				add2Map(search.getConceptSemanticTypes(), cName, c.semanticTypes);
 				if (conceptMap.get(term) != null)
 					imports = conceptMap.get(term);
 				imports.push(cName);
@@ -80,6 +98,7 @@ function toD3JTreeFormat(term){
 	
 	var data;
 	data = constructTree(term);
+	
 	function constructTree(term){
 		var temp = {};
 		var child = [];
@@ -104,11 +123,11 @@ function toD3JTreeFormat(term){
 	return data;
 }
 
-function M2J(conceptMap) {
+function M2J(map) {
 	var d3JSONRadial = {
 		data : []
 	};
-	conceptMap.forEach(function(v, k) {
+	map.forEach(function(v, k) {
 		d3JSONRadial.data.push({
 			"name" : k,
 			"imports" : v
@@ -134,8 +153,13 @@ function removeFromList(term, type) {
 	else if (type == "P")
 		unProcessedConcepts.splice(unProcessedConcepts.indexOf(term), 1);
 }
-/*
+
+/**
  * Converts the relationship map (obtained from search.js) to the radial format.
+ * 
+ * @param term The search term
+ * @param map holds all the relational information about the search term. 
+ * @returns {Map}
  */
 function toD3JFormatRelation(term, map) {
 	var conceptMap = new Map();
@@ -149,9 +173,14 @@ function toD3JFormatRelation(term, map) {
 	conceptMap.set(term, imports);
 	return conceptMap;
 }
-/*
+
+/**
  * Generates the radial format based on the relation selected by the user. The
  * function uses the relationships populated in the adjacencyMap variable.
+ * 
+ * @param term
+ * @param relation
+ * @returns {Map}
  */
 function toD3JFormatSelectedRelation(term, relation) {
 	var conceptMap = new Map();

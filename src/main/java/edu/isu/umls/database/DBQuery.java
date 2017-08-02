@@ -28,15 +28,19 @@ import edu.isu.umls.utils.LoggerUtil;
  */
 public class DBQuery {
 
+	enum QUERY{
+		Hierarchy,
+		Adjacency
+	}
+	
+	
 	private final static Logger logger = LogManager.getLogger(DBQuery.class.getName());
 
-	// private Session session = null;
 	private Connection dbConnection = null;
 	private final int LIMIT = 30;
-	private final int DEPTH = 2;
-
-	private final int CONCEPT_LIMIT = 100;
-
+	
+	private final String UNKNOWN_RELA = "unknown";
+	
 	/**
 	 * Obtains a data connection from the data source Check
 	 * {@link DataConnection}
@@ -73,7 +77,7 @@ public class DBQuery {
 	 */
 	public List<AbstractConcept> searchByString(String value) {
 		List<AbstractConcept> concepts = null;
-		List<Object[]> results = new ArrayList<>();
+		List<String[]> results = new ArrayList<>();
 		try {
 			getConnection();
 			{
@@ -82,9 +86,9 @@ public class DBQuery {
 				stmt.setMaxRows(LIMIT);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					Object o[] = new Object[2];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
+					String o[] = new String[2];
+					o[0] = rs.getString(1);
+					o[1] = rs.getString(2);
 					results.add(o);
 				}
 				stmt.close();
@@ -106,7 +110,7 @@ public class DBQuery {
 	 */
 	public AbstractConcept searchByCUI(String cui) {
 		AbstractConcept concept = null;
-		List<Object[]> results = new ArrayList<>();
+		List<String[]> results = new ArrayList<>();
 		try {
 			getConnection();
 			{
@@ -115,9 +119,9 @@ public class DBQuery {
 				stmt.setMaxRows(LIMIT);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					Object o[] = new Object[2];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
+					String o[] = new String[2];
+					o[0] = rs.getString(1);
+					o[1] = rs.getString(2);
 					results.add(o);
 				}
 				stmt.close();
@@ -173,7 +177,7 @@ public class DBQuery {
 	 */
 	public List<AbstractType> getSemanticType(String cui) {
 		List<AbstractType> type = null;
-		List<Object[]> results = new ArrayList<>();
+		List<String[]> results = new ArrayList<>();
 		try {
 
 			getConnection();
@@ -182,9 +186,9 @@ public class DBQuery {
 				stmt.setString(1, cui);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					Object o[] = new Object[2];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
+					String o[] = new String[2];
+					o[0] = rs.getString(1);
+					o[1] = rs.getString(2);
 					results.add(o);
 				}
 				stmt.close();
@@ -199,237 +203,111 @@ public class DBQuery {
 		return type;
 	}
 
-	/**
-	 * Get all the information associated with a CUI, which includes its name,
-	 * relationships and assigned semantic type(s)
-	 * 
-	 * @param cui
-	 *            The CUI of the UMLS concept
-	 * @return {@link AbstractConcept}
-	 */
-	public AbstractConcept getHierarchyInfomationByCUI(String cui, AbstractConcept concept) {
-		List<Object[]> results = new ArrayList<>();
-		try {
-			getConnection();
-			{
-				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
-				stmt.setString(1, cui);
-				ResultSet rs = stmt.executeQuery();
-				while (rs.next()) {
-					Object o[] = new Object[7];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
-					o[2] = (Object) rs.getString(3);
-					o[3] = (Object) rs.getString(4);
-					o[4] = (Object) rs.getString(5);
-					o[5] = (Object) rs.getString(6);
-					o[6] = (Object) rs.getString(7);
-					results.add(o);
-				}
-				stmt.close();
-			}
-			closeConnection();
-
-			if (concept == null)
-				concept = new Term();
-			boolean setOnce = true;
-
-			int rows = results.size();
-			if (rows != 0) {
-				for (Object[] o : results) {
-					if (setOnce) {
-						concept.setName(ConceptMapper.normalizeName(o[2].toString()));
-						concept.setCui(cui);
-						AbstractType type = new SemanticType();
-						type.setName(o[6].toString());
-						type.setTypeId(o[5].toString());
-						concept.addSemanticType(type);
-						setOnce = false;
-					}
-					String rel = o[3].toString();
-					String conceptCUI2 = o[0].toString();
-					AbstractConcept cui2 = searchByCUI(conceptCUI2);
-					cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
-					if (rel.equals("PAR")) {
-						concept.addToChildern(cui2);
-					}
-				}
-			} else {
-				concept = searchByCUI(cui);
-				concept.setName(ConceptMapper.normalizeName(concept.getName()));
-				AbstractType type = getSemanticType(cui).get(0);
-				concept.addSemanticType(type);
-			}
-		} catch (Exception e) {
-			LoggerUtil.logError(logger, e);
-		}
-
-		return concept;
-	}
-
 	
+	private void getInfomationByCUI(String cui, AbstractConcept sourceConcept,QUERY query) {
+		List<String[]> results = new ArrayList<>();
+		try {
+			getConnection();
+			{
+				PreparedStatement stmt = null;
+				if(query.equals(QUERY.Hierarchy))
+					stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
+				else
+					stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_RELATIONS);
+				stmt.setString(1, cui);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					String o[] = new String[10];
+					o[0] = rs.getString(1); // CUI1
+					o[1] = rs.getString(2); // STR
+					o[2] = rs.getString(3); // STY
+					o[3] = rs.getString(4); // TUI
+					o[4] = rs.getString(5); // REL
+					o[5] = rs.getString(6); // RELA
+					o[6] = rs.getString(7); // CUI2
+					o[7] = rs.getString(8); // STR
+					o[8] = rs.getString(9); // STY
+					o[9] = rs.getString(10); // TUI
+					results.add(o);
+				}
+				stmt.close();
+			}
+			closeConnection();
+
+			if (sourceConcept == null)
+				sourceConcept = new Term();
+			boolean setOnce = true;
+
+			int rows = results.size();
+			if (rows != 0) {
+				for (String[] o : results) {
+					if (setOnce) {
+						buildConcept(sourceConcept, o[7], o[6], o[8], o[9]);
+						setOnce = false;
+					}
+					AbstractConcept objectConcept = new Term();
+					buildConcept(objectConcept, o[1], o[0], o[2], o[3]);
+					if(query.equals(QUERY.Hierarchy)){
+						
+						sourceConcept.addToChildern(objectConcept);
+					}else{
+						Relationship relationship = new Relationship();
+
+						relationship.setRelationType(o[4]);
+						if (o[5] != null)
+							relationship.setRelationName(o[5]);
+						else
+							relationship.setRelationName(UNKNOWN_RELA);
+						RelationTo relTo = new RelationTo();
+						relTo.setObject(objectConcept);
+						relTo.setPredicate(relationship);
+						sourceConcept.addToAdjacency(relTo);
+					}
+				}
+			} else {
+				sourceConcept = searchByCUI(cui);
+				sourceConcept.setName(ConceptMapper.normalizeName(sourceConcept.getName()));
+				AbstractType type = getSemanticType(cui).get(0);
+				sourceConcept.addSemanticType(type);
+			}
+		} catch (Exception e) {
+			LoggerUtil.logError(logger, e);
+		}
+	}
+
 	/**
-	 * Get all the information associated with a CUI, which includes its name,
-	 * relationships and assigned semantic type(s)
+	 * Get the hierarchical information associated with a CUI, which includes its name,
+	 * children and assigned semantic type(s)
 	 * 
 	 * @param cui
 	 *            The CUI of the UMLS concept
 	 * @return {@link AbstractConcept}
 	 */
-	public AbstractConcept getHierarchyInfomationByCUI(String cui, int depth, AbstractConcept concept) {
-		List<Object[]> results = new ArrayList<>();
-		try {
-			getConnection();
-			{
-				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_HIERARCHY);
-				stmt.setString(1, cui);
-				ResultSet rs = stmt.executeQuery();
-				while (rs.next()) {
-					Object o[] = new Object[7];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
-					o[2] = (Object) rs.getString(3);
-					o[3] = (Object) rs.getString(4);
-					o[4] = (Object) rs.getString(5);
-					o[5] = (Object) rs.getString(6);
-					o[6] = (Object) rs.getString(7);
-					results.add(o);
-				}
-				stmt.close();
-			}
-			closeConnection();
+	public AbstractConcept getHierarchyInfomationByCUI(String cui, AbstractConcept sourceConcept) {
+		getInfomationByCUI(cui, sourceConcept, QUERY.Hierarchy);
 
-			if (concept == null)
-				concept = new Term();
-			boolean setOnce = true;
-
-			int rows = results.size();
-			if (rows != 0) {
-				for (Object[] o : results) {
-					if (setOnce) {
-						concept.setName(ConceptMapper.normalizeName(o[2].toString()));
-						concept.setCui(cui);
-						AbstractType type = new SemanticType();
-						type.setName(o[6].toString());
-						type.setTypeId(o[5].toString());
-						concept.addSemanticType(type);
-						setOnce = false;
-					}
-					String rel = o[3].toString();
-					String conceptCUI2 = o[0].toString();
-					AbstractConcept cui2 = searchByCUI(conceptCUI2);
-					cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
-					/*
-					 * if(rel.equals("CHD")) concept.addToHierarchy(cui2); else
-					 */
-					if (rel.equals("PAR")) {
-						// System.out.println("Parent - " + concept.getName() +
-						// " - " + depth);
-						if (depth != DEPTH) {
-							depth++;
-							// System.out.println("Child - " + cui2.getName() +
-							// " - " + depth);
-							AbstractConcept t = getHierarchyInfomationByCUI(cui2.getCui(), depth, null);
-							depth--;
-							concept.addToChildern(t);
-							if (concept.getChildren().size() == CONCEPT_LIMIT) {
-								// System.out.println("Breaking off ....
-								// "+depth);
-								break;
-							}
-						} else {
-							concept.addToChildern(cui2);
-							// System.out.println("Final Child - " +
-							// cui2.getName() + " - " + depth);
-							if (concept.getChildren().size() == CONCEPT_LIMIT) {
-								// System.out.println("Breaking off ....
-								// "+depth);
-								break;
-							}
-							continue;
-						}
-					}
-				}
-			} else {
-				concept = searchByCUI(cui);
-				concept.setName(ConceptMapper.normalizeName(concept.getName()));
-				AbstractType type = getSemanticType(cui).get(0);
-				concept.addSemanticType(type);
-			}
-		} catch (Exception e) {
-			LoggerUtil.logError(logger, e);
-		}
-
-		return concept;
+		return sourceConcept;
 	}
 
-	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept concept) {
-		List<Object[]> results = new ArrayList<>();
-		try {
-			getConnection();
-			{
-				PreparedStatement stmt = dbConnection.prepareStatement(DBStatements.SEARCH_CONCEPT_RELATIONS);
-				stmt.setString(1, cui);
-				ResultSet rs = stmt.executeQuery();
-				while (rs.next()) {
-					Object o[] = new Object[7];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
-					o[2] = (Object) rs.getString(3);
-					o[3] = (Object) rs.getString(4);
-					o[4] = (Object) rs.getString(5);
-					o[5] = (Object) rs.getString(6);
-					o[6] = (Object) rs.getString(7);
-					results.add(o);
-				}
-				stmt.close();
-			}
-			closeConnection();
+	/**
+	 * Get the relational information associated with a CUI, which includes its name,
+	 * relationship, relationship type and assigned semantic type(s).
+	 * 
+	 * https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/abbreviations.html
+	 * 
+	 * @param cui
+	 *            The CUI of the UMLS concept
+	 * @return {@link AbstractConcept}
+	 */
+	public AbstractConcept getAdjacencyInfomationByCUI(String cui, AbstractConcept sourceConcept) {
 
-			if (concept == null)
-				concept = new Term();
-			boolean setOnce = true;
-			for (Object[] o : results) {
-				if (setOnce) {
-					concept.setName(ConceptMapper.normalizeName(o[2].toString()));
-					concept.setCui(cui);
-					AbstractType type = new SemanticType();
-					type.setName(o[6].toString());
-					type.setTypeId(o[5].toString());
-					concept.addSemanticType(type);
-					setOnce = false;
-				}
-
-				String rela = "N/A";
-				if (o[4] != null)
-					rela = o[4].toString();
-				String conceptCUI2 = o[0].toString();
-				AbstractConcept cui2 = searchByCUI(conceptCUI2);
-				cui2.setName(ConceptMapper.normalizeName(cui2.getName()));
-				Relationship relationship = new Relationship();
-
-				relationship.setRelationType(o[3].toString());
-				if (rela != null)
-					relationship.setRelationName(rela);
-				else
-					relationship.setRelationName("N/A");
-				RelationTo relTo = new RelationTo();
-				relTo.setObject(cui2);
-				relTo.setPredicate(relationship);
-
-				concept.addToAdjacency(relTo);
-			}
-
-		} catch (Exception e) {
-			LoggerUtil.logError(logger, e);
-		}
-
-		return concept;
+		getInfomationByCUI(cui, sourceConcept, QUERY.Adjacency);
+		
+		return sourceConcept;
 	}
 
 	public List<String> getConceptDefinitons(String cui) {
 		List<String> results = new ArrayList<String>();
-		List<Object[]> queryResults = new ArrayList<>();
 		try {
 			getConnection();
 			{
@@ -437,24 +315,13 @@ public class DBQuery {
 				stmt.setString(1, cui);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					Object o[] = new Object[4];
-					o[0] = (Object) rs.getString(1);
-					o[1] = (Object) rs.getString(2);
-					o[2] = (Object) rs.getString(3);
-					o[3] = (Object) rs.getString(4);
-					queryResults.add(o);
+					results.add(
+							"According to <span id='definitionSource'>" + rs.getString(1) + "(" + rs.getString(4) +
+							")</span>, <b>" + rs.getString(2)+ " </b> is defined as <i>" + rs.getString(3)+ "</i>");
 				}
 				stmt.close();
 			}
 			closeConnection();
-			for (Object[] o : queryResults) {
-				String son = o[0].toString();
-				String name = o[1].toString();
-				String def = o[2].toString();
-				String sab = o[3].toString();
-				results.add(
-						"According to <span id='definitionSource'>" + son + "(" + sab + ")</span>, <b>" + name + "</b> is defined as <i>" + def + "</i>");
-			}
 		} catch (Exception e) {
 			LoggerUtil.logError(logger, e);
 		}
@@ -476,17 +343,17 @@ public class DBQuery {
 	 *            The SQL query as string
 	 * @return Returns the SQL {@link ResultSet}
 	 */
-	public List<Object[]> executeQuery(String nativeQuery) {
-		List<Object[]> result = new ArrayList<>();
+	public List<String[]> executeQuery(String nativeQuery) {
+		List<String[]> result = new ArrayList<>();
 		try {
 			getConnection();
 			{
 				ResultSet rs = dbConnection.createStatement().executeQuery(nativeQuery);
 				int columns = rs.getMetaData().getColumnCount();
 				while (rs.next()) {
-					Object o[] = new Object[columns];
+					String o[] = new String[columns];
 					for(int i=0;i<columns;i++)
-						o[i] = (Object) rs.getString(i+1);
+						o[i] = rs.getString(i+1);
 					result.add(o);
 				}
 			}
@@ -532,6 +399,19 @@ public class DBQuery {
 		return results;
 	}
 
+	private void buildConcept(AbstractConcept concept, 
+			String name, String cui, String semanticType, String semanticTypeId){
+		
+		concept.setName(ConceptMapper.normalizeName(name));
+		concept.setCui(cui);
+		AbstractType type = new SemanticType();
+		type.setName(semanticType);
+		type.setTypeId(semanticTypeId);
+		concept.addSemanticType(type);
+		
+	}
+	
+	
 	public static void main(String args[]) {
 
 		/*

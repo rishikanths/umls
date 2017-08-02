@@ -23,10 +23,10 @@ import edu.isu.umls.Concepts.Term;
 public class ConceptMapper {
 
 	
-	public static List<AbstractConcept> term2Concept(List<Object[]> resultSet) throws Exception{
+	public static List<AbstractConcept> term2Concept(List<String[]> resultSet) throws Exception{
 		
 		List<AbstractConcept> concepts = new ArrayList<AbstractConcept>();
-		for(Object[] o:resultSet){
+		for(String[] o:resultSet){
 			Term concept = new Term();
 			concept.setCui(o[0].toString());
 			concept.setName(o[1].toString().replace(" ", "_").replace(",", "_"));
@@ -35,10 +35,10 @@ public class ConceptMapper {
 		return concepts;
 	}
 		
-	public static List<AbstractType> toAbstractType(List<Object[]> resultSet) throws Exception{
+	public static List<AbstractType> toAbstractType(List<String[]> resultSet) throws Exception{
 		
 		List<AbstractType> type = new ArrayList<AbstractType>();
-		for(Object[] o:resultSet){
+		for(String[] o:resultSet){
 			AbstractType tempType = null;
 			tempType = new SemanticType();
 			tempType.setName(o[1].toString());
