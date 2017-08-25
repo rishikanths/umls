@@ -10,6 +10,9 @@
  * relationDescription - stores all the relationship types and the respective
  * description.
  */
+/**
+ * Need to clean this messy file. 
+ */
 var processedConcepts = [];
 var unProcessedConcepts = [];
 var relationDescription = new Map();

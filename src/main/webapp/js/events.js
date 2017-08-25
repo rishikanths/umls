@@ -2,11 +2,11 @@
  * This script captures all the events in the application such as click, selected, mouse-movements, etc.
  */
 var KEYCODE_ESC = 27;
-
+var MAX_CONCEPT = 65;
 function selectedRelation(e) {
+	$("#pagniationValue").html(0);
 	var active = relationPagination(1);
 	changeRelationText(searchTerm, e.currentTarget.value,active);
-	$("#pagniationValue").html(0);
 }
 
 function changeRelationText(term, relation,navigationMsg) {
@@ -24,13 +24,14 @@ function changeRelationText(term, relation,navigationMsg) {
 }
 
 function relationPagination(direction) {
+	 
 	var relationMap = new Map();
 	var rel = [];
 	var navigationActive = false;
 	var relation = $('input[name=relations]:checked').val();
 	search.getAdjacencyMap().forEach(function(val, key) {
 		if (key.indexOf(relation) != -1) {
-			if (val.length > 60) {
+			if (val.length > MAX_CONCEPT) {
 				navigationActive = true;
 				$("#relationNavigation").css('display', 'inline');
 				var index = parseInt($("#pagniationValue").text());
@@ -40,26 +41,26 @@ function relationPagination(direction) {
 				if(direction ==1){
 					//within the size limits
 					if (index < temp) {
-						val = val.slice(index, index + 60);
-						index+=60;
+						val = val.slice(index, index + MAX_CONCEPT);
+						index+=MAX_CONCEPT;
 					} else if(index > temp){
 						index = val.length;
-						val = val.slice(index - 60, val.length);
-						index-=60;
+						val = val.slice(index - MAX_CONCEPT, val.length);
+						index-=MAX_CONCEPT;
 					}
 					
 				}else{
-					if ((index < temp || index >= temp) && index>60) {
-						val = val.slice(index-120, index-60);
-						index-=60;
-					} else if(index <=60){
-						val = val.slice(0, 60);
+					if ((index < temp || index >= temp) && index>MAX_CONCEPT) {
+						val = val.slice(index-MAX_CONCEPT*2, index-MAX_CONCEPT);
+						index-=MAX_CONCEPT;
+					} else if(index <=MAX_CONCEPT){
+						val = val.slice(0, MAX_CONCEPT);
 						index = 0;
 					}
 					
 				}
 				navigationLinks(index,temp);
-				$("#pagniationValue").html(index);
+				$("#pagniationValue").text(index);
 			}else
 				$("#relationNavigation").css('display', 'none');
 			for ( var i in val) {
@@ -75,7 +76,7 @@ function relationPagination(direction) {
 }
 
 function navigationLinks(index,length){
-	index == 0? $("#leftLink").css('display', 'none'): $("#leftLink").css('display', 'inline');
+	index <= MAX_CONCEPT? $("#leftLink").css('display', 'none'): $("#leftLink").css('display', 'inline');
 	index >= length?$("#rightLink").css('display', 'none'):$("#rightLink").css('display', 'inline');
 }
 
